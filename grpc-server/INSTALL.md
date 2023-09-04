@@ -22,16 +22,12 @@ En la consola:
 ```bash
 git clone https://github.com/ltisera/tpSD1.git
 cd tpSD1
-cd front
+cd grpc-server
 npm install
 ```
 
-## Para levantar el front
+## Para levantar el server
 
 ```bash
 npm run dev
 ```
-
-## Herramientas
-
-Front generado con https://vitejs.dev/
