@@ -4,9 +4,30 @@ const cors = require("cors");
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const grpc = require("@grpc/grpc-js");
+const protoLoader = require("@grpc/proto-loader");
 const app = express();
 
 // ======== CONFIGURACION =========
+const PROTO_PATH_USERS = path.resolve(
+  __dirname,
+  "../grpc-server/proto/usuario.proto"
+);
+
+const packageDefinitionUser = protoLoader.loadSync(PROTO_PATH_USERS, {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true,
+});
+
+const userProto = grpc.loadPackageDefinition(packageDefinitionUser);
+const usersGrpcClient = new userProto.servicioUsuario(
+  "localhost:50051",
+  grpc.credentials.createInsecure()
+);
+
 const port = 3000;
 const SERVER_JWT_SECRET = "secret1234";
 app.use(cors());
@@ -26,14 +47,15 @@ app.use(express.static(path.resolve(__dirname, "../front")));
 // Si la respuesta es correcta, setear cookie y redirigir a backoffice
 // Si la respuesta es incorrecta, redirigir a login
 app.post("/api/login", (req, res) => {
-  console.log(req.body);
-  const serverResponse = true;
-  if (serverResponse) {
-    res.cookie("user", buildAuthCookie(req.body));
-    res.redirect("/backoffice");
-  } else {
-    res.redirect("/login");
-  }
+  const { password, email } = req.body;
+  createUser({ password, email }, (err, response) => {
+    if (err) {
+      res.redirect("/login");
+    } else {
+      res.cookie("user", buildAuthCookie(response));
+      res.redirect("/backoffice");
+    }
+  });
 });
 app.post("/api/register", (req, res) => {
   console.log(req.body);
@@ -47,6 +69,19 @@ const server = app.listen(port, () => {
 server.on("close", () => {
   console.log("Server closed");
 });
+
+// ====== GRPC CLIENT ======
+function createUser(
+  userdata = {
+    username: "",
+    email: "",
+    password: "",
+    tipo: "",
+  },
+  callback
+) {
+  usersGrpcClient.crearUsuario(userdata, callback);
+}
 
 // ====== MIDDLEWARES ======
 
