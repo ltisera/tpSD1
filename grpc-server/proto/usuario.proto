@@ -1,7 +1,5 @@
 syntax ="proto3";
 
-package manejoUsuario;
-
 message crearUsuarioRequest {
     string username = 1;
     string email = 2;
