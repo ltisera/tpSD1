@@ -1,0 +1,43 @@
+syntax ="proto3";
+
+message crearUsuarioRequest {
+    string username = 1;
+    string email = 2;
+    string password = 3;
+    string tipo = 4;
+}
+
+message crearUsuarioResponse {
+    string username = 1;
+    string mensaje = 2;
+    /*
+        mensajes:
+            "Alta Exitosa" (cuando no existe usuario en BD y Se puede crear)
+            "Alta Fail"
+            "Usuario Existente" (cuando ya existe el usuario en BD)
+    */
+}
+
+message usuario{
+    string username = 1;
+}
+
+message solicitudDeSeguidorRequest{
+    string usuarioQueSigue = 1;
+    string usuarioSeguido = 2;
+
+}
+
+message solicitudDeSeguidorResponse{
+    string mensaje = 1;
+    /*
+        mensajes:
+            "Estas siguiendo a este usuario"
+            "No se puede seguir a este usuario"
+    */
+}
+service servicioUsuario{
+    rpc crearUsuario (crearUsuarioRequest) returns (crearUsuarioResponse);
+    rpc seguirUsuario(solicitudDeSeguidorRequest) returns (solicitudDeSeguidorResponse);
+
+}
