@@ -4,23 +4,23 @@ sys.path.append(r'C:\Users\LucsPC\Downloads\distribuidos\Entrega\tpBDR\tpSD1\pyt
 
 import mysql.connector
 import json
-from Ingrediente import *
+from Categoria import *
 from DAO.ConexionBD import ConexionBD
 
-class IngredienteDAO(ConexionBD):
+class CategoriaDAO(ConexionBD):
     def __int__(self):
         pass
     
 
-    def agregarIngrediente(self, Ingrediente):
+    def agregarCategoria(self, Categoria):
         print("LLEGUE aki")
         mensaje="No se pudo guardar."
         try:
             self.crearConexion()
 
-            self._micur.execute("INSERT INTO Ingrediente(idIngrediente, nombre) values (%s, %s)", (Ingrediente.idIngrediente, Ingrediente.nombre))
+            self._micur.execute("INSERT INTO Categoria(nombre) values (%s, %s)", (Categoria.nombre))
             self._bd.commit()
-            mensaje = "Ingrediente guardado."
+            mensaje = "Categoria guardado."
 #            self._micur.execute("SELECT * FROM inscripcion where idUsuario = %s and idExamen = %s", (idUsuario, idExamen))
             inscripcion = self._micur.fetchone()
                 
