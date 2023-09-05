@@ -1,0 +1,26 @@
+syntax ="proto3";
+
+package manejoUsuario;
+
+message crearUsuarioRequest {
+    string username = 1;
+    string email = 2;
+    string password = 3;
+    string tipo = 4;
+}
+
+message crearUsuarioResponse {
+    string username = 1;
+    string mensaje = 2;
+    /*
+        mensajes:
+            "Alta Exitosa" (cuando no existe usuario en BD y Se puede crear)
+            "Alta Fail"
+            "Usuario Existente" (cuando ya existe el usuario en BD)
+    */
+}
+
+service servicioUsuario{
+    rpc crearUsuario (crearUsuarioRequest) returns (crearUsuarioResponse);
+    
+}
