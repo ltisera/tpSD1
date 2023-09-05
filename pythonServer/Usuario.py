@@ -1,9 +1,9 @@
 class Usuario():
-    def __init__(self, idUsuario = None, email = "", nombre ="", constraseña="", tipo = ""):
+    def __init__(self, idUsuario = None, email = "", nombre ="", password="", tipo = ""):
         self._idUsuario = idUsuario
         self._email = email
         self._nombre = nombre
-        self._contraseña = constraseña
+        self._password = password
         self._tipo = tipo
     
     @property
@@ -31,12 +31,12 @@ class Usuario():
         self._nombre = nombre
     
     @property
-    def constraseña(self):
-        return self._constraseña
+    def password(self):
+        return self._password
     
     @nombre.setter
-    def constraseña (self, constraseña):
-        self._constraseña = constraseña
+    def password (self, password):
+        self._password = password
     
 
     @property
@@ -52,7 +52,7 @@ class Usuario():
             "idUsuario: " + str(self.idUsuario) +
             " email: " + str(self.email) +
             " nombre: " + str(self.nombre) +
-            " constraseña: " + str(self.nombre) +
+            " password: " + str(self.nombre) +
             " tipo = " + str(self.nombre)
         )
 
@@ -60,7 +60,7 @@ class Usuario():
 if __name__ == '__main__':
     print("Main de Usuario para test")
     print("Creando usuaruio us1")
-    us1 = Usuario(email="loc@yahoo.com", nombre="Lucas", constraseña="sinco", tipo= "admin")
+    us1 = Usuario(email="loc@yahoo.com", nombre="Lucas", password="sinco", tipo= "admin")
     print("Imprimiendo us1")
     print(us1)
     print("impreso... Izi Usuario")
