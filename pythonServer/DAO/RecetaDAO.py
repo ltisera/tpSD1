@@ -49,7 +49,7 @@ class RecetaDAO(ConexionBD):
 
 #            self._micur.execute("SELECT * FROM inscripcion where idReceta = %s and idExamen = %s", (idUsuario, idExamen))
 #            inscripcion = self._micur.fetchone()
-            self._micur.execute("INSERT INTO receta(idReceta, titulo, tiempoEnMinutos, categoria, creador) values (%s, %s, %s, %s, %s)", (receta.idReceta, receta.titulo, receta.tiempoEnMinutos, receta.categoria, receta.creador))
+            self._micur.execute("INSERT INTO receta(idReceta, titulo, tiempoEnMinutos, categoria, creador) values (%s, %s, %s, %s, %s)", (receta.idReceta, receta.titulo, receta.tiempoEnMinutos, 1, 2))
             self._bd.commit()
             mensaje = "receta guardada."
 #            self._micur.execute("SELECT * FROM inscripcion where idUsuario = %s and idExamen = %s", (idUsuario, idExamen))
@@ -62,7 +62,7 @@ class RecetaDAO(ConexionBD):
         finally:
             self.cerrarConexion()
         
-        return (inscripcion, mensaje)
+        return (mensaje)
 
 if __name__ == '__main__':
 
