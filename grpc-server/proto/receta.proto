@@ -1,0 +1,25 @@
+syntax ="proto3";
+
+
+message receta {
+    string titulo = 1;
+    string foto = 2;
+    string tpMin = 3;
+    string tpMax = 4;
+    string idReceta = 5;
+}
+message traerRecetasPorRequest {
+    string tiempoEnMinutos = 1;
+    string categoria = 2;
+    string creador = 3;
+    
+}
+
+message traerRecetasPorResponse {
+    repeated receta recetas = 1;
+}
+
+service servicioReceta{
+    rpc traerRecetasPor (traerRecetasPorRequest) returns (traerRecetasPorResponse);
+    
+}
