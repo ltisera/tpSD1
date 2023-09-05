@@ -29,24 +29,14 @@ class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
         return respuesta
 
 def iniciar_servidor():
-    print("paso1")
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    print("paso2")
-    
     usuario_pb2_grpc.add_servicioUsuarioServicer_to_server(UsuarioServicer(), server)
-    print("paso3")
-    
     server.add_insecure_port('[::]:50051')  # Escucha en el puerto 50051 sin cifrado
-    print("paso4")
-    
     server.start()
-    print("paso5")
     logging.basicConfig(level=logging.DEBUG) 
     logging.info("Servidor gRPC iniciado en el puerto 50051")
-    print("paso6")
     
     server.wait_for_termination()
-    print("paso7")
     
 
 if __name__ == '__main__':
