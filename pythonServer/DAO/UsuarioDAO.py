@@ -4,12 +4,28 @@ sys.path.append(r'C:\Users\LucsPC\Downloads\distribuidos\Entrega\tpBDR\tpSD1\pyt
 from Usuario import *
 import mysql.connector
 import json
-
+from mysql.connector import Error
 from DAO.ConexionBD import ConexionBD
 
 class UsuarioDAO(ConexionBD):
     def __int__(self):
         pass
+    
+    def traerUsuarioSIMPLE(self, idUsuario):
+        usTraido = None
+        try:
+            self.crearConexion()
+            self.cursorDict()
+            #self._micur.execute('SELECT idUsuario, email, tipoUsuario FROM usuario WHERE usuario.idUsuario = %s', (idUsuario,))
+            self._micur.execute('SELECT * FROM usuario WHERE usuario.usuario = %s', (idUsuario,))
+            usTraido = self._micur.fetchone()
+        except Error as e:
+            print("Error al conectar con la BD", e)
+
+        finally:
+            self.cerrarConexion()
+        
+        return usTraido
     
 
 
@@ -65,14 +81,15 @@ class UsuarioDAO(ConexionBD):
 
 if __name__ == '__main__':
 
-    print("testing Usuario DAO")
-    print("Creando usuario local")
-    us1 = Usuario(idUsuario="Elnombre",email="loc@yahoo.com", nombre="Lucas", password="sinco", tipo= "admin")
-    print("Uss: ")
-    print(us1)
-    print("Persistiendo")
+#    print("testing Usuario DAO")
+#    print("Creando usuario local")
+#    us1 = Usuario(idUsuario="Elnombre",email="loc@yahoo.com", nombre="Lucas", password="sinco", tipo= "admin")
+#    print("Uss: ")
+#    print(us1)
+#    print("Persistiendo")
+    
     udao = UsuarioDAO()
 
-    udao.agregarUsuario(us1)
+    print(udao.traerUsuarioSIMPLE("Elnombre"))
 
     print("Finnn eaaa")

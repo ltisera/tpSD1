@@ -34,6 +34,7 @@ class ConexionBD:
 
     #def cerrarCursor(self):
     #    self._micur.close()
+    
 
 if __name__ == '__main__':
     a = ConexionBD()
