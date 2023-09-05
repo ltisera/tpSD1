@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `bdRecetas`.`Usuario` (
   `usuario` VARCHAR(25) NOT NULL,
   `email` VARCHAR(45) NULL,
   `nombre` VARCHAR(45) NULL,
-  `contraseña` VARCHAR(45) NULL,
+  `password` VARCHAR(45) NULL,
   `tipo` VARCHAR(45) NULL,
   PRIMARY KEY (`usuario`))
 ENGINE = InnoDB;
