@@ -1,16 +1,6 @@
 class Ingrediente():
-    def __init__(self, idIngrediente=None, nombre=""):
-        self._idIngrediente = idIngrediente
+    def __init__(self, nombre=""):
         self._nombre = nombre
-        
-
-    @property
-    def idIngrediente(self):
-        return self._idIngrediente
-
-    @idIngrediente.setter
-    def idIngrediente(self, id):
-        self._idIngrediente = id
 
     @property
     def nombre(self):
@@ -22,6 +12,5 @@ class Ingrediente():
     
 
     def __str__(self):
-        return str("id: " + str(self.idIngrediente)
-                   + " nombre: " +
-                   str(self.nombre))
+        return str("id: " + str(" nombre: " +
+                   str(self.nombre)))

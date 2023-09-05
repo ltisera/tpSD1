@@ -1,16 +1,6 @@
 class Categoria():
-    def __init__(self, idCategoria=None, nombre=""):
-        self._idCategoria = idCategoria
+    def __init__(self, nombre=""):
         self._nombre = nombre
-        
-
-    @property
-    def idCategoria(self):
-        return self._idCategoria
-
-    @idCategoria.setter
-    def idCategoria(self, id):
-        self._idCategoria = id
 
     @property
     def nombre(self):
@@ -22,6 +12,5 @@ class Categoria():
     
 
     def __str__(self):
-        return str("id: " + str(self.idCategoria)
-                   + " nombre: " +
-                   str(self.nombre))
+        return str("id: " + str(" nombre: " +
+                   str(self.nombre)))

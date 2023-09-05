@@ -1,10 +1,12 @@
 import sys
 
 sys.path.append(r'C:\Users\LucsPC\Downloads\distribuidos\Entrega\tpBDR\tpSD1\pythonServer')
+sys.path.append(r'C:\Users\camil\Documents\GitHub\tpSD1\pythonServer')
 
+from Categoria import *
 import mysql.connector
 import json
-from Categoria import *
+from mysql.connector import Error
 from DAO.ConexionBD import ConexionBD
 
 class CategoriaDAO(ConexionBD):
@@ -13,18 +15,12 @@ class CategoriaDAO(ConexionBD):
     
 
     def agregarCategoria(self, Categoria):
-        print("LLEGUE aki")
-        mensaje="No se pudo guardar."
+        mensaje = "Error"
         try:
             self.crearConexion()
-
-            self._micur.execute("INSERT INTO Categoria(nombre) values (%s, %s)", (Categoria.nombre))
+            self._micur.execute("INSERT INTO Categoria(nombre) values (%s)", ( Categoria.nombre,))
             self._bd.commit()
-            mensaje = "Categoria guardado."
-#            self._micur.execute("SELECT * FROM inscripcion where idUsuario = %s and idExamen = %s", (idUsuario, idExamen))
-            inscripcion = self._micur.fetchone()
-                
-
+            mensaje = "Categoria guardado"
         except mysql.connector.errors.IntegrityError as err:
             print("Error: " + str(err))
 
@@ -32,8 +28,33 @@ class CategoriaDAO(ConexionBD):
             self.cerrarConexion()
         
         return (mensaje)
+    
+    def traerCategoria(self, nombre):
+        caTraida = None
+        try:
+            self.crearConexion()
+            self.cursorDict()
+            self._micur.execute('SELECT * FROM Categoria WHERE Categoria.nombre = %s', (nombre,))
+            caTraida = self._micur.fetchone()
+        except Error as e:
+            print("Error al conectar con la BD", e)
+
+        finally:
+            self.cerrarConexion()
+        
+        return caTraida
 
 if __name__ == '__main__':
-    pass
+
+    cat = Categoria(nombre="postre")
+    
+    cdao = CategoriaDAO()
+
+    print(cdao.agregarCategoria(cat))
+
+    print("traer:")
+    print(cdao.traerCategoria("postre"))
+
+    print("Finnn eaaa")
     
         

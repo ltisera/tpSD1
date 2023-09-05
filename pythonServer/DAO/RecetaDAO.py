@@ -1,7 +1,7 @@
 import sys
 
 sys.path.append(r'C:\Users\LucsPC\Downloads\distribuidos\Entrega\tpBDR\tpSD1\pythonServer')
-
+sys.path.append(r'C:\Users\camil\Documents\GitHub\tpSD1\pythonServer')
 import mysql.connector
 import json
 from Receta import *
@@ -13,25 +13,17 @@ class RecetaDAO(ConexionBD):
     
 
 
-    def traerListaRecetas(self, idUsuario, carreras):
+    
+
+    def traerRecetasxCategoria(self, categoria):
+        lstRecetas = []
         try:
-            examenesDisponibles = []
-            lstExamenes = []
             self.crearConexion()
             self.cursorDict()
-            for c in carreras:
-                print("de carrera imprimo su id ",c["idCarrera"])
-                self._micur.execute("SELECT * FROM examen INNER JOIN carrera ON examen.idCarrera = carrera.idCarrera  WHERE examen.disponible = 1 and examen.idCarrera = %s", (c["idCarrera"],))
-                examenesDeCarrera = self._micur.fetchall()
-                for e in examenesDeCarrera:
-                    examenesDisponibles.append(e)
-            
-            for examen in examenesDisponibles:
-                self._micur.execute("SELECT * FROM inscripcion WHERE inscripcion.idUsuario =%s and inscripcion.idExamen =%s", (idUsuario, examen['idExamen']))
-                inscripcion = self._micur.fetchone()
-                
-                if inscripcion == None:
-                    lstExamenes.append(examen)
+            self._micur.execute("SELECT * FROM receta WHERE receta.categoria = %s", (categoria,))
+            listaDeRecetas = self._micur.fetchall()
+            for r in listaDeRecetas:
+                lstRecetas.append(r)
 
         except mysql.connector.errors.IntegrityError as err:
             print("Error: " + str(err))
@@ -39,17 +31,29 @@ class RecetaDAO(ConexionBD):
         finally:
             self.cerrarConexion()
         
-        return lstExamenes
+        return lstRecetas
+
+    def traerReceta(self, idReceta):
+        usTraido = None
+        try:
+            self.crearConexion()
+            self.cursorDict()
+            self._micur.execute('SELECT * FROM Receta WHERE Receta.idReceta = %s', (idReceta,))
+            usTraido = self._micur.fetchone()
+        except Error as e:
+            print("Error al conectar con la BD", e)
+
+        finally:
+            self.cerrarConexion()
+        
+        return usTraido
 
     def agregarReceta(self, receta):
         print("LLEGUE aki")
-        mensaje="Ya estabas inscripto."
+        mensaje="Error."
         try:
             self.crearConexion()
-
-#            self._micur.execute("SELECT * FROM inscripcion where idReceta = %s and idExamen = %s", (idUsuario, idExamen))
-#            inscripcion = self._micur.fetchone()
-            self._micur.execute("INSERT INTO receta(idReceta, titulo, tiempoEnMinutos, categoria, creador) values (%s, %s, %s, %s, %s)", (receta.idReceta, receta.titulo, receta.tiempoEnMinutos, 1, 2))
+            self._micur.execute("INSERT INTO receta(idReceta, titulo, descripcion, foto1, foto2, foto3, foto4, foto5, pasos, tiempoEnMinutos, categoria, creador) values (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s)", (receta.idReceta, receta.titulo, receta.descripcion, receta.foto1, receta.foto2, receta.foto3, receta.foto4, receta.foto5, receta.pasos, receta.tiempoEnMinutos, receta.categoria, receta.creador))
             self._bd.commit()
             mensaje = "receta guardada."
 #            self._micur.execute("SELECT * FROM inscripcion where idUsuario = %s and idExamen = %s", (idUsuario, idExamen))
@@ -63,22 +67,39 @@ class RecetaDAO(ConexionBD):
             self.cerrarConexion()
         
         return (mensaje)
+    
+    def agregarIngredienteAReceta(self, receta, ingrediente, cantidad, tipoDeMedida):
+        mensaje = "Error."
+        try:
+            self.crearConexion()
+            self._micur.execute("INSERT INTO receta_has_ingrediente(idReceta, ingrediente, cantidad, tipoDeMedida) values (%s, %s, %s, %s)", (receta, ingrediente, cantidad, tipoDeMedida))
+            self._bd.commit()
+            mensaje = "ingrediente guardado."
+
+        except mysql.connector.errors.IntegrityError as err:
+            print("Error: " + str(err))
+
+        finally:
+            self.cerrarConexion()
+        
+        return (mensaje)
 
 if __name__ == '__main__':
+    
+    rdao = RecetaDAO()
 
-    #print("TEST INSCRIPCIONNNNNNNNNNNNNNNNNNN")
-    #print(alumnoDao.inscripcionAExamen(2,1))
+    """
+    rec = Receta(titulo="flan",tiempoEnMinutos=5,categoria="postre",descripcion="Rico", creador="Elnombre2", pasos="1)hacer el flan")
+    
 
-    #print("EXAMENES A RENDIR")
-    #print(alumnoDao.traerExamenesARendir(2))
+    print(rdao.agregarReceta(rec))
 
-    #print("Responder pregunta")
-    #alumnoDao.responderPregunta(1,2,1)
-    #alumnoDao.responderPregunta(1,3,1)
+    print("traer:")
+    print(rdao.traerReceta(1))
+    """
 
-    #print("FINALIZAR EXAMEN")
-    #alumnoDao.finalizarExamen(1,2)
+    print(rdao.agregarIngredienteAReceta(1, "Azucar", 10, "gramos"))
 
-    print("RENDIR EXAMEN")
+    print("Finnn eaaa")
     
         
