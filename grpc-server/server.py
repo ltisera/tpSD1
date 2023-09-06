@@ -20,7 +20,9 @@ from proto import usuario_pb2_grpc as usuario_pb2_grpc
 from proto import receta_pb2 as receta_pb2
 from proto import receta_pb2_grpc as receta_pb2_grpc
 
+
 from DAO.RecetaDAO import RecetaDAO
+from DAO.UsuarioDAO import UsuarioDAO
 
 from Receta import *
 
@@ -29,24 +31,6 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
     def traerRecetasPor(self, request, context):
         print(request.creador)
         print(request.categoria)
-        # print(request.creador)
-        # receta1 = receta_pb2.receta(
-            
-        #     titulo ="tomates con cherry",
-        #     foto = "agregar foto",
-        #     tpMin = "3",
-        #     tpMax = "10"
-        # )
-
-        # receta2 = receta_pb2.receta(
-        #     titulo = "Palta con Pan",
-        #     foto = "no tenemos",
-        #     tpMin = "3",
-        #     tpMax = "10"
-        # )
-
-        # listaRecetas = [receta1, receta2]
-        # print("Enviando recetas al cliente")
         responseListaRecetas=[]
     
             
@@ -82,26 +66,6 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
     def crearReceta(self, request, context):
         print(request)
         print(context)
-
-        # print(request.creador)
-        # receta1 = receta_pb2.receta(
-            
-        #     titulo ="tomates con cherry",
-        #     foto = "agregar foto",
-        #     tpMin = "3",
-        #     tpMax = "10"
-        # )
-
-        # receta2 = receta_pb2.receta(
-        #     titulo = "Palta con Pan",
-        #     foto = "no tenemos",
-        #     tpMin = "3",
-        #     tpMax = "10"
-        # )
-
-        # listaRecetas = [receta1, receta2]
-        # print("Enviando recetas al cliente")
-        # receta.idReceta, receta.titulo, receta.descripcion, receta.foto1, receta.foto2, receta.foto3, receta.foto4, receta.foto5, receta.pasos, receta.tiempoEnMinutos, receta.categoria, receta.creador
         adminreceta = RecetaDAO()
         receta = Receta()
         receta.titulo = request.titulo
@@ -125,6 +89,21 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
 
 #### Aca te entra los request de Usuario
 class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
+    def loguearUsuario(self, request, context):
+        
+        udao = UsuarioDAO()
+        ustmp = udao.traerUsuarioSIMPLE(request.username);
+        
+        if(ustmp == None):
+            respuesta = usuario_pb2.loguearUsuarioResponse(username=request.username, estado="No existe el usuario")
+        else:
+            if(ustmp["password"] == request.password):
+                respuesta = usuario_pb2.loguearUsuarioResponse(username=request.username, estado="VALIDO")
+            else:
+                respuesta = usuario_pb2.loguearUsuarioResponse(username=request.username, estado="Contra MAlaa")
+
+        return respuesta
+    
     def crearUsuario(self, request, context):
         
         print("LLEGO ALGO EHHHH")
