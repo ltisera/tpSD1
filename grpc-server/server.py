@@ -89,6 +89,9 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
 
 #### Aca te entra los request de Usuario
 class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
+    def seguirUsuario(self, request, context):
+        respuesta = usuario_pb2.solicitudDeSeguidorResponse(mensaje="Usuario SEGUIDO")
+        return respuesta
     def loguearUsuario(self, request, context):
         
         udao = UsuarioDAO()
