@@ -9,6 +9,8 @@ import json
 from mysql.connector import Error
 from DAO.ConexionBD import ConexionBD
 
+from DAO.CONFIGS.variablesGlobales import TINGREDIENTE
+
 class IngredienteDAO(ConexionBD):
     def __int__(self):
         pass
@@ -34,7 +36,7 @@ class IngredienteDAO(ConexionBD):
         try:
             self.crearConexion()
             self.cursorDict()
-            self._micur.execute('SELECT * FROM ingrediente WHERE ingrediente.nombre = %s', (nombre,))
+            self._micur.execute('SELECT * FROM " + TINGREDIENTE + " WHERE " + TINGREDIENTE + ".nombre = %s', (nombre,))
             inTraido = self._micur.fetchone()
         except Error as e:
             print("Error al conectar con la BD", e)

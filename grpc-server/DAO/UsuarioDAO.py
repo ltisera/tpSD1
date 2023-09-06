@@ -8,6 +8,7 @@ import mysql.connector
 import json
 from mysql.connector import Error
 from DAO.ConexionBD import ConexionBD
+from DAO.CONFIGS.variablesGlobales import TUSUARIO, TSIGUIENDO
 
 class UsuarioDAO(ConexionBD):
     def __int__(self):
@@ -19,7 +20,7 @@ class UsuarioDAO(ConexionBD):
             self.crearConexion()
             self.cursorDict()
             #self._micur.execute('SELECT idUsuario, email, tipoUsuario FROM usuario WHERE usuario.idUsuario = %s', (idUsuario,))
-            self._micur.execute('SELECT * FROM usuario WHERE usuario.usuario = %s', (idUsuario,))
+            self._micur.execute('SELECT * FROM " + TUSUARIO + " WHERE " + TUSUARIO + ".usuario = %s', (idUsuario,))
             usTraido = self._micur.fetchone()
         except Error as e:
             print("Error al conectar con la BD", e)
@@ -37,7 +38,7 @@ class UsuarioDAO(ConexionBD):
 
 #            self._micur.execute("SELECT * FROM inscripcion where idReceta = %s and idExamen = %s", (idUsuario, idExamen))
 #            inscripcion = self._micur.fetchone()
-            self._micur.execute("INSERT INTO usuario(usuario, email, nombre, password, tipo) values (%s, %s, %s, %s, %s)", (usuario.idUsuario, usuario.email, usuario.nombre, usuario.password, usuario.tipo))
+            self._micur.execute("INSERT INTO " + TUSUARIO + "(usuario, email, nombre, password, tipo) values (%s, %s, %s, %s, %s)", (usuario.idUsuario, usuario.email, usuario.nombre, usuario.password, usuario.tipo))
             self._bd.commit()
             mensaje = "Alta Exitosa"
 #            self._micur.execute("SELECT * FROM inscripcion where idUsuario = %s and idExamen = %s", (idUsuario, idExamen))
@@ -58,7 +59,7 @@ class UsuarioDAO(ConexionBD):
         if (usuarioQueSigue != usuarioSeguido):
             try:
                 self.crearConexion()
-                self._micur.execute("INSERT INTO siguiendo(Usuario_Seguidor, Usuario_Seguido) values (%s, %s)", (usuarioQueSigue, usuarioSeguido))
+                self._micur.execute("INSERT INTO " + TSIGUIENDO + "(Usuario_Seguidor, Usuario_Seguido) values (%s, %s)", (usuarioQueSigue, usuarioSeguido))
                 self._bd.commit()
                 mensaje = "Estas siguiendo a este usuario"
 
@@ -75,7 +76,7 @@ class UsuarioDAO(ConexionBD):
         try:
             self.crearConexion()
             self.cursorDict()
-            self._micur.execute("SELECT siguiendo.Usuario_Seguido FROM siguiendo WHERE siguiendo.Usuario_Seguidor = %s", (usuario,))
+            self._micur.execute("SELECT " + TSIGUIENDO + ".Usuario_Seguido FROM " + TSIGUIENDO + " WHERE " + TSIGUIENDO + ".Usuario_Seguidor = %s", (usuario,))
             listaDeSeguidos = self._micur.fetchall()
             for r in listaDeSeguidos:
                 lstSeguidos.append(r)
@@ -93,7 +94,7 @@ class UsuarioDAO(ConexionBD):
         try:
             self.crearConexion()
             self.cursorDict()
-            self._micur.execute("SELECT siguiendo.Usuario_Seguidor FROM siguiendo WHERE siguiendo.Usuario_Seguido = %s", (usuario,))
+            self._micur.execute("SELECT " + TSIGUIENDO + ".Usuario_Seguidor FROM " + TSIGUIENDO + " WHERE " + TSIGUIENDO + ".Usuario_Seguido = %s", (usuario,))
             listaDeRecetasSeguidores = self._micur.fetchall()
             for r in listaDeRecetasSeguidores:
                 lstSeguidores.append(r)

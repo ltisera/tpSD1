@@ -8,6 +8,7 @@ import mysql.connector
 import json
 from mysql.connector import Error
 from DAO.ConexionBD import ConexionBD
+from DAO.CONFIGS.variablesGlobales import TCATEGORIA
 
 class CategoriaDAO(ConexionBD):
     def __int__(self):
@@ -18,7 +19,7 @@ class CategoriaDAO(ConexionBD):
         mensaje = "Error"
         try:
             self.crearConexion()
-            self._micur.execute("INSERT INTO Categoria(nombre) values (%s)", ( Categoria.nombre,))
+            self._micur.execute("INSERT INTO " + TCATEGORIA + "(nombre) values (%s)", ( Categoria.nombre,))
             self._bd.commit()
             mensaje = "Categoria guardado"
         except mysql.connector.errors.IntegrityError as err:
@@ -34,7 +35,7 @@ class CategoriaDAO(ConexionBD):
         try:
             self.crearConexion()
             self.cursorDict()
-            self._micur.execute('SELECT * FROM Categoria WHERE Categoria.nombre = %s', (nombre,))
+            self._micur.execute("SELECT * FROM " + TCATEGORIA + " WHERE " + TCATEGORIA + ".nombre = %s", (nombre,))
             caTraida = self._micur.fetchone()
         except Error as e:
             print("Error al conectar con la BD", e)
@@ -46,7 +47,7 @@ class CategoriaDAO(ConexionBD):
 
 if __name__ == '__main__':
 
-    cat = Categoria(nombre="postre")
+    cat = Categoria(nombre="postre2")
     
     cdao = CategoriaDAO()
 
