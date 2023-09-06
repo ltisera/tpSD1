@@ -40,3 +40,4 @@ __pycache__/
 *.egg-info/
 dist/
 build/
+grpc-server/DAO/CONFIGS/configs.py
