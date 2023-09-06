@@ -46,12 +46,12 @@ CREATE TABLE IF NOT EXISTS `bdRecetas`.`Receta` (
   `idReceta` INT NOT NULL AUTO_INCREMENT,
   `titulo` VARCHAR(45) NULL,
   `descripcion` VARCHAR(256) NULL,
-  `foto1` VARCHAR(45) NULL,
-  `foto2` VARCHAR(45) NULL,
-  `foto3` VARCHAR(45) NULL,
-  `foto4` VARCHAR(45) NULL,
-  `foto5` VARCHAR(45) NULL,
-  `pasos` VARCHAR(45) NULL,
+  `foto1` VARCHAR(1600) NULL,
+  `foto2` VARCHAR(1600) NULL,
+  `foto3` VARCHAR(1600) NULL,
+  `foto4` VARCHAR(1600) NULL,
+  `foto5` VARCHAR(1600) NULL,
+  `pasos` VARCHAR(1600) NULL,
   `tiempoEnMinutos` INT NULL,
   `categoria` VARCHAR(45) NOT NULL,
   `creador` VARCHAR(25) NOT NULL,
@@ -151,3 +151,15 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+
+INSERT INTO `bdRecetas`.`Usuario` (`usuario`, `email`, `nombre`, `password`, `tipo`) VALUES ('admin', 'admin@admin.com', 'admin', 'admin', 'admin');
+INSERT INTO `bdRecetas`.`Usuario` (`usuario`, `email`, `nombre`, `password`, `tipo`) VALUES ('roberto', 'roberto@roberto.com', 'roberto', 'roberto', 'roberto');
+
+INSERT INTO `bdRecetas`.`Categoria` (`nombre`) VALUES ('Desayuno');
+INSERT INTO `bdRecetas`.`Categoria` (`nombre`) VALUES ('Almuerzo');
+INSERT INTO `bdRecetas`.`Categoria` (`nombre`) VALUES ('Cena');
+
+INSERT INTO `bdRecetas`.`Receta` (`titulo`, `descripcion`, `foto1`, `foto2`, `foto3`, `foto4`, `foto5`, `pasos`, `tiempoEnMinutos`, `categoria`, `creador`) VALUES ('Huevos con jamon', 'Huevos con jamon', 'https://cdn0.recetasgratis.net/es/posts/2/9/7/huevos_con_jamon_y_frijoles_76792_orig.jpg', NULL, NULL, NULL, NULL, '1. Cocinar los huevos en una sarten\n2. Cocinar el jamon en otra sarten\n3. Servir en un plato', '10', 'Desayuno', 'admin');
+
+INSERT INTO `bdRecetas`.`Receta` (`titulo`, `descripcion`, `foto1`, `foto2`, `foto3`, `foto4`, `foto5`, `pasos`, `tiempoEnMinutos`, `categoria`, `creador`) VALUES ('Frijoles', 'Frijoles muy ricos con salsa especial', 'https://www.goya.com/media/4156/colombian-beans.jpg?quality=80', NULL, NULL, NULL, NULL, '1. Servir 2. Poner salsa', '10', 'Almuerzo', 'roberto');

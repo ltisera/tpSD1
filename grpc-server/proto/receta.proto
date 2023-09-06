@@ -3,23 +3,45 @@ syntax ="proto3";
 
 message receta {
     string titulo = 1;
-    string foto = 2;
-    string tpMin = 3;
-    string tpMax = 4;
-    string idReceta = 5;
+    string descripcion=2;
+    string pasos=3;
+    uint32 tiempoEnMinutos=4;
+    string categoria=5;
+    string creador=6;
+    string foto1=7;
+    string foto2=8;
+    string foto3=9;
+    string foto4=10;
+    string foto5=11;
+    uint32 idReceta = 12;
 }
 message traerRecetasPorRequest {
     string tiempoEnMinutos = 1;
     string categoria = 2;
     string creador = 3;
-    
 }
-
+message crearRecetaRequest {
+    string titulo = 1;
+    string descripcion=2;
+    string pasos=3;
+    uint32 tiempoEnMinutos=4;
+    string categoria=5;
+    string creador=6;
+    string foto1=7;
+    string foto2=8;
+    string foto3=9;
+    string foto4=10;
+    string foto5=11;
+}
+message status {
+    // 0 = error, 1 = ok
+   int32 status=1;
+}
 message traerRecetasPorResponse {
     repeated receta recetas = 1;
 }
 
 service servicioReceta{
     rpc traerRecetasPor (traerRecetasPorRequest) returns (traerRecetasPorResponse);
-    
+    rpc crearReceta(crearRecetaRequest)returns (status);
 }

@@ -27,6 +27,24 @@ const usersGrpcClient = new userProto.servicioUsuario(
   "localhost:50051",
   grpc.credentials.createInsecure()
 );
+const PROTO_PATH_RECIPES = path.resolve(
+  __dirname,
+  "../grpc-server/proto/receta.proto"
+);
+
+const packageDefinitionRecipes = protoLoader.loadSync(PROTO_PATH_RECIPES, {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true,
+});
+
+const recipesProto = grpc.loadPackageDefinition(packageDefinitionRecipes);
+const recipesGrpcClient = new recipesProto.servicioReceta(
+  "localhost:50051",
+  grpc.credentials.createInsecure()
+);
 
 const port = 3000;
 const SERVER_JWT_SECRET = "secret1234";
@@ -50,16 +68,36 @@ app.post("/api/login", (req, res) => {
   const { password, email } = req.body;
   createUser({ password, email }, (err, response) => {
     if (err) {
+      console.error(err);
       res.redirect("/login");
     } else {
+      console.log(response);
       res.cookie("user", buildAuthCookie(response));
       res.redirect("/backoffice");
     }
   });
 });
 app.post("/api/register", (req, res) => {
-  console.log(req.body);
-  res.redirect("/");
+  const { password, email } = req.body;
+  createUser({ password, email }, (err, response) => {
+    if (err) {
+      console.error(err);
+      res.redirect("/login");
+    } else {
+      console.log(response);
+      res.cookie("user", buildAuthCookie(response));
+      res.redirect("/backoffice");
+    }
+  });
+});
+app.post("/api/recipes", (req, res) => {
+  getRecipes(req.body, (error, response) => {
+    if (error) {
+      res.json([]);
+    } else {
+      res.json(response);
+    }
+  });
 });
 
 const server = app.listen(port, () => {
@@ -81,6 +119,24 @@ function createUser(
   callback
 ) {
   usersGrpcClient.crearUsuario(userdata, callback);
+}
+function createRecipe() {}
+function getRecipes(
+  filters = {
+    tiempoEnMinutos: "",
+    categoria: "",
+    creador: "",
+  },
+  callback
+) {
+  recipesGrpcClient.traerRecetasPor(filters, (err, response) => {
+    callback(err, response);
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(response);
+    }
+  });
 }
 
 // ====== MIDDLEWARES ======

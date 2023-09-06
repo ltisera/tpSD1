@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0creceta.proto\"D\n\x06receta\x12\x0e\n\x06titulo\x18\x01 \x01(\t\x12\x0c\n\x04\x66oto\x18\x02 \x01(\t\x12\r\n\x05tpMin\x18\x03 \x01(\t\x12\r\n\x05tpMax\x18\x04 \x01(\t\"U\n\x16traerRecetasPorRequest\x12\x17\n\x0ftiempoEnMinutos\x18\x01 \x01(\t\x12\x11\n\tcategoria\x18\x02 \x01(\t\x12\x0f\n\x07\x63reador\x18\x03 \x01(\t\"3\n\x17traerRecetasPorResponse\x12\x18\n\x07recetas\x18\x01 \x03(\x0b\x32\x07.receta2V\n\x0eservicioReceta\x12\x44\n\x0ftraerRecetasPor\x12\x17.traerRecetasPorRequest\x1a\x18.traerRecetasPorResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0creceta.proto\"\xd6\x01\n\x06receta\x12\x0e\n\x06titulo\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scripcion\x18\x02 \x01(\t\x12\r\n\x05pasos\x18\x03 \x01(\t\x12\x17\n\x0ftiempoEnMinutos\x18\x04 \x01(\r\x12\x11\n\tcategoria\x18\x05 \x01(\t\x12\x0f\n\x07\x63reador\x18\x06 \x01(\t\x12\r\n\x05\x66oto1\x18\x07 \x01(\t\x12\r\n\x05\x66oto2\x18\x08 \x01(\t\x12\r\n\x05\x66oto3\x18\t \x01(\t\x12\r\n\x05\x66oto4\x18\n \x01(\t\x12\r\n\x05\x66oto5\x18\x0b \x01(\t\x12\x10\n\x08idReceta\x18\x0c \x01(\r\"U\n\x16traerRecetasPorRequest\x12\x17\n\x0ftiempoEnMinutos\x18\x01 \x01(\t\x12\x11\n\tcategoria\x18\x02 \x01(\t\x12\x0f\n\x07\x63reador\x18\x03 \x01(\t\"\xd0\x01\n\x12\x63rearRecetaRequest\x12\x0e\n\x06titulo\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scripcion\x18\x02 \x01(\t\x12\r\n\x05pasos\x18\x03 \x01(\t\x12\x17\n\x0ftiempoEnMinutos\x18\x04 \x01(\r\x12\x11\n\tcategoria\x18\x05 \x01(\t\x12\x0f\n\x07\x63reador\x18\x06 \x01(\t\x12\r\n\x05\x66oto1\x18\x07 \x01(\t\x12\r\n\x05\x66oto2\x18\x08 \x01(\t\x12\r\n\x05\x66oto3\x18\t \x01(\t\x12\r\n\x05\x66oto4\x18\n \x01(\t\x12\r\n\x05\x66oto5\x18\x0b \x01(\t\"\x18\n\x06status\x12\x0e\n\x06status\x18\x01 \x01(\x05\"3\n\x17traerRecetasPorResponse\x12\x18\n\x07recetas\x18\x01 \x03(\x0b\x32\x07.receta2\x83\x01\n\x0eservicioReceta\x12\x44\n\x0ftraerRecetasPor\x12\x17.traerRecetasPorRequest\x1a\x18.traerRecetasPorResponse\x12+\n\x0b\x63rearReceta\x12\x13.crearRecetaRequest\x1a\x07.statusb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -21,12 +21,16 @@ _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'receta_pb2', _globals)
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  _globals['_RECETA']._serialized_start=16
-  _globals['_RECETA']._serialized_end=84
-  _globals['_TRAERRECETASPORREQUEST']._serialized_start=86
-  _globals['_TRAERRECETASPORREQUEST']._serialized_end=171
-  _globals['_TRAERRECETASPORRESPONSE']._serialized_start=173
-  _globals['_TRAERRECETASPORRESPONSE']._serialized_end=224
-  _globals['_SERVICIORECETA']._serialized_start=226
-  _globals['_SERVICIORECETA']._serialized_end=312
+  _globals['_RECETA']._serialized_start=17
+  _globals['_RECETA']._serialized_end=231
+  _globals['_TRAERRECETASPORREQUEST']._serialized_start=233
+  _globals['_TRAERRECETASPORREQUEST']._serialized_end=318
+  _globals['_CREARRECETAREQUEST']._serialized_start=321
+  _globals['_CREARRECETAREQUEST']._serialized_end=529
+  _globals['_STATUS']._serialized_start=531
+  _globals['_STATUS']._serialized_end=555
+  _globals['_TRAERRECETASPORRESPONSE']._serialized_start=557
+  _globals['_TRAERRECETASPORRESPONSE']._serialized_end=608
+  _globals['_SERVICIORECETA']._serialized_start=611
+  _globals['_SERVICIORECETA']._serialized_end=742
 # @@protoc_insertion_point(module_scope)

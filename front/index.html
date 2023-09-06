@@ -7,6 +7,24 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
     />
+    <style>
+      .form {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        justify-content: center;
+        place-items: center;
+        gap: 16px;
+      }
+      hgroup {
+        width: 100%;
+      }
+      main.container {
+        padding-block: 0;
+      }
+      .flex {
+        display: flex;
+      }
+    </style>
     <title>ChefEnCasa</title>
   </head>
   <body>
@@ -31,14 +49,92 @@
         </h3>
       </div>
     </header>
+
     <main class="container">
       <section>
-        <form action="/" method="get">
-          <label for="password">Password</label>
-          <input type="password" name="password" id="password" required />
-          <input type="submit" value="Registrar" />
+        <h4>Busquemos tu proxima receta</h4>
+        <form action="/" method="get" class="form">
+          <hgroup>
+            <label for="author">Creador</label>
+            <input type="text" name="author" id="author" />
+          </hgroup>
+          <hgroup>
+            <label for="category">Categoria</label>
+            <select name="category" id="category">
+              <option value="">Todas</option>
+              <option value="desayuno">Desayuno</option>
+              <option value="almuerzo">Almuerzo</option>
+              <option value="cena">Cena</option>
+            </select>
+          </hgroup>
+
+          <input type="submit" value="Buscar" />
         </form>
       </section>
+      <section id="recipes-list"></section>
     </main>
+    <script>
+      /*
+{
+    tiempoEnMinutos: "",
+    categoria: "",
+    creador: "",
+  }
+      */
+      const params = new URLSearchParams(window.location.search);
+      const author = params.get("author") || "";
+      const category = params.get("category") || "";
+      document.querySelector("#author").value = author;
+      document.querySelector("#category").value = category;
+
+      const recipeList = document.querySelector("#recipes-list");
+      fetch("/api/recipes", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          categoria: category,
+          creador: author,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data = []) => {
+          console.log(data);
+          const {} = data;
+
+          data.recetas.forEach(
+            ({
+              tiempoEnMinutos,
+              categoria,
+              creador,
+              descripcion,
+              foto1,
+              foto2,
+              foto3,
+              foto4,
+              foto5,
+              idReceta,
+              pasos,
+              titulo,
+            }) => {
+              recipeList.innerHTML += ` <a href="" class="hover">
+          <article>
+            <header class="container">
+              <div class="headings">
+                <h2>${titulo}</h2>
+                <h3>${descripcion}</h3>
+                <small>Autor: ${creador}</small>
+                <p>Listo en ${tiempoEnMinutos} minutos</p>
+              </div>
+            </header>
+            <img src="${foto1}" alt="imagen" />
+          </article>
+        </a>`;
+            }
+          );
+        })
+        .catch((err) => console.log(err));
+    </script>
   </body>
 </html>

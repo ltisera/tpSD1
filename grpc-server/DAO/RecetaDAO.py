@@ -12,7 +12,23 @@ class RecetaDAO(ConexionBD):
         pass
     
 
+    def traerRecetas(self):
+        lstRecetas = []
+        try:
+            self.crearConexion()
+            self.cursorDict()
+            self._micur.execute("SELECT * FROM Receta")
+            listaDeRecetas = self._micur.fetchall()
+            for r in listaDeRecetas:
+                lstRecetas.append(r)
 
+        except mysql.connector.errors.IntegrityError as err:
+            print("Error: " + str(err))
+
+        finally:
+            self.cerrarConexion()
+        
+        return lstRecetas
     
 
     def traerRecetasxCategoria(self, categoria):
@@ -20,7 +36,25 @@ class RecetaDAO(ConexionBD):
         try:
             self.crearConexion()
             self.cursorDict()
-            self._micur.execute("SELECT * FROM receta WHERE receta.categoria = %s", (categoria,))
+            self._micur.execute("SELECT * FROM Receta WHERE Receta.categoria = %s", (categoria,))
+            listaDeRecetas = self._micur.fetchall()
+            for r in listaDeRecetas:
+                lstRecetas.append(r)
+
+        except mysql.connector.errors.IntegrityError as err:
+            print("Error: " + str(err))
+
+        finally:
+            self.cerrarConexion()
+        
+        return lstRecetas
+
+    def traerRecetasxCreador(self, creador):
+        lstRecetas = []
+        try:
+            self.crearConexion()
+            self.cursorDict()
+            self._micur.execute("SELECT * FROM Receta WHERE Receta.creador = %s", (creador,))
             listaDeRecetas = self._micur.fetchall()
             for r in listaDeRecetas:
                 lstRecetas.append(r)
@@ -50,10 +84,11 @@ class RecetaDAO(ConexionBD):
 
     def agregarReceta(self, receta):
         print("LLEGUE aki")
+        print(receta)
         mensaje="Error."
         try:
             self.crearConexion()
-            self._micur.execute("INSERT INTO receta(idReceta, titulo, descripcion, foto1, foto2, foto3, foto4, foto5, pasos, tiempoEnMinutos, categoria, creador) values (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s)", (receta.idReceta, receta.titulo, receta.descripcion, receta.foto1, receta.foto2, receta.foto3, receta.foto4, receta.foto5, receta.pasos, receta.tiempoEnMinutos, receta.categoria, receta.creador))
+            self._micur.execute("INSERT INTO Receta(idReceta, titulo, descripcion, foto1, foto2, foto3, foto4, foto5, pasos, tiempoEnMinutos, categoria, creador) values (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s)", (receta.idReceta, receta.titulo, receta.descripcion, receta.foto1, receta.foto2, receta.foto3, receta.foto4, receta.foto5, receta.pasos, receta.tiempoEnMinutos, receta.categoria, receta.creador))
             self._bd.commit()
             mensaje = "receta guardada."
 #            self._micur.execute("SELECT * FROM inscripcion where idUsuario = %s and idExamen = %s", (idUsuario, idExamen))
