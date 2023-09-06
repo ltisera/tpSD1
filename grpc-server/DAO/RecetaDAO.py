@@ -5,7 +5,7 @@ sys.path.append(os.path.dirname(CURRENT_DIR))
 
 import mysql.connector
 import json
-from Receta import *
+from objetos.Receta import *
 from DAO.ConexionBD import ConexionBD
 
 from mysql.connector import Error

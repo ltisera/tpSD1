@@ -51,9 +51,35 @@ message solicitudDeSeguidorResponse{
             "No se puede seguir a este usuario"
     */
 }
+
+message agregarRecetaAFavoritosRequest{
+    string usuario = 1;
+    string idReceta = 2;
+
+}
+
+message agregarRecetaAFavoritosResponse{
+    string mensaje = 1;
+    /*
+        mensajes:
+            "Agregado a favoritos"
+            "Error"
+    */
+}
+
+message traerUsuariosQueSigoRequest{
+    string usuario= 1;
+
+}
+
+message traerUsuariosQueSigoResponse{
+    repeated string usuarios = 1;
+}
+
 service servicioUsuario{
     rpc crearUsuario (crearUsuarioRequest) returns (crearUsuarioResponse);
     rpc loguearUsuario (crearUsuarioRequest) returns (crearUsuarioResponse);
     rpc seguirUsuario(solicitudDeSeguidorRequest) returns (solicitudDeSeguidorResponse);
-
+    rpc agregarRecetaAFavoritos(agregarRecetaAFavoritosRequest) returns (agregarRecetaAFavoritosResponse);
+    rpc traerUsuariosQueSigo(traerUsuariosQueSigoRequest) returns (traerUsuariosQueSigoResponse);
 }

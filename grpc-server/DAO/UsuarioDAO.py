@@ -3,7 +3,7 @@ import os, sys
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(CURRENT_DIR))
 
-from Usuario import *
+from objetos.Usuario import *
 import mysql.connector
 import json
 from mysql.connector import Error
@@ -31,7 +31,7 @@ class UsuarioDAO(ConexionBD):
 
     def agregarUsuario(self, usuario):
         print("agregar usuario")
-        mensaje = "Error"
+        mensaje = "Alta Fail"
         try:
             self.crearConexion()
 
@@ -39,7 +39,7 @@ class UsuarioDAO(ConexionBD):
 #            inscripcion = self._micur.fetchone()
             self._micur.execute("INSERT INTO usuario(usuario, email, nombre, password, tipo) values (%s, %s, %s, %s, %s)", (usuario.idUsuario, usuario.email, usuario.nombre, usuario.password, usuario.tipo))
             self._bd.commit()
-            mensaje = "Usuario guardado."
+            mensaje = "Alta Exitosa"
 #            self._micur.execute("SELECT * FROM inscripcion where idUsuario = %s and idExamen = %s", (idUsuario, idExamen))
             inscripcion = self._micur.fetchone()
                 
@@ -90,14 +90,14 @@ class UsuarioDAO(ConexionBD):
         return lstRecetas
 
     #Seguir personas
-    def seguirUsuario(self, follower, seguido):
-        mensaje = "Error."
-        if (follower != seguido):
+    def seguirUsuario(self, usuarioQueSigue, usuarioSeguido):
+        mensaje = "No se puede seguir a este usuario"
+        if (usuarioQueSigue != usuarioSeguido):
             try:
                 self.crearConexion()
-                self._micur.execute("INSERT INTO siguiendo(Usuario_Seguidor, Usuario_Seguido) values (%s, %s)", (follower, seguido))
+                self._micur.execute("INSERT INTO siguiendo(Usuario_Seguidor, Usuario_Seguido) values (%s, %s)", (usuarioQueSigue, usuarioSeguido))
                 self._bd.commit()
-                mensaje = "Seguimiento guardado."
+                mensaje = "Estas siguiendo a este usuario"
 
             except mysql.connector.errors.IntegrityError as err:
                 print("Error: " + str(err))

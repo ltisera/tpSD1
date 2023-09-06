@@ -3,7 +3,7 @@ import os, sys
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(CURRENT_DIR))
 
-from Categoria import *
+from objetos.Categoria import *
 import mysql.connector
 import json
 from mysql.connector import Error

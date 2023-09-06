@@ -24,7 +24,8 @@ from proto import receta_pb2_grpc as receta_pb2_grpc
 from DAO.RecetaDAO import RecetaDAO
 from DAO.UsuarioDAO import UsuarioDAO
 
-from Receta import *
+from objetos.Receta import *
+from objetos.Usuario import *
 
 #### Aca te entra los request de RECETAS
 class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
@@ -63,6 +64,7 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
         print(responseListaRecetas)
         respuesta = receta_pb2.traerRecetasPorResponse(recetas=responseListaRecetas)
         return respuesta
+
     def crearReceta(self, request, context):
         print(request)
         print(context)
@@ -89,14 +91,31 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
 
 #### Aca te entra los request de Usuario
 class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
-    def seguirUsuario(self, request, context):
-        respuesta = usuario_pb2.solicitudDeSeguidorResponse(mensaje="Usuario SEGUIDO")
+    def agregarRecetaAFavoritos(self, request, context):
+        udao = UsuarioDAO()
+        res = udao.agregarFavorito(request.usuario, request.idReceta)
+        respuesta = usuario_pb2.solicitudDeSeguidorResponse(mensaje=res)
         return respuesta
+    
+    def seguirUsuario(self, request, context):
+        udao = UsuarioDAO()
+        res = udao.seguirUsuario(request.usuarioQueSigue, request.usuarioSeguido)
+        respuesta = usuario_pb2.solicitudDeSeguidorResponse(mensaje=res)
+        return respuesta
+
+    def traerUsuariosQueSigo(self, request, context):
+        responseListaUsuarios=[] 
+        listaUsuario=[]
+        udao = UsuarioDAO()
+        listaUsuario = udao.traerUsuariosQueSigo(request.usuario)
+        for us in listaUsuario:
+            responseListaUsuarios.append(us["Usuario_Seguido"])
+        respuesta = usuario_pb2.traerUsuariosQueSigoResponse(usuarios=responseListaUsuarios)
+        return respuesta
+
     def loguearUsuario(self, request, context):
-        
         udao = UsuarioDAO()
         ustmp = udao.traerUsuarioSIMPLE(request.username);
-        
         if(ustmp == None):
             respuesta = usuario_pb2.loguearUsuarioResponse(username=request.username, estado="No existe el usuario")
         else:
@@ -104,21 +123,25 @@ class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
                 respuesta = usuario_pb2.loguearUsuarioResponse(username=request.username, estado="VALIDO")
             else:
                 respuesta = usuario_pb2.loguearUsuarioResponse(username=request.username, estado="Contra MAlaa")
-
         return respuesta
     
     def crearUsuario(self, request, context):
-        
-        print("LLEGO ALGO EHHHH")
-        print("username:" + request.username)
-        print("email:" + request.email)
-        print("password: " + request.password)
-        print("tipo: " + request.tipo)
+        udao = UsuarioDAO()
+        ustmp = udao.traerUsuarioSIMPLE(request.username);
+        msj = ""
+        if (ustmp == None):
+            us = Usuario()
+            us.idUsuario = request.username
+            us.email = request.email
+            us.password = request.password
+            us.tipo = request.tipo
+            msj = udao.agregarUsuario(us)
+        else:
+            msj = "Usuario Existente"
 
-        #Logica de crear usuario conexion a la bd y eso
         respuesta = usuario_pb2.crearUsuarioResponse(
-            username=request.username,
-            mensaje="alta exitosa"
+            username = request.username,
+            mensaje = msj,
         )
         return respuesta
 

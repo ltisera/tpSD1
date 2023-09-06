@@ -34,7 +34,7 @@ class Usuario():
     def password(self):
         return self._password
     
-    @nombre.setter
+    @password.setter
     def password (self, password):
         self._password = password
     
