@@ -36,7 +36,7 @@ class IngredienteDAO(ConexionBD):
         try:
             self.crearConexion()
             self.cursorDict()
-            self._micur.execute('SELECT * FROM " + TINGREDIENTE + " WHERE " + TINGREDIENTE + ".nombre = %s', (nombre,))
+            self._micur.execute("SELECT * FROM " + TINGREDIENTE + " WHERE " + TINGREDIENTE + ".nombre = %s", (nombre,))
             inTraido = self._micur.fetchone()
         except Error as e:
             print("Error al conectar con la BD", e)
