@@ -1,0 +1,33 @@
+Link al repositorio:
+
+https://github.com/ltisera/tpSD1
+
+Integrantes:
+Camila Mathov
+Lucas Tisera
+Julian Kominovik
+
+
+Todos nos encargamos de la conexion de GRPC
+
+Julian desarollo el front
+
+camila y lucas el back
+
+Esquema de conexion:
+Browser web<--> cliente NODEJS <--GRPC--> Servidor Python <--> BD MYSQL
+
+puerto usado para GRPC :50051
+
+Funcionalidades:
+-Traer Lista de Recetas desde la bd y mostrarlas en el cliente
+
+
+-Mini guia de como usarlo
+
+-crear BD MYSQL
+-ejecutar en consola:
+    python server.py
+    node index.js
+
+-desde un browser conectar a "localhost:3000"
