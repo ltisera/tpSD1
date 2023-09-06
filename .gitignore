@@ -1,6 +1,5 @@
 node_modules
-tpSD1/grpc-server/DAO/CONFIGS/configs.py
-grpc-server/DAO/CONFIGS/configs.py
+grpc-server/DAO/CONFIGS/*
 # Archivos y directorios generados automáticamente
 __pycache__/
 *.pyc
@@ -40,9 +39,4 @@ __pycache__/
 *.egg-info/
 dist/
 build/
-grpc-server/DAO/CONFIGS/configs.py
-grpc-server\DAO\CONFIGS\configs.py
-tpSD1/grpc-server/DAO/CONFIGS/configs.py
-tpSD1\grpc-server\DAO\CONFIGS\configs.py
 
-C:\Users\LucsPC\Downloads\distribuidos\Entrega\tpBDR\tpSD1\grpc-server\DAO\CONFIGS\configs.py
