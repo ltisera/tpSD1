@@ -1,4 +1,4 @@
-
+#Edicion remota
 #modo = 'produccion'
 modo = 'desarrollo'
 
