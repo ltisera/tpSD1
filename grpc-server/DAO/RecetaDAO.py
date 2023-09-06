@@ -70,6 +70,42 @@ class RecetaDAO(ConexionBD):
             self.cerrarConexion()
         
         return lstRecetas
+    
+    #Recetas favoritas
+
+    def agregarFavorito(self, usuario, idReceta):
+        mensaje = "Error."
+        try:
+            self.crearConexion()
+            self._micur.execute("INSERT INTO receta_favorita(usuario, idReceta) values (%s, %s)", (usuario, idReceta))
+            self._bd.commit()
+            mensaje = "favorito guardado."
+
+        except mysql.connector.errors.IntegrityError as err:
+            print("Error: " + str(err))
+
+        finally:
+            self.cerrarConexion()
+        
+        return (mensaje)
+
+    def traerRecetasFavoritas(self, usuario):
+        lstRecetas = []
+        try:
+            self.crearConexion()
+            self.cursorDict()
+            self._micur.execute("SELECT receta.idReceta, receta.titulo, receta.foto1, receta.tiempoEnMinutos, receta.creador FROM receta_favorita INNER JOIN receta ON receta_favorita.idReceta = receta.idReceta WHERE receta_favorita.usuario = %s", (usuario,))
+            listaDeRecetasFavoritas = self._micur.fetchall()
+            for r in listaDeRecetasFavoritas:
+                lstRecetas.append(r)
+
+        except mysql.connector.errors.IntegrityError as err:
+            print("Error: " + str(err))
+
+        finally:
+            self.cerrarConexion()
+        
+        return lstRecetas
 
     def traerReceta(self, idReceta):
         usTraido = None

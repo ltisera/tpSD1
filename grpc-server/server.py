@@ -65,6 +65,24 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
         respuesta = receta_pb2.traerRecetasPorResponse(recetas=responseListaRecetas)
         return respuesta
 
+    def traerReceta(self, request, context):
+        rec=RecetaDAO().traerReceta(request.idReceta)
+        respuesta=receta_pb2.receta(
+            titulo = rec["titulo"],
+            descripcion = rec["descripcion"],
+            pasos = rec["pasos"],
+            tiempoEnMinutos = rec["tiempoEnMinutos"],
+            categoria = rec["categoria"],
+            creador = rec["creador"],
+            foto1 = rec["foto1"],
+            foto2 = rec["foto2"],
+            foto3 = rec["foto3"],
+            foto4 = rec["foto4"],
+            foto5 = rec["foto5"],
+            idReceta = rec["idReceta"],
+        )
+        return respuesta
+
     def crearReceta(self, request, context):
         print(request)
         print(context)
@@ -86,16 +104,31 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
         print(receta_pb2)
         respuesta = receta_pb2.status(status=1)
         return respuesta
+    
+    def agregarRecetaAFavoritos(self, request, context):
+        rdao = RecetaDAO()
+        res = rdao.agregarFavorito(request.usuario, request.idReceta)
+        respuesta = usuario_pb2.solicitudDeSeguidorResponse(mensaje=res)
+        return respuesta
 
-
+    def traerRecetasFavoritas(self, request, context):
+        responseListaRecetas=[]            
+        listaRecetas = RecetaDAO().traerRecetasFavoritas(request.usuario)
+        for rec in listaRecetas:
+            re=receta_pb2.receta(
+                titulo = rec["titulo"],
+                tiempoEnMinutos = rec["tiempoEnMinutos"],
+                creador = rec["creador"],
+                foto1 = rec["foto1"],
+                idReceta = rec["idReceta"],
+            )
+            responseListaRecetas.append(re)
+        print(responseListaRecetas)
+        respuesta = receta_pb2.traerRecetasPorResponse(recetas=responseListaRecetas)
+        return respuesta
 
 #### Aca te entra los request de Usuario
 class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
-    def agregarRecetaAFavoritos(self, request, context):
-        udao = UsuarioDAO()
-        res = udao.agregarFavorito(request.usuario, request.idReceta)
-        respuesta = usuario_pb2.solicitudDeSeguidorResponse(mensaje=res)
-        return respuesta
     
     def seguirUsuario(self, request, context):
         udao = UsuarioDAO()

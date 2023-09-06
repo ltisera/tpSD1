@@ -52,43 +52,6 @@ class UsuarioDAO(ConexionBD):
         
         return (mensaje)
 
-    #Recetas favoritas
-
-    def agregarFavorito(self, usuario, idReceta):
-        mensaje = "Error."
-        try:
-            self.crearConexion()
-            self._micur.execute("INSERT INTO receta_favorita(usuario, idReceta) values (%s, %s)", (usuario, idReceta))
-            self._bd.commit()
-            mensaje = "favorito guardado."
-
-        except mysql.connector.errors.IntegrityError as err:
-            print("Error: " + str(err))
-
-        finally:
-            self.cerrarConexion()
-        
-        return (mensaje)
-
-    def traerRecetasFavoritas(self, usuario):
-        lstRecetas = []
-        try:
-            self.crearConexion()
-            self.cursorDict()
-            #agregar inner join
-            self._micur.execute("SELECT receta_favorita.idReceta FROM receta_favorita WHERE receta_favorita.usuario = %s", (usuario,))
-            listaDeRecetasFavoritas = self._micur.fetchall()
-            for r in listaDeRecetasFavoritas:
-                lstRecetas.append(r)
-
-        except mysql.connector.errors.IntegrityError as err:
-            print("Error: " + str(err))
-
-        finally:
-            self.cerrarConexion()
-        
-        return lstRecetas
-
     #Seguir personas
     def seguirUsuario(self, usuarioQueSigue, usuarioSeguido):
         mensaje = "No se puede seguir a este usuario"
