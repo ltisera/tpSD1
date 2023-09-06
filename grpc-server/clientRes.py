@@ -1,23 +1,18 @@
 import sys
 sys.path.append('C:\\Users\\LucsPC\\Downloads\\distribuidos\\Entrega\\tpBDR\\tpSD1\\grpc-server\\proto')
-
+sys.path.append(r'C:\Users\camil\Documents\GitHub\tpSD1\grpc-server\proto')
 import grpc
 from proto import receta_pb2 as receta_pb2
 from proto import receta_pb2_grpc as receta_pb2_grpc
 
 
 def traerRecetaPor(cliente):
-#    sol = usuario_pb2.crearUsuarioRequest(
-#        username = "pepe",
-#        email = "notiene@gmail.com",
-#        password = "asd",
-#        tipo = "usuario"
-#    )
 
     sol = receta_pb2.traerRecetasPorRequest(
-        tiempoEnMinutos = "20",
-        categoria = "Desayuno",
-        creador = "MATHOV"
+        tpMin = "2",
+        tpMax = "4",
+        categoria = "",
+        creador = "",
     )
 
     respuesta = cliente.traerRecetasPor(sol)

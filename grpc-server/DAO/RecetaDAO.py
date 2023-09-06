@@ -1,7 +1,7 @@
 import sys
 
-sys.path.append(r'C:\Users\LucsPC\Downloads\distribuidos\Entrega\tpBDR\tpSD1\pythonServer')
-sys.path.append(r'C:\Users\camil\Documents\GitHub\tpSD1\pythonServer')
+sys.path.append(r'C:\Users\LucsPC\Downloads\distribuidos\Entrega\tpBDR\tpSD1\grpc-server\Objetos')
+sys.path.append(r'C:\Users\camil\Documents\GitHub\tpSD1\grpc-server\Objetos')
 import mysql.connector
 import json
 from Receta import *
@@ -21,6 +21,42 @@ class RecetaDAO(ConexionBD):
             self.crearConexion()
             self.cursorDict()
             self._micur.execute("SELECT * FROM receta WHERE receta.categoria = %s", (categoria,))
+            listaDeRecetas = self._micur.fetchall()
+            for r in listaDeRecetas:
+                lstRecetas.append(r)
+
+        except mysql.connector.errors.IntegrityError as err:
+            print("Error: " + str(err))
+
+        finally:
+            self.cerrarConexion()
+        
+        return lstRecetas
+    
+    def traerRecetasxCreador(self, creador):
+        lstRecetas = []
+        try:
+            self.crearConexion()
+            self.cursorDict()
+            self._micur.execute("SELECT * FROM receta WHERE receta.creador = %s", (creador,))
+            listaDeRecetas = self._micur.fetchall()
+            for r in listaDeRecetas:
+                lstRecetas.append(r)
+
+        except mysql.connector.errors.IntegrityError as err:
+            print("Error: " + str(err))
+
+        finally:
+            self.cerrarConexion()
+        
+        return lstRecetas
+
+    def traerRecetasxTiempo(self, tpMin, tpMax):
+        lstRecetas = []
+        try:
+            self.crearConexion()
+            self.cursorDict()
+            self._micur.execute("SELECT * FROM receta WHERE receta.tiempoEnMinutos BETWEEN %s and %s", (tpMin, tpMax))
             listaDeRecetas = self._micur.fetchall()
             for r in listaDeRecetas:
                 lstRecetas.append(r)

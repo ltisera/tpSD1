@@ -9,10 +9,10 @@ message receta {
     string idReceta = 5;
 }
 message traerRecetasPorRequest {
-    string tiempoEnMinutos = 1;
+    string tpMax = 1;
     string categoria = 2;
     string creador = 3;
-    
+    string tpMin = 4;
 }
 
 message traerRecetasPorResponse {

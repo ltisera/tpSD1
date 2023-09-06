@@ -2,7 +2,7 @@ class Receta():
     def __init__(self, idReceta=None, titulo="", descripcion="", foto1="", foto2="", foto3="", foto4="", foto5="", pasos="", tiempoEnMinutos="", categoria="",creador=""):
         self._idReceta = idReceta
         self._titulo = titulo
-        self.descripcion = descripcion
+        self._descripcion = descripcion
         self._pasos = pasos
         self._tiempoEnMinutos = tiempoEnMinutos
         self._categoria = categoria

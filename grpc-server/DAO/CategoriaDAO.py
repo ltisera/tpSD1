@@ -1,7 +1,7 @@
 import sys
 
-sys.path.append(r'C:\Users\LucsPC\Downloads\distribuidos\Entrega\tpBDR\tpSD1\pythonServer')
-sys.path.append(r'C:\Users\camil\Documents\GitHub\tpSD1\pythonServer')
+sys.path.append(r'C:\Users\LucsPC\Downloads\distribuidos\Entrega\tpBDR\tpSD1\grpc-server\Objetos')
+sys.path.append(r'C:\Users\camil\Documents\GitHub\tpSD1\grpc-server\Objetos')
 
 from Categoria import *
 import mysql.connector

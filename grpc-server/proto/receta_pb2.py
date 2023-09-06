@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0creceta.proto\"D\n\x06receta\x12\x0e\n\x06titulo\x18\x01 \x01(\t\x12\x0c\n\x04\x66oto\x18\x02 \x01(\t\x12\r\n\x05tpMin\x18\x03 \x01(\t\x12\r\n\x05tpMax\x18\x04 \x01(\t\"U\n\x16traerRecetasPorRequest\x12\x17\n\x0ftiempoEnMinutos\x18\x01 \x01(\t\x12\x11\n\tcategoria\x18\x02 \x01(\t\x12\x0f\n\x07\x63reador\x18\x03 \x01(\t\"3\n\x17traerRecetasPorResponse\x12\x18\n\x07recetas\x18\x01 \x03(\x0b\x32\x07.receta2V\n\x0eservicioReceta\x12\x44\n\x0ftraerRecetasPor\x12\x17.traerRecetasPorRequest\x1a\x18.traerRecetasPorResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0creceta.proto\"V\n\x06receta\x12\x0e\n\x06titulo\x18\x01 \x01(\t\x12\x0c\n\x04\x66oto\x18\x02 \x01(\t\x12\r\n\x05tpMin\x18\x03 \x01(\t\x12\r\n\x05tpMax\x18\x04 \x01(\t\x12\x10\n\x08idReceta\x18\x05 \x01(\t\"Z\n\x16traerRecetasPorRequest\x12\r\n\x05tpMax\x18\x01 \x01(\t\x12\x11\n\tcategoria\x18\x02 \x01(\t\x12\x0f\n\x07\x63reador\x18\x03 \x01(\t\x12\r\n\x05tpMin\x18\x04 \x01(\t\"3\n\x17traerRecetasPorResponse\x12\x18\n\x07recetas\x18\x01 \x03(\x0b\x32\x07.receta2V\n\x0eservicioReceta\x12\x44\n\x0ftraerRecetasPor\x12\x17.traerRecetasPorRequest\x1a\x18.traerRecetasPorResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -22,11 +22,11 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _globals['_RECETA']._serialized_start=16
-  _globals['_RECETA']._serialized_end=84
-  _globals['_TRAERRECETASPORREQUEST']._serialized_start=86
-  _globals['_TRAERRECETASPORREQUEST']._serialized_end=171
-  _globals['_TRAERRECETASPORRESPONSE']._serialized_start=173
-  _globals['_TRAERRECETASPORRESPONSE']._serialized_end=224
-  _globals['_SERVICIORECETA']._serialized_start=226
-  _globals['_SERVICIORECETA']._serialized_end=312
+  _globals['_RECETA']._serialized_end=102
+  _globals['_TRAERRECETASPORREQUEST']._serialized_start=104
+  _globals['_TRAERRECETASPORREQUEST']._serialized_end=194
+  _globals['_TRAERRECETASPORRESPONSE']._serialized_start=196
+  _globals['_TRAERRECETASPORRESPONSE']._serialized_end=247
+  _globals['_SERVICIORECETA']._serialized_start=249
+  _globals['_SERVICIORECETA']._serialized_end=335
 # @@protoc_insertion_point(module_scope)

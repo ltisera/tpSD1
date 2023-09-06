@@ -2,6 +2,8 @@
 
 import sys
 sys.path.append('C:\\Users\\LucsPC\\Downloads\\distribuidos\\Entrega\\tpBDR\\tpSD1\\grpc-server\\proto')
+sys.path.append(r'C:\Users\camil\Documents\GitHub\tpSD1\grpc-server\proto')
+sys.path.append(r'C:\Users\camil\Documents\GitHub\tpSD1\grpc-server\DAO')
 
 import logging 
 import grpc
@@ -13,28 +15,33 @@ from proto import usuario_pb2 as usuario_pb2
 from proto import usuario_pb2_grpc as usuario_pb2_grpc
 from proto import receta_pb2 as receta_pb2
 from proto import receta_pb2_grpc as receta_pb2_grpc
-
+from DAO.RecetaDAO import *
 
 #### Aca te entra los request de RECETAS
 class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
     def traerRecetasPor(self, request, context):
-        print(request.creador)
-        receta1 = receta_pb2.receta(
-            
-            titulo ="tomates con cherry",
-            foto = "agregar foto",
-            tpMin = "3",
-            tpMax = "10"
-        )
+        lstRecetas = []
+        rdao = RecetaDAO()
+        if(request.creador != ""):
+            print("xcreador")
+            lstRecetas = rdao.traerRecetasxCreador(request.creador)
+        elif(request.categoria != ""):
+            print("xcategoria")
+            lstRecetas = rdao.traerRecetasxCategoria(request.categoria)
+        else:
+            print("xtiempo")
+            lstRecetas = rdao.traerRecetasxTiempo(request.tpMin, request.tpMax)
 
-        receta2 = receta_pb2.receta(
-            titulo = "Palta con Pan",
-            foto = "no tenemos",
-            tpMin = "3",
-            tpMax = "10"
-        )
-
-        listaRecetas = [receta1, receta2]
+        listaRecetas = []
+        for r in lstRecetas:
+            receta1 = receta_pb2.receta(
+                titulo = str(r['titulo']),
+                foto = str(r['foto1']),
+                tpMin = str(r['tiempoEnMinutos']),
+                tpMax = "",
+                idReceta = str(r['idReceta'])
+            )
+            listaRecetas.append(receta1) 
         print("Enviando recetas al cliente")
         respuesta = receta_pb2.traerRecetasPorResponse(recetas=listaRecetas)
         return respuesta
