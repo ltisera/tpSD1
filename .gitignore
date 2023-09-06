@@ -1,6 +1,5 @@
 node_modules
 
-grpc-server/DAO/CONFIGS/configs.py
 # Archivos y directorios generados automáticamente
 __pycache__/
 *.pyc
@@ -40,5 +39,3 @@ __pycache__/
 *.egg-info/
 dist/
 build/
-grpc-server/DAO/CONFIGS/configs.py
-grpc-server\DAO\CONFIGS\configs.py
