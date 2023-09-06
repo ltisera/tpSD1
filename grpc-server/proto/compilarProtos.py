@@ -3,6 +3,12 @@ from grpc_tools import protoc
 
 #python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. mi_archivo.proto
 def compilaProto(protoDir):
+    print("Eliminando compilaciones anteriores")
+    for archivo in os.listdir(protoDir):
+        if archivo.endswith("_pb2.py") or archivo.endswith("pb2_grpc.py"):
+            archivoyPath = os.path.join(protoDir, archivo)
+            os.remove(archivoyPath)
+    print("Compilando las nuevas")
     protoc.main(
     (
         "",
