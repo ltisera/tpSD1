@@ -2,6 +2,7 @@
 
 import sys
 sys.path.append('C:\\Users\\LucsPC\\Downloads\\distribuidos\\Entrega\\tpBDR\\tpSD1\\grpc-server\\proto')
+sys.path.append('C:\\Users\\LucsPC\\Downloads\\distribuidos\\Entrega\\tpBDR\\tpSD1\\grpc-server\\DAO')
 sys.path.append(r'C:\Users\camil\Documents\GitHub\tpSD1\grpc-server\proto')
 sys.path.append(r'C:\Users\camil\Documents\GitHub\tpSD1\grpc-server\DAO')
 
@@ -16,6 +17,7 @@ from proto import usuario_pb2_grpc as usuario_pb2_grpc
 from proto import receta_pb2 as receta_pb2
 from proto import receta_pb2_grpc as receta_pb2_grpc
 from DAO.RecetaDAO import *
+from DAO.UsuarioDAO import *
 
 #### Aca te entra los request de RECETAS
 class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
@@ -51,17 +53,12 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
 #### Aca te entra los request de Usuario
 class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
     def crearUsuario(self, request, context):
-        
-        print("LLEGO ALGO EHHHH")
-        print("username:" + request.username)
-        print("email:" + request.email)
-        print("password: " + request.password)
-        print("tipo: " + request.tipo)
-
-        #Logica de crear usuario conexion a la bd y eso
+        u = Usuario(idUsuario=request.username, email=request.email,password=request.password,tipo=request.tipo)
+        udao = UsuarioDAO()
+        r = udao.agregarUsuario(u)
         respuesta = usuario_pb2.crearUsuarioResponse(
             username=request.username,
-            mensaje="alta exitosa"
+            mensaje=r
         )
         return respuesta
 

@@ -30,7 +30,7 @@ class UsuarioDAO(ConexionBD):
 
     def agregarUsuario(self, usuario):
         print("agregar usuario")
-        mensaje = "Error"
+        mensaje = "Alta Fail"
         try:
             self.crearConexion()
 
@@ -38,7 +38,7 @@ class UsuarioDAO(ConexionBD):
 #            inscripcion = self._micur.fetchone()
             self._micur.execute("INSERT INTO usuario(usuario, email, nombre, password, tipo) values (%s, %s, %s, %s, %s)", (usuario.idUsuario, usuario.email, usuario.nombre, usuario.password, usuario.tipo))
             self._bd.commit()
-            mensaje = "Usuario guardado."
+            mensaje = "Alta Exitosa"
 #            self._micur.execute("SELECT * FROM inscripcion where idUsuario = %s and idExamen = %s", (idUsuario, idExamen))
             inscripcion = self._micur.fetchone()
                 

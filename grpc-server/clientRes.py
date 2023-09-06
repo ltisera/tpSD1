@@ -4,6 +4,8 @@ sys.path.append(r'C:\Users\camil\Documents\GitHub\tpSD1\grpc-server\proto')
 import grpc
 from proto import receta_pb2 as receta_pb2
 from proto import receta_pb2_grpc as receta_pb2_grpc
+from proto import usuario_pb2 as usuario_pb2
+from proto import usuario_pb2_grpc as usuario_pb2_grpc
 
 
 def traerRecetaPor(cliente):
@@ -19,11 +21,27 @@ def traerRecetaPor(cliente):
     print("Mensaje del server", respuesta)
 
 
+def agregarUsuario(cliente):
+
+    sol = usuario_pb2.crearUsuarioRequest(
+        username = "Juan",
+        email = "Juan@gmail.com",
+        tipo = "ehhh",
+        password = "1234",
+    )
+
+    respuesta = cliente.crearUsuario(sol)
+    print("Mensaje del server", respuesta)
+
+
 
 def main():
     canal = grpc.insecure_channel('localhost:50051')
     cliente = receta_pb2_grpc.servicioRecetaStub(canal)
     traerRecetaPor(cliente)
+    #cliente = usuario_pb2_grpc.servicioUsuarioStub(canal)
+    #agregarUsuario(cliente)
+
 
 if __name__ == '__main__':
     main()
