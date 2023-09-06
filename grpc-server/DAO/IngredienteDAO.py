@@ -1,7 +1,7 @@
-import sys
+import os, sys
 
-sys.path.append(r'C:\Users\LucsPC\Downloads\distribuidos\Entrega\tpBDR\tpSD1\pythonServer')
-sys.path.append(r'C:\Users\camil\Documents\GitHub\tpSD1\pythonServer')
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(CURRENT_DIR))
 
 from Ingrediente import *
 import mysql.connector

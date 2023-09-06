@@ -1,7 +1,11 @@
 #servidor de ejemplo para testear GRPS
 
-import sys
-sys.path.append('C:\\Users\\LucsPC\\Downloads\\distribuidos\\Entrega\\tpBDR\\tpSD1\\grpc-server\\proto')
+import os, sys
+
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(CURRENT_DIR))
+sys.path.append(CURRENT_DIR + '\\proto')
+sys.path.append(CURRENT_DIR + '\\DAO')
 
 import logging 
 import grpc
@@ -149,6 +153,6 @@ def iniciar_servidor():
     
 
 if __name__ == '__main__':
-    print("arrancando el server")
+    print("current dir: " + CURRENT_DIR)
     iniciar_servidor()
     

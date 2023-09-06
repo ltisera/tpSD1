@@ -1,11 +1,15 @@
-import sys
+import os, sys
 
-sys.path.append(r'C:\Users\LucsPC\Downloads\distribuidos\Entrega\tpBDR\tpSD1\pythonServer')
-sys.path.append(r'C:\Users\camil\Documents\GitHub\tpSD1\pythonServer')
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(CURRENT_DIR))
+
 import mysql.connector
 import json
 from Receta import *
 from DAO.ConexionBD import ConexionBD
+
+from mysql.connector import Error
+
 
 class RecetaDAO(ConexionBD):
     def __int__(self):
@@ -123,17 +127,15 @@ if __name__ == '__main__':
     
     rdao = RecetaDAO()
 
-    """
-    rec = Receta(titulo="flan",tiempoEnMinutos=5,categoria="postre",descripcion="Rico", creador="Elnombre2", pasos="1)hacer el flan")
+    rec = Receta(titulo="flan",tiempoEnMinutos=5,categoria="Cena",descripcion="Rico", creador="roberto", pasos="1)hacer el flan")
     
 
     print(rdao.agregarReceta(rec))
 
     print("traer:")
-    print(rdao.traerReceta(1))
-    """
-
-    print(rdao.agregarIngredienteAReceta(1, "Azucar", 10, "gramos"))
+    print(rdao.traerReceta(3))
+    
+    #print(rdao.agregarIngredienteAReceta(1, "Azucar", 10, "gramos"))
 
     print("Finnn eaaa")
     
