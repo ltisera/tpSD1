@@ -41,7 +41,32 @@ message traerRecetasPorResponse {
     repeated receta recetas = 1;
 }
 
+message agregarRecetaAFavoritosRequest{
+    string usuario = 1;
+    string idReceta = 2;
+}
+
+message agregarRecetaAFavoritosResponse{
+    string mensaje = 1;
+    /*
+        mensajes:
+            "Agregado a favoritos"
+            "Error"
+    */
+}
+
+message traerRecetasFavoritasRequest{
+    string usuario = 1;
+}
+
+message traerRecetaRequest{
+    string idReceta = 1;
+}
+
 service servicioReceta{
     rpc traerRecetasPor (traerRecetasPorRequest) returns (traerRecetasPorResponse);
     rpc crearReceta(crearRecetaRequest)returns (status);
+    rpc agregarRecetaAFavoritos(agregarRecetaAFavoritosRequest) returns (agregarRecetaAFavoritosResponse);
+    rpc traerRecetasFavoritas(traerRecetasFavoritasRequest) returns (traerRecetasPorResponse);
+    rpc traerReceta (traerRecetaRequest) returns (receta);
 }

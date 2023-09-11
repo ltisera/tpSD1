@@ -19,20 +19,10 @@ class servicioUsuarioStub(object):
                 request_serializer=usuario__pb2.crearUsuarioRequest.SerializeToString,
                 response_deserializer=usuario__pb2.crearUsuarioResponse.FromString,
                 )
-        self.loguearUsuario = channel.unary_unary(
-                '/servicioUsuario/loguearUsuario',
-                request_serializer=usuario__pb2.crearUsuarioRequest.SerializeToString,
-                response_deserializer=usuario__pb2.crearUsuarioResponse.FromString,
-                )
         self.seguirUsuario = channel.unary_unary(
                 '/servicioUsuario/seguirUsuario',
                 request_serializer=usuario__pb2.solicitudDeSeguidorRequest.SerializeToString,
                 response_deserializer=usuario__pb2.solicitudDeSeguidorResponse.FromString,
-                )
-        self.traerUsuariosQueSigo = channel.unary_unary(
-                '/servicioUsuario/traerUsuariosQueSigo',
-                request_serializer=usuario__pb2.traerUsuariosQueSigoRequest.SerializeToString,
-                response_deserializer=usuario__pb2.traerUsuariosQueSigoResponse.FromString,
                 )
 
 
@@ -45,19 +35,7 @@ class servicioUsuarioServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def loguearUsuario(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
     def seguirUsuario(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
-
-    def traerUsuariosQueSigo(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -71,20 +49,10 @@ def add_servicioUsuarioServicer_to_server(servicer, server):
                     request_deserializer=usuario__pb2.crearUsuarioRequest.FromString,
                     response_serializer=usuario__pb2.crearUsuarioResponse.SerializeToString,
             ),
-            'loguearUsuario': grpc.unary_unary_rpc_method_handler(
-                    servicer.loguearUsuario,
-                    request_deserializer=usuario__pb2.crearUsuarioRequest.FromString,
-                    response_serializer=usuario__pb2.crearUsuarioResponse.SerializeToString,
-            ),
             'seguirUsuario': grpc.unary_unary_rpc_method_handler(
                     servicer.seguirUsuario,
                     request_deserializer=usuario__pb2.solicitudDeSeguidorRequest.FromString,
                     response_serializer=usuario__pb2.solicitudDeSeguidorResponse.SerializeToString,
-            ),
-            'traerUsuariosQueSigo': grpc.unary_unary_rpc_method_handler(
-                    servicer.traerUsuariosQueSigo,
-                    request_deserializer=usuario__pb2.traerUsuariosQueSigoRequest.FromString,
-                    response_serializer=usuario__pb2.traerUsuariosQueSigoResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -114,23 +82,6 @@ class servicioUsuario(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def loguearUsuario(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/servicioUsuario/loguearUsuario',
-            usuario__pb2.crearUsuarioRequest.SerializeToString,
-            usuario__pb2.crearUsuarioResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
     def seguirUsuario(request,
             target,
             options=(),
@@ -144,22 +95,5 @@ class servicioUsuario(object):
         return grpc.experimental.unary_unary(request, target, '/servicioUsuario/seguirUsuario',
             usuario__pb2.solicitudDeSeguidorRequest.SerializeToString,
             usuario__pb2.solicitudDeSeguidorResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
-    def traerUsuariosQueSigo(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/servicioUsuario/traerUsuariosQueSigo',
-            usuario__pb2.traerUsuariosQueSigoRequest.SerializeToString,
-            usuario__pb2.traerUsuariosQueSigoResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

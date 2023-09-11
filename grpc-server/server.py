@@ -20,33 +20,18 @@ from proto import usuario_pb2_grpc as usuario_pb2_grpc
 from proto import receta_pb2 as receta_pb2
 from proto import receta_pb2_grpc as receta_pb2_grpc
 
-from DAO.RecetaDAO import RecetaDAO
 
-from Receta import *
+from DAO.RecetaDAO import RecetaDAO
+from DAO.UsuarioDAO import UsuarioDAO
+
+from objetos.Receta import *
+from objetos.Usuario import *
 
 #### Aca te entra los request de RECETAS
 class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
     def traerRecetasPor(self, request, context):
         print(request.creador)
         print(request.categoria)
-        # print(request.creador)
-        # receta1 = receta_pb2.receta(
-            
-        #     titulo ="tomates con cherry",
-        #     foto = "agregar foto",
-        #     tpMin = "3",
-        #     tpMax = "10"
-        # )
-
-        # receta2 = receta_pb2.receta(
-        #     titulo = "Palta con Pan",
-        #     foto = "no tenemos",
-        #     tpMin = "3",
-        #     tpMax = "10"
-        # )
-
-        # listaRecetas = [receta1, receta2]
-        # print("Enviando recetas al cliente")
         responseListaRecetas=[]
     
             
@@ -79,29 +64,28 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
         print(responseListaRecetas)
         respuesta = receta_pb2.traerRecetasPorResponse(recetas=responseListaRecetas)
         return respuesta
+
+    def traerReceta(self, request, context):
+        rec=RecetaDAO().traerReceta(request.idReceta)
+        respuesta=receta_pb2.receta(
+            titulo = rec["titulo"],
+            descripcion = rec["descripcion"],
+            pasos = rec["pasos"],
+            tiempoEnMinutos = rec["tiempoEnMinutos"],
+            categoria = rec["categoria"],
+            creador = rec["creador"],
+            foto1 = rec["foto1"],
+            foto2 = rec["foto2"],
+            foto3 = rec["foto3"],
+            foto4 = rec["foto4"],
+            foto5 = rec["foto5"],
+            idReceta = rec["idReceta"],
+        )
+        return respuesta
+
     def crearReceta(self, request, context):
         print(request)
         print(context)
-
-        # print(request.creador)
-        # receta1 = receta_pb2.receta(
-            
-        #     titulo ="tomates con cherry",
-        #     foto = "agregar foto",
-        #     tpMin = "3",
-        #     tpMax = "10"
-        # )
-
-        # receta2 = receta_pb2.receta(
-        #     titulo = "Palta con Pan",
-        #     foto = "no tenemos",
-        #     tpMin = "3",
-        #     tpMax = "10"
-        # )
-
-        # listaRecetas = [receta1, receta2]
-        # print("Enviando recetas al cliente")
-        # receta.idReceta, receta.titulo, receta.descripcion, receta.foto1, receta.foto2, receta.foto3, receta.foto4, receta.foto5, receta.pasos, receta.tiempoEnMinutos, receta.categoria, receta.creador
         adminreceta = RecetaDAO()
         receta = Receta()
         receta.titulo = request.titulo
@@ -120,23 +104,77 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
         print(receta_pb2)
         respuesta = receta_pb2.status(status=1)
         return respuesta
+    
+    def agregarRecetaAFavoritos(self, request, context):
+        rdao = RecetaDAO()
+        res = rdao.agregarFavorito(request.usuario, request.idReceta)
+        respuesta = usuario_pb2.solicitudDeSeguidorResponse(mensaje=res)
+        return respuesta
 
-
+    def traerRecetasFavoritas(self, request, context):
+        responseListaRecetas=[]            
+        listaRecetas = RecetaDAO().traerRecetasFavoritas(request.usuario)
+        for rec in listaRecetas:
+            re=receta_pb2.receta(
+                titulo = rec["titulo"],
+                tiempoEnMinutos = rec["tiempoEnMinutos"],
+                creador = rec["creador"],
+                foto1 = rec["foto1"],
+                idReceta = rec["idReceta"],
+            )
+            responseListaRecetas.append(re)
+        print(responseListaRecetas)
+        respuesta = receta_pb2.traerRecetasPorResponse(recetas=responseListaRecetas)
+        return respuesta
 
 #### Aca te entra los request de Usuario
 class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
-    def crearUsuario(self, request, context):
-        
-        print("LLEGO ALGO EHHHH")
-        print("username:" + request.username)
-        print("email:" + request.email)
-        print("password: " + request.password)
-        print("tipo: " + request.tipo)
+    
+    def seguirUsuario(self, request, context):
+        udao = UsuarioDAO()
+        res = udao.seguirUsuario(request.usuarioQueSigue, request.usuarioSeguido)
+        respuesta = usuario_pb2.solicitudDeSeguidorResponse(mensaje=res)
+        return respuesta
 
-        #Logica de crear usuario conexion a la bd y eso
+    def traerUsuariosQueSigo(self, request, context):
+        responseListaUsuarios=[] 
+        listaUsuario=[]
+        udao = UsuarioDAO()
+        listaUsuario = udao.traerUsuariosQueSigo(request.usuario)
+        for us in listaUsuario:
+            responseListaUsuarios.append(us["Usuario_Seguido"])
+        respuesta = usuario_pb2.traerUsuariosQueSigoResponse(usuarios=responseListaUsuarios)
+        return respuesta
+
+    def loguearUsuario(self, request, context):
+        udao = UsuarioDAO()
+        ustmp = udao.traerUsuarioSIMPLE(request.username);
+        if(ustmp == None):
+            respuesta = usuario_pb2.loguearUsuarioResponse(username=request.username, estado="No existe el usuario")
+        else:
+            if(ustmp["password"] == request.password):
+                respuesta = usuario_pb2.loguearUsuarioResponse(username=request.username, estado="VALIDO")
+            else:
+                respuesta = usuario_pb2.loguearUsuarioResponse(username=request.username, estado="Contra MAlaa")
+        return respuesta
+    
+    def crearUsuario(self, request, context):
+        udao = UsuarioDAO()
+        ustmp = udao.traerUsuarioSIMPLE(request.username);
+        msj = ""
+        if (ustmp == None):
+            us = Usuario()
+            us.idUsuario = request.username
+            us.email = request.email
+            us.password = request.password
+            us.tipo = request.tipo
+            msj = udao.agregarUsuario(us)
+        else:
+            msj = "Usuario Existente"
+
         respuesta = usuario_pb2.crearUsuarioResponse(
-            username=request.username,
-            mensaje="alta exitosa"
+            username = request.username,
+            mensaje = msj,
         )
         return respuesta
 

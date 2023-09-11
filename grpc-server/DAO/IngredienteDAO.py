@@ -3,11 +3,13 @@ import os, sys
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(CURRENT_DIR))
 
-from Ingrediente import *
+from objetos.Ingrediente import *
 import mysql.connector
 import json
 from mysql.connector import Error
 from DAO.ConexionBD import ConexionBD
+
+from DAO.CONFIGS.variablesGlobales import TINGREDIENTE
 
 class IngredienteDAO(ConexionBD):
     def __int__(self):
@@ -34,7 +36,7 @@ class IngredienteDAO(ConexionBD):
         try:
             self.crearConexion()
             self.cursorDict()
-            self._micur.execute('SELECT * FROM ingrediente WHERE ingrediente.nombre = %s', (nombre,))
+            self._micur.execute("SELECT * FROM " + TINGREDIENTE + " WHERE " + TINGREDIENTE + ".nombre = %s", (nombre,))
             inTraido = self._micur.fetchone()
         except Error as e:
             print("Error al conectar con la BD", e)

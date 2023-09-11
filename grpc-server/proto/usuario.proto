@@ -18,9 +18,24 @@ message crearUsuarioResponse {
     */
 }
 
-message usuario{
+message loguearUsuarioRequest{
     string username = 1;
+    string password = 3;
+    
 }
+
+/*
+username = contiene el nombre de usuario
+estado:
+    -"Log Ok"
+    -"Contraseña erronea"
+    -"Usuario inexistente"
+*/
+message loguearUsuarioResponse{
+    string username = 1;
+    string estado = 2;
+}
+
 
 message solicitudDeSeguidorRequest{
     string usuarioQueSigue = 1;
@@ -36,8 +51,19 @@ message solicitudDeSeguidorResponse{
             "No se puede seguir a este usuario"
     */
 }
+
+message traerUsuariosQueSigoRequest{
+    string usuario= 1;
+
+}
+
+message traerUsuariosQueSigoResponse{
+    repeated string usuarios = 1;
+}
+
 service servicioUsuario{
     rpc crearUsuario (crearUsuarioRequest) returns (crearUsuarioResponse);
+    rpc loguearUsuario (crearUsuarioRequest) returns (crearUsuarioResponse);
     rpc seguirUsuario(solicitudDeSeguidorRequest) returns (solicitudDeSeguidorResponse);
-
+    rpc traerUsuariosQueSigo(traerUsuariosQueSigoRequest) returns (traerUsuariosQueSigoResponse);
 }
