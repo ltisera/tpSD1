@@ -6,7 +6,10 @@ sys.path.append(os.path.dirname(CURRENT_DIR))
 import mysql.connector
 import json
 from objetos.Receta import *
+from objetos.Ingrediente import *
 from DAO.ConexionBD import ConexionBD
+from DAO.IngredienteDAO import IngredienteDAO
+from DAO.CategoriaDAO import CategoriaDAO
 from DAO.CONFIGS.variablesGlobales import TRECETA, TRECETAFAVORITA, TINGREDIENTEDERECETA 
 
 from mysql.connector import Error
@@ -72,6 +75,44 @@ class RecetaDAO(ConexionBD):
         
         return lstRecetas
     
+    def traerRecetasxIngrediente(self, ingrediente):
+        lstRecetas = []
+        try:
+            self.crearConexion()
+            self.cursorDict()
+            self._micur.execute("SELECT " + TRECETA + ".idReceta, " + TRECETA + ".titulo, " + TRECETA + ".descripcion, " + TRECETA + ".foto1, " + TRECETA + ".tiempoEnMinutos, " + TRECETA + ".categoria, " + TRECETA + ".creador FROM " + TINGREDIENTEDERECETA + " INNER JOIN " + TRECETA + " ON " + TINGREDIENTEDERECETA + ".idReceta = " + TRECETA + ".idReceta WHERE " + TINGREDIENTEDERECETA + ".ingrediente = %s", (ingrediente,))
+            listaDeRecetas = self._micur.fetchall()
+            for r in listaDeRecetas:
+                lstRecetas.append(r)
+
+        except mysql.connector.errors.IntegrityError as err:
+            print("Error: " + str(err))
+
+        finally:
+            self.cerrarConexion()
+        
+        return lstRecetas
+
+    def traerRecetasxTiempo(self, tpMin, tpMax):
+        lstRecetas = []
+        try:
+            self.crearConexion()
+            self.cursorDict()
+            self._micur.execute("SELECT * FROM " + TRECETA + " WHERE " + TRECETA + ".tiempoEnMinutos BETWEEN %s and %s", (tpMin, tpMax))
+            listaDeRecetas = self._micur.fetchall()
+            for r in listaDeRecetas:
+                lstRecetas.append(r)
+
+        except mysql.connector.errors.IntegrityError as err:
+            print("Error: " + str(err))
+
+        finally:
+            self.cerrarConexion()
+        
+        return lstRecetas
+
+
+
     #Recetas favoritas
 
     def agregarFavorito(self, usuario, idReceta):
@@ -124,6 +165,7 @@ class RecetaDAO(ConexionBD):
         return usTraido
 
     def agregarReceta(self, receta):
+        cdao = CategoriaDAO.agregarCategoria(receta.categoria)
         print("LLEGUE aki")
         print(receta)
         mensaje="Error."
@@ -145,12 +187,13 @@ class RecetaDAO(ConexionBD):
         return (mensaje)
     
     def agregarIngredienteAReceta(self, receta, ingrediente, cantidad, tipoDeMedida):
+        idao = IngredienteDAO().agregarIngrediente(Ingrediente(ingrediente))
         mensaje = "Error."
         try:
             self.crearConexion()
             self._micur.execute("INSERT INTO " + TINGREDIENTEDERECETA + "(idReceta, ingrediente, cantidad, tipoDeMedida) values (%s, %s, %s, %s)", (receta, ingrediente, cantidad, tipoDeMedida))
             self._bd.commit()
-            mensaje = "ingrediente guardado."
+            mensaje = "Agregado a ingredientes"
 
         except mysql.connector.errors.IntegrityError as err:
             print("Error: " + str(err))
@@ -159,6 +202,24 @@ class RecetaDAO(ConexionBD):
             self.cerrarConexion()
         
         return (mensaje)
+    
+    def traerIngredientesDeReceta(self, receta):
+        lstIngredientes = []
+        try:
+            self.crearConexion()
+            self.cursorDict()
+            self._micur.execute("SELECT " + TINGREDIENTEDERECETA + ".ingrediente, " + TINGREDIENTEDERECETA + ".cantidad, " + TINGREDIENTEDERECETA + ".tipoDeMedida FROM " + TINGREDIENTEDERECETA + " WHERE " + TINGREDIENTEDERECETA + ".idReceta = %s", (receta,))
+            listaDeIngredientes = self._micur.fetchall()
+            for r in listaDeIngredientes:
+                lstIngredientes.append(r)
+
+        except mysql.connector.errors.IntegrityError as err:
+            print("Error: " + str(err))
+
+        finally:
+            self.cerrarConexion()
+        
+        return lstIngredientes
 
 if __name__ == '__main__':
     

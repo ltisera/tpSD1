@@ -15,10 +15,23 @@ message receta {
     string foto5=11;
     uint32 idReceta = 12;
 }
+
+message ingredienteDeReceta {
+    string nombre = 1;
+    uint32 cantidad = 2;
+    string tipoDeMedida =3;
+}
+
+message listaIngredientesPorResponse  {
+    repeated ingredienteDeReceta ingredientes = 1;
+}
+
 message traerRecetasPorRequest {
-    string tiempoEnMinutos = 1;
-    string categoria = 2;
-    string creador = 3;
+    string tiempoEnMinutosMIN = 1;
+    string tiempoEnMinutosMAX = 2;
+    string categoria = 3;
+    string creador = 4;
+    string ingrediente = 5;
 }
 message crearRecetaRequest {
     string titulo = 1;
@@ -50,6 +63,22 @@ message agregarRecetaAFavoritosResponse{
     string mensaje = 1;
     /*
         mensajes:
+            "Agregado a ingredientes"
+            "Error"
+    */
+}
+
+message agregarIngredienteARecetaRequest {
+    string idReceta = 1;
+    string ingrediente = 2;
+    uint32 cantidad = 3;
+    string tipoDeMedida = 4;
+}
+
+message agregarIngredienteARecetaResponse{
+    string mensaje = 1;
+    /*
+        mensajes:
             "Agregado a favoritos"
             "Error"
     */
@@ -69,4 +98,6 @@ service servicioReceta{
     rpc agregarRecetaAFavoritos(agregarRecetaAFavoritosRequest) returns (agregarRecetaAFavoritosResponse);
     rpc traerRecetasFavoritas(traerRecetasFavoritasRequest) returns (traerRecetasPorResponse);
     rpc traerReceta (traerRecetaRequest) returns (receta);
+    rpc traerIngredientesDeReceta (traerRecetaRequest) returns (listaIngredientesPorResponse);
+    rpc agregarIngredienteAReceta(agregarIngredienteARecetaRequest) returns (agregarIngredienteARecetaResponse);
 }

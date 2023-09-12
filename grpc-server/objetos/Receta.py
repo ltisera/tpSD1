@@ -12,6 +12,7 @@ class Receta():
         self._foto3 = foto3
         self._foto4 = foto4
         self._foto5 = foto5
+        self._lstIngredientes = []
         
 
     @property
@@ -113,6 +114,14 @@ class Receta():
     @foto5.setter
     def foto5(self, foto5):
         self._foto5 = foto5
+
+    @property
+    def lstIngredientes(self):
+        return self._lstIngredientes
+
+    @lstIngredientes.setter
+    def lstIngredientes(self, lst):
+        self._lstIngredientes = lst
 
 
 
