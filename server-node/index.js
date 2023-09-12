@@ -66,7 +66,7 @@ app.use(express.static(path.resolve(__dirname, "../front")));
 // Si la respuesta es incorrecta, redirigir a login
 app.post("/api/login", (req, res) => {
   const { password, email } = req.body;
-  createUser({ password, email }, (err, response) => {
+  loguearUsuario({ password, email }, (err, response) => {
     if (err) {
       console.error(err);
       res.redirect("/login");
@@ -78,8 +78,8 @@ app.post("/api/login", (req, res) => {
   });
 });
 app.post("/api/register", (req, res) => {
-  const { password, email } = req.body;
-  createUser({ password, email }, (err, response) => {
+  const { username, password, email } = req.body;
+  createUser({ username, password, email, tipo: "Usuario" }, (err, response) => {
     if (err) {
       console.error(err);
       res.redirect("/login");
@@ -114,12 +114,25 @@ function createUser(
     username: "",
     email: "",
     password: "",
-    tipo: "",
+    tipo: "usuario",
   },
   callback
 ) {
+  console.log(userdata.email)
+  console.log(userdata.username)
+  console.log(userdata.password)
+  console.log(userdata.tipo)
   usersGrpcClient.crearUsuario(userdata, callback);
 }
+
+
+function loguearUsuario(userdata = {email: "", password: "",}, callback){
+  usersGrpcClient.loguearUsuario(userdata, callback);
+  console.log("ESTE ES MI TEST");
+}
+
+
+
 function createRecipe() {}
 function getRecipes(
   filters = {

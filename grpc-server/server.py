@@ -172,18 +172,22 @@ class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
         return respuesta
 
     def loguearUsuario(self, request, context):
+        print("Golpeo al loguin")
         udao = UsuarioDAO()
-        ustmp = udao.traerUsuarioSIMPLE(request.username);
+        ustmp = udao.traerUsuarioSIMPLE(request.email);
         if(ustmp == None):
-            respuesta = usuario_pb2.loguearUsuarioResponse(username=request.username, estado="No existe el usuario")
+            respuesta = usuario_pb2.loguearUsuarioResponse(username=request.email, estado="No existe el usuario")
         else:
             if(ustmp["password"] == request.password):
-                respuesta = usuario_pb2.loguearUsuarioResponse(username=request.username, estado="VALIDO")
+                respuesta = usuario_pb2.loguearUsuarioResponse(username=request.email, estado="VALIDO")
             else:
-                respuesta = usuario_pb2.loguearUsuarioResponse(username=request.username, estado="Contra MAlaa")
+                respuesta = usuario_pb2.loguearUsuarioResponse(username=request.email, estado="Contra MAlaa")
         return respuesta
     
     def crearUsuario(self, request, context):
+        print("Golpeo al crear")
+        print(request)
+        print("Fin request")
         udao = UsuarioDAO()
         ustmp = udao.traerUsuarioSIMPLE(request.username);
         msj = ""

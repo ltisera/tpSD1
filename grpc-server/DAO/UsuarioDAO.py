@@ -20,7 +20,7 @@ class UsuarioDAO(ConexionBD):
             self.crearConexion()
             self.cursorDict()
             #self._micur.execute("SELECT idUsuario, email, tipoUsuario FROM usuario WHERE usuario.idUsuario = %s", (idUsuario,))
-            self._micur.execute("SELECT * FROM " + TUSUARIO + " WHERE " + TUSUARIO + ".usuario = %s", (idUsuario,))
+            self._micur.execute("SELECT * FROM " + TUSUARIO + " WHERE " + TUSUARIO + ".email = %s", (idUsuario,))
             usTraido = self._micur.fetchone()
         except Error as e:
             print("Error al conectar con la BD", e)
