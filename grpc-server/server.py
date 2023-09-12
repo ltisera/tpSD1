@@ -101,8 +101,8 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
         for ing in listaIngredientes:
             ingrediente=receta_pb2.ingredienteDeReceta(
                 nombre = ing["ingrediente"],
-                cantidad = rec["cantidad"],
-                tipoDeMedida = rec["tipoDeMedida"],
+                cantidad = ing["cantidad"],
+                tipoDeMedida = ing["tipoDeMedida"],
             )
             responseListaIngredientes.append(ingrediente)
         respuesta = receta_pb2.listaIngredientesPorResponse(ingredientes=responseListaIngredientes)
