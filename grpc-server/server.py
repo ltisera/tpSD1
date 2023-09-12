@@ -30,19 +30,22 @@ from objetos.Usuario import *
 #### Aca te entra los request de RECETAS
 class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
     def traerRecetasPor(self, request, context):
-        print(request.creador)
-        print(request.categoria)
+        print(request)
         responseListaRecetas=[]
     
             
-        listaRecetas=[]
-
-        if(request.creador == "" and request.categoria == ""):
-            listaRecetas=RecetaDAO().traerRecetas()
-        elif(request.categoria != ""):
-            listaRecetas=RecetaDAO().traerRecetasxCategoria(request.categoria)
-        else:
-            listaRecetas=RecetaDAO().traerRecetasxCreador(request.creador)
+        listaRecetas=RecetaDAO().traerRecetasXFiltro(
+            tiempoEnMinutos=request.tiempoEnMinutos,
+            categoria=request.categoria,
+            creador=request.creador,
+            titulo=request.titulo
+        )
+        # if(request.creador == "" and request.categoria == ""):
+        #     listaRecetas=RecetaDAO().traerRecetas()
+        # elif(request.categoria != ""):
+        #     listaRecetas=RecetaDAO().traerRecetasxCategoria(request.categoria)
+        # else:
+        #     listaRecetas=RecetaDAO().traerRecetasxCreador(request.creador)
 
 
         for rec in listaRecetas:
@@ -148,14 +151,16 @@ class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
 
     def loguearUsuario(self, request, context):
         udao = UsuarioDAO()
-        ustmp = udao.traerUsuarioSIMPLE(request.username);
+        ustmp = udao.traerUsuarioSIMPLE(request.email);
+        print(request)
+        print(ustmp)
         if(ustmp == None):
-            respuesta = usuario_pb2.loguearUsuarioResponse(username=request.username, estado="No existe el usuario")
+            respuesta = usuario_pb2.loguearUsuarioResponse(username=ustmp["usuario"], estado="NO_EXISTE_EL_USUARIO")
         else:
             if(ustmp["password"] == request.password):
-                respuesta = usuario_pb2.loguearUsuarioResponse(username=request.username, estado="VALIDO")
+                respuesta = usuario_pb2.loguearUsuarioResponse(username=ustmp["usuario"], estado="VALIDO")
             else:
-                respuesta = usuario_pb2.loguearUsuarioResponse(username=request.username, estado="Contra MAlaa")
+                respuesta = usuario_pb2.loguearUsuarioResponse(username=ustmp["usuario"], estado="INVALIDO")
         return respuesta
     
     def crearUsuario(self, request, context):
@@ -170,7 +175,7 @@ class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
             us.tipo = request.tipo
             msj = udao.agregarUsuario(us)
         else:
-            msj = "Usuario Existente"
+            msj = "YA_EXISTE_EL_USUARIO"
 
         respuesta = usuario_pb2.crearUsuarioResponse(
             username = request.username,

@@ -24,6 +24,17 @@
         </form>
       </article>
     </main>
-    <script></script>
+    <script src="/js/nav"></script>
+    <script>
+      const error = new URLSearchParams(window.location.search).get("error");
+      if (error) {
+        if (error === "INVALID_CREDENTIALS") {
+          alert("Credenciales invalidas");
+        }
+        if (error === "USER_NOT_FOUND") {
+          alert("Usuario no encontrado");
+        }
+      }
+    </script>
   </body>
 </html>

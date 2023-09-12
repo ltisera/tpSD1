@@ -1,0 +1,54 @@
+form {
+  display: flex;
+  justify-content: center;
+  place-items: center;
+  align-items: end;
+  gap: 16px;
+}
+hgroup {
+  width: 100%;
+  margin-block: 0;
+}
+input,
+select {
+  margin: 0 !important;
+}
+main.container {
+  padding-block: 0;
+}
+article > header.container {
+  margin: 0;
+  border: none;
+}
+.flex {
+  display: flex;
+}
+img {
+  height: 300px;
+  margin: auto;
+}
+article {
+  display: flex;
+  padding-inline: 24px;
+  padding-block: 16px;
+  margin-block: 32px;
+}
+form > button {
+  width: fit-content;
+}
+.create-btn {
+  width: fit-content;
+  margin-left: auto;
+}
+.flex {
+  display: flex;
+}
+.items-center {
+  align-items: center;
+}
+#user-name {
+  margin: 0;
+}
+button {
+  margin: 0;
+}

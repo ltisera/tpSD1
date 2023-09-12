@@ -19,6 +19,7 @@ message traerRecetasPorRequest {
     string tiempoEnMinutos = 1;
     string categoria = 2;
     string creador = 3;
+    string titulo=4;
 }
 message crearRecetaRequest {
     string titulo = 1;

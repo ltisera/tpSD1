@@ -34,7 +34,44 @@ class RecetaDAO(ConexionBD):
             self.cerrarConexion()
         
         return lstRecetas
-    
+    # Filtros: 
+    # Todos los filtros son opcionales
+    # tiempoEnMinutos
+    # categoria
+    # creador
+    # titulo
+    def traerRecetasXFiltro(self, 
+        tiempoEnMinutos,
+        categoria,
+        creador,
+        titulo
+    ):
+        lstRecetas = []
+        try:
+            self.crearConexion()
+            self.cursorDict()
+            queryBase="SELECT * FROM " + TRECETA + " WHERE {}.titulo is not null ".format(TRECETA)
+            if (tiempoEnMinutos != ""):
+                queryBase += "AND {}.tiempoEnMinutos = '{}' ".format(TRECETA,tiempoEnMinutos)
+            if (categoria != ""):
+                queryBase += "AND {}.categoria = '{}' ".format(TRECETA,categoria)
+            if (creador != ""):
+                queryBase += "AND {}.creador = '{}' ".format(TRECETA,creador)
+            if (titulo != ""):
+                queryBase += "AND {}.titulo LIKE '%{}%' ".format(TRECETA,titulo)
+            print(queryBase)
+            self._micur.execute(queryBase)
+            listaDeRecetas = self._micur.fetchall()
+            for r in listaDeRecetas:
+                lstRecetas.append(r)
+        except mysql.connector.errors.IntegrityError as err:
+            print("Error: " + str(err))
+
+        finally:
+            self.cerrarConexion()
+        
+        return lstRecetas
+
 
     def traerRecetasxCategoria(self, categoria):
         lstRecetas = []

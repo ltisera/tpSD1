@@ -64,30 +64,38 @@ app.use(express.static(path.resolve(__dirname, "../front")));
 // Pasar datos a python y esperar respuesta
 // Si la respuesta es correcta, setear cookie y redirigir a backoffice
 // Si la respuesta es incorrecta, redirigir a login
-app.post("/api/login", (req, res) => {
-  const { password, email } = req.body;
-  createUser({ password, email }, (err, response) => {
+app.post("/api/register", (req, res) => {
+  const { password, email, name, user } = req.body;
+  createUser({ password, email, username: user }, (err, response) => {
     if (err) {
       console.error(err);
       res.redirect("/login");
     } else {
       console.log(response);
-      res.cookie("user", buildAuthCookie(response));
-      res.redirect("/backoffice");
+      if (response.mensaje === "Usuario Existente") {
+        res.cookie("user", buildAuthCookie(response));
+        return res.redirect("/backoffice");
+      }
+      res.redirect("/login");
     }
   });
 });
-app.post("/api/register", (req, res) => {
+app.post("/api/login", (req, res) => {
   const { password, email } = req.body;
-  createUser({ password, email }, (err, response) => {
+  loginUser({ password, email }, (err, response) => {
     if (err) {
       console.error(err);
-      res.redirect("/login");
-    } else {
-      console.log(response);
-      res.cookie("user", buildAuthCookie(response));
-      res.redirect("/backoffice");
+      return res.redirect("/login");
     }
+    console.log(response);
+    if (response.mensaje === "INVALIDO") {
+      return res.redirect("/login?error=INVALID_CREDENTIALS");
+    }
+    if (response.mensaje === "NO_EXISTE_EL_USUARIO") {
+      return res.redirect("/login?error=USER_NOT_FOUND");
+    }
+    res.cookie("user", buildAuthCookie(response));
+    res.redirect("/backoffice");
   });
 });
 app.post("/api/recipes", (req, res) => {
@@ -119,6 +127,17 @@ function createUser(
   callback
 ) {
   usersGrpcClient.crearUsuario(userdata, callback);
+}
+function loginUser(
+  userdata = {
+    username: "",
+    email: "",
+    password: "",
+    tipo: "",
+  },
+  callback
+) {
+  usersGrpcClient.loguearUsuario(userdata, callback);
 }
 function createRecipe() {}
 function getRecipes(

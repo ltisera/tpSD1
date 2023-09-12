@@ -14,13 +14,13 @@ class UsuarioDAO(ConexionBD):
     def __int__(self):
         pass
     
-    def traerUsuarioSIMPLE(self, idUsuario):
+    def traerUsuarioSIMPLE(self, email):
         usTraido = None
         try:
             self.crearConexion()
             self.cursorDict()
             #self._micur.execute("SELECT idUsuario, email, tipoUsuario FROM usuario WHERE usuario.idUsuario = %s", (idUsuario,))
-            self._micur.execute("SELECT * FROM " + TUSUARIO + " WHERE " + TUSUARIO + ".usuario = %s", (idUsuario,))
+            self._micur.execute("SELECT * FROM " + TUSUARIO + " WHERE email = %s", (email,))
             usTraido = self._micur.fetchone()
         except Error as e:
             print("Error al conectar con la BD", e)
@@ -38,7 +38,7 @@ class UsuarioDAO(ConexionBD):
 
 #            self._micur.execute("SELECT * FROM inscripcion where idReceta = %s and idExamen = %s", (idUsuario, idExamen))
 #            inscripcion = self._micur.fetchone()
-            self._micur.execute("INSERT INTO " + TUSUARIO + "(usuario, email, nombre, password, tipo) values (%s, %s, %s, %s, %s)", (usuario.idUsuario, usuario.email, usuario.nombre, usuario.password, usuario.tipo))
+            self._micur.execute("INSERT INTO " + TUSUARIO + " (usuario, email, nombre, password, tipo) values (%s, %s, %s, %s, %s)", (usuario.idUsuario, usuario.email, usuario.nombre, usuario.password, usuario.tipo))
             self._bd.commit()
             mensaje = "Alta Exitosa"
 #            self._micur.execute("SELECT * FROM inscripcion where idUsuario = %s and idExamen = %s", (idUsuario, idExamen))

@@ -8,19 +8,19 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema bdRecetas
+-- Schema bdrecetas
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema bdRecetas
+-- Schema bdrecetas
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `bdRecetas` DEFAULT CHARACTER SET utf8 ;
-USE `bdRecetas` ;
+CREATE SCHEMA IF NOT EXISTS `bdrecetas` DEFAULT CHARACTER SET utf8 ;
+USE `bdrecetas` ;
 
 -- -----------------------------------------------------
--- Table `bdRecetas`.`Usuario`
+-- Table `bdrecetas`.`Usuario`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bdRecetas`.`Usuario` (
+CREATE TABLE IF NOT EXISTS `bdrecetas`.`usuario` (
   `usuario` VARCHAR(25) NOT NULL,
   `email` VARCHAR(45) NULL,
   `nombre` VARCHAR(45) NULL,
@@ -31,18 +31,18 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `bdRecetas`.`Categoria`
+-- Table `bdrecetas`.`Categoria`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bdRecetas`.`Categoria` (
+CREATE TABLE IF NOT EXISTS `bdrecetas`.`categoria` (
   `nombre` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`nombre`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `bdRecetas`.`Receta`
+-- Table `bdrecetas`.`Receta`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bdRecetas`.`Receta` (
+CREATE TABLE IF NOT EXISTS `bdrecetas`.`receta` (
   `idReceta` INT NOT NULL AUTO_INCREMENT,
   `titulo` VARCHAR(45) NULL,
   `descripcion` VARCHAR(256) NULL,
@@ -60,30 +60,30 @@ CREATE TABLE IF NOT EXISTS `bdRecetas`.`Receta` (
   INDEX `fk_Receta_Usuario1_idx` (`creador` ASC) VISIBLE,
   CONSTRAINT `fk_Receta_Categoria1`
     FOREIGN KEY (`categoria`)
-    REFERENCES `bdRecetas`.`Categoria` (`nombre`)
+    REFERENCES `bdrecetas`.`categoria` (`nombre`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Receta_Usuario1`
     FOREIGN KEY (`creador`)
-    REFERENCES `bdRecetas`.`Usuario` (`usuario`)
+    REFERENCES `bdrecetas`.`usuario` (`usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `bdRecetas`.`Ingrediente`
+-- Table `bdrecetas`.`ingrediente`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bdRecetas`.`Ingrediente` (
+CREATE TABLE IF NOT EXISTS `bdrecetas`.`ingrediente` (
   `nombre` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`nombre`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `bdRecetas`.`Receta_has_Ingrediente`
+-- Table `bdrecetas`.`Receta_has_Ingrediente`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bdRecetas`.`Receta_has_Ingrediente` (
+CREATE TABLE IF NOT EXISTS `bdrecetas`.`receta_has_ingrediente` (
   `idReceta` INT NOT NULL,
   `ingrediente` VARCHAR(45) NOT NULL,
   `cantidad` INT NULL,
@@ -93,21 +93,21 @@ CREATE TABLE IF NOT EXISTS `bdRecetas`.`Receta_has_Ingrediente` (
   INDEX `fk_Receta_has_Ingrediente_Receta_idx` (`idReceta` ASC) VISIBLE,
   CONSTRAINT `fk_Receta_has_Ingrediente_Receta`
     FOREIGN KEY (`idReceta`)
-    REFERENCES `bdRecetas`.`Receta` (`idReceta`)
+    REFERENCES `bdrecetas`.`Receta` (`idReceta`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Receta_has_Ingrediente_Ingrediente1`
     FOREIGN KEY (`ingrediente`)
-    REFERENCES `bdRecetas`.`Ingrediente` (`nombre`)
+    REFERENCES `bdrecetas`.`ingrediente` (`nombre`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `bdRecetas`.`Siguiendo`
+-- Table `bdrecetas`.`Siguiendo`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bdRecetas`.`Siguiendo` (
+CREATE TABLE IF NOT EXISTS `bdrecetas`.`siguiendo` (
   `Usuario_Seguidor` VARCHAR(25) NOT NULL,
   `Usuario_Seguido` VARCHAR(25) NOT NULL,
   PRIMARY KEY (`Usuario_Seguidor`, `Usuario_Seguido`),
@@ -115,21 +115,21 @@ CREATE TABLE IF NOT EXISTS `bdRecetas`.`Siguiendo` (
   INDEX `fk_Usuario_has_Usuario_Usuario1_idx` (`Usuario_Seguidor` ASC) VISIBLE,
   CONSTRAINT `fk_Usuario_has_Usuario_Usuario1`
     FOREIGN KEY (`Usuario_Seguidor`)
-    REFERENCES `bdRecetas`.`Usuario` (`usuario`)
+    REFERENCES `bdrecetas`.`usuario` (`usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Usuario_has_Usuario_Usuario2`
     FOREIGN KEY (`Usuario_Seguido`)
-    REFERENCES `bdRecetas`.`Usuario` (`usuario`)
+    REFERENCES `bdrecetas`.`usuario` (`usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `bdRecetas`.`Receta_Favorita`
+-- Table `bdrecetas`.`Receta_Favorita`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bdRecetas`.`Receta_Favorita` (
+CREATE TABLE IF NOT EXISTS `bdrecetas`.`receta_favorita` (
   `usuario` VARCHAR(25) NOT NULL,
   `idReceta` INT NOT NULL,
   PRIMARY KEY (`usuario`, `idReceta`),
@@ -137,12 +137,12 @@ CREATE TABLE IF NOT EXISTS `bdRecetas`.`Receta_Favorita` (
   INDEX `fk_Usuario_has_Receta_Usuario1_idx` (`usuario` ASC) VISIBLE,
   CONSTRAINT `fk_Usuario_has_Receta_Usuario1`
     FOREIGN KEY (`usuario`)
-    REFERENCES `bdRecetas`.`Usuario` (`usuario`)
+    REFERENCES `bdrecetas`.`usuario` (`usuario`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Usuario_has_Receta_Receta1`
     FOREIGN KEY (`idReceta`)
-    REFERENCES `bdRecetas`.`Receta` (`idReceta`)
+    REFERENCES `bdrecetas`.`receta` (`idReceta`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -153,13 +153,13 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 
-INSERT INTO `bdRecetas`.`Usuario` (`usuario`, `email`, `nombre`, `password`, `tipo`) VALUES ('admin', 'admin@admin.com', 'admin', 'admin', 'admin');
-INSERT INTO `bdRecetas`.`Usuario` (`usuario`, `email`, `nombre`, `password`, `tipo`) VALUES ('roberto', 'roberto@roberto.com', 'roberto', 'roberto', 'roberto');
+INSERT INTO `bdrecetas`.`usuario` (`usuario`, `email`, `nombre`, `password`, `tipo`) VALUES ('admin', 'admin@admin.com', 'admin', 'admin', 'admin');
+INSERT INTO `bdrecetas`.`usuario` (`usuario`, `email`, `nombre`, `password`, `tipo`) VALUES ('roberto', 'roberto@roberto.com', 'roberto', 'roberto', 'roberto');
 
-INSERT INTO `bdRecetas`.`Categoria` (`nombre`) VALUES ('Desayuno');
-INSERT INTO `bdRecetas`.`Categoria` (`nombre`) VALUES ('Almuerzo');
-INSERT INTO `bdRecetas`.`Categoria` (`nombre`) VALUES ('Cena');
+INSERT INTO `bdrecetas`.`categoria` (`nombre`) VALUES ('Desayuno');
+INSERT INTO `bdrecetas`.`categoria` (`nombre`) VALUES ('Almuerzo');
+INSERT INTO `bdrecetas`.`categoria` (`nombre`) VALUES ('Cena');
 
-INSERT INTO `bdRecetas`.`Receta` (`titulo`, `descripcion`, `foto1`, `foto2`, `foto3`, `foto4`, `foto5`, `pasos`, `tiempoEnMinutos`, `categoria`, `creador`) VALUES ('Huevos con jamon', 'Huevos con jamon', 'https://cdn0.recetasgratis.net/es/posts/2/9/7/huevos_con_jamon_y_frijoles_76792_orig.jpg', NULL, NULL, NULL, NULL, '1. Cocinar los huevos en una sarten\n2. Cocinar el jamon en otra sarten\n3. Servir en un plato', '10', 'Desayuno', 'admin');
+INSERT INTO `bdrecetas`.`receta` (`titulo`, `descripcion`, `foto1`, `foto2`, `foto3`, `foto4`, `foto5`, `pasos`, `tiempoEnMinutos`, `categoria`, `creador`) VALUES ('Huevos con jamon', 'Huevos con jamon', 'https://cdn0.recetasgratis.net/es/posts/2/9/7/huevos_con_jamon_y_frijoles_76792_orig.jpg', NULL, NULL, NULL, NULL, '1. Cocinar los huevos en una sarten\n2. Cocinar el jamon en otra sarten\n3. Servir en un plato', '10', 'Desayuno', 'admin');
 
-INSERT INTO `bdRecetas`.`Receta` (`titulo`, `descripcion`, `foto1`, `foto2`, `foto3`, `foto4`, `foto5`, `pasos`, `tiempoEnMinutos`, `categoria`, `creador`) VALUES ('Frijoles', 'Frijoles muy ricos con salsa especial', 'https://www.goya.com/media/4156/colombian-beans.jpg?quality=80', NULL, NULL, NULL, NULL, '1. Servir 2. Poner salsa', '10', 'Almuerzo', 'roberto');
+INSERT INTO `bdrecetas`.`receta` (`titulo`, `descripcion`, `foto1`, `foto2`, `foto3`, `foto4`, `foto5`, `pasos`, `tiempoEnMinutos`, `categoria`, `creador`) VALUES ('Frijoles', 'Frijoles muy ricos con salsa especial', 'https://www.goya.com/media/4156/colombian-beans.jpg?quality=80', NULL, NULL, NULL, NULL, '1. Servir 2. Poner salsa', '10', 'Almuerzo', 'roberto');
