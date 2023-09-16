@@ -159,6 +159,7 @@ INSERT INTO `bdrecetas`.`usuario` (`usuario`, `email`, `nombre`, `password`, `ti
 INSERT INTO `bdrecetas`.`categoria` (`nombre`) VALUES ('Desayuno');
 INSERT INTO `bdrecetas`.`categoria` (`nombre`) VALUES ('Almuerzo');
 INSERT INTO `bdrecetas`.`categoria` (`nombre`) VALUES ('Cena');
+INSERT INTO `bdrecetas`.`categoria` (`nombre`) VALUES ('Todas');
 
 INSERT INTO `bdrecetas`.`receta` (`titulo`, `descripcion`, `foto1`, `foto2`, `foto3`, `foto4`, `foto5`, `pasos`, `tiempoEnMinutos`, `categoria`, `creador`) VALUES ('Huevos con jamon', 'Huevos con jamon', 'https://cdn0.recetasgratis.net/es/posts/2/9/7/huevos_con_jamon_y_frijoles_76792_orig.jpg', NULL, NULL, NULL, NULL, '1. Cocinar los huevos en una sarten\n2. Cocinar el jamon en otra sarten\n3. Servir en un plato', '10', 'Desayuno', 'admin');
 

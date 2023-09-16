@@ -15,7 +15,7 @@
   <body>
     <header class="container flex items-center">
       <h1 id="user-name">Hola,</h1>
-      <button class="create-btn">Crear receta</button>
+      <button class="create-btn" id="create-btn">Crear receta</button>
     </header>
     <main class="container">
       <h4>Mis recetas</h4>
@@ -23,23 +23,85 @@
       <section id="recipes-list"></section>
     </main>
     <dialog id="creation-modal">
-      <article>
-        <h2>Backoffice</h2>
-        <form action="/api/backoffice" method="post">
-          <label for="email">Email</label>
-          <input type="email" name="email" id="email" required />
-          <label for="password">Password</label>
-          <input type="password" name="password" id="password" required />
-          <input type="submit" value="Login" />
+      <article class="flex-col">
+        <h2>Crear receta</h2>
+        <form class="justify-start" id="create-recipe-form">
+          <input name="creador" id="creator-input" readonly hidden />
+          <label for="titulo">Titulo</label>
+          <input type="text" name="titulo" id="titulo" required />
+          <label for="descripcion">Descripcion</label>
+          <input type="text" name="descripcion" id="descripcion" required />
+          <label for="pasos">Pasos</label>
+          <textarea
+            rows="4"
+            cols="50"
+            name="pasos"
+            id="pasos"
+            required
+          ></textarea>
+          <label for="tiempoEnMinutos">Tiempo en minutos</label>
+          <input
+            type="number"
+            name="tiempoEnMinutos"
+            id="tiempoEnMinutos"
+            required
+            min="1"
+          />
+          <label for="categoria">Categoria</label>
+          <select name="categoria" id="categoria">
+            <option value="Todas">Todas</option>
+            <option value="Desayuno">Desayuno</option>
+            <option value="Almuerzo">Almuerzo</option>
+            <option value="Cena">Cena</option>
+          </select>
+          <label for="foto1">Foto 1</label>
+          <input type="text" name="foto1" id="foto1" required />
+          <label for="foto2">Foto 2</label>
+          <input type="text" name="foto2" id="foto2" />
+          <label for="foto3">Foto 3</label>
+          <input type="text" name="foto3" id="foto3" />
+          <label for="foto4">Foto 4</label>
+          <input type="text" name="foto4" id="foto4" />
+          <label for="foto5">Foto 5</label>
+          <input type="text" name="foto5" id="foto5" />
+
+          <input type="submit" value="Crear" />
+          <input type="reset" value="Cancelar" id="cancel-btn" />
         </form>
       </article>
     </dialog>
 
-    <script>
-      const creationModal = document.querySelector("#creation-modal");
-    </script>
-
     <script src="/js/nav.js"></script>
     <script src="/js/backoffice-search.js"></script>
+    <script>
+      const creationModal = document.querySelector("#creation-modal");
+      const createBtn = document.querySelector("#create-btn");
+      const cancelBtn = document.querySelector("#cancel-btn");
+      const createRecipeForm = document.querySelector("#create-recipe-form");
+      const creatorInput = document.querySelector("#creator-input");
+      creatorInput.value = user.username;
+      createRecipeForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        console.log(Object.fromEntries(data));
+        fetch("/api/recipe", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(Object.fromEntries(data)),
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            window.location.reload();
+          });
+      });
+      cancelBtn.addEventListener("click", () => {
+        creationModal.close();
+      });
+      createBtn.addEventListener("click", () => {
+        creationModal.showModal();
+      });
+    </script>
   </body>
 </html>

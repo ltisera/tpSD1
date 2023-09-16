@@ -18,7 +18,7 @@
 const formContainer = document.querySelector("#form-container");
 const form = document.createElement("form");
 form.innerHTML = `<form action="/" method="get" class="form">
-<hgroup>
+<hgroup class="w-large">
   <label for="title">Titulo</label>
   <input type="text" name="title" id="title" />
 </hgroup>
@@ -35,6 +35,14 @@ form.innerHTML = `<form action="/" method="get" class="form">
     <option value="cena">Cena</option>
   </select>
 </hgroup>
+<hgroup class="w-medium">
+  <label for="min-temp">Tiempo mínimo (min.)</label>
+  <input type="number" min="0"  id="min-temp" name="min-temp"/>
+</hgroup>
+<hgroup class="w-medium">
+  <label for="max-temp">Tiempo mínimo (máx.)</label>
+  <input type="number" min="0"  id="max-temp" name="max-temp"/>
+</hgroup>
 <button type="reset" class="secondary">Limpiar</button>
 <button type="submit">Buscar</button>
 </form>`;
@@ -44,9 +52,13 @@ const params = new URLSearchParams(window.location.search);
 const title = params.get("title") || "";
 const author = params.get("author") || "";
 const category = params.get("category") || "";
+const minTemp = params.get("min-temp") || "";
+const maxTemp = params.get("max-temp") || "";
 document.querySelector("#title").value = title;
 document.querySelector("#author").value = author;
 document.querySelector("#category").value = category;
+document.querySelector("#min-temp").value = minTemp;
+document.querySelector("#max-temp").value = maxTemp;
 
 const recipeList = document.querySelector("#recipes-list");
 fetch("/api/recipes", {
@@ -54,17 +66,24 @@ fetch("/api/recipes", {
   headers: {
     "Content-Type": "application/json",
   },
+
   body: JSON.stringify({
     categoria: category,
     creador: author,
     titulo: title,
+    tiempoEnMinutosMIN: minTemp,
+    tiempoEnMinutosMAX: maxTemp,
   }),
 })
   .then((res) => res.json())
   .then((data = []) => {
     console.log(data);
     const {} = data;
-
+    if (data.recetas.length === 0) {
+      recipeList.innerHTML += `<h2>No se encontraron recetas</h2>
+      <p>Intenta con otros filtros</p>
+      `;
+    }
     data.recetas.forEach(
       ({
         tiempoEnMinutos,
@@ -80,7 +99,7 @@ fetch("/api/recipes", {
         pasos,
         titulo,
       }) => {
-        recipeList.innerHTML += ` <a href="" class="hover">
+        recipeList.innerHTML += ` <a href="/recipe/${idReceta}" class="hover">
             <article>
               <header class="container">
                 <div class="headings">

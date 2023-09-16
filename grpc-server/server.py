@@ -35,7 +35,8 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
     
             
         listaRecetas=RecetaDAO().traerRecetasXFiltro(
-            tiempoEnMinutos=request.tiempoEnMinutos,
+            tiempoEnMinutosMIN=request.tiempoEnMinutosMIN,
+            tiempoEnMinutosMAX=request.tiempoEnMinutosMAX,
             categoria=request.categoria,
             creador=request.creador,
             titulo=request.titulo
@@ -45,15 +46,15 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
             re=receta_pb2.receta(
                 titulo = rec["titulo"],
                 descripcion = rec["descripcion"],
-            #    pasos = rec["pasos"],
+                pasos = rec["pasos"],
                 tiempoEnMinutos = rec["tiempoEnMinutos"],
                 categoria = rec["categoria"],
                 creador = rec["creador"],
                 foto1 = rec["foto1"],
-            #    foto2 = rec["foto2"],
-            #    foto3 = rec["foto3"],
-            #    foto4 = rec["foto4"],
-            #    foto5 = rec["foto5"],
+                foto2 = rec["foto2"],
+                foto3 = rec["foto3"],
+                foto4 = rec["foto4"],
+                foto5 = rec["foto5"],
                 idReceta = rec["idReceta"],
             )
             responseListaRecetas.append(re)
@@ -116,6 +117,7 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
         receta.tiempoEnMinutos = request.tiempoEnMinutos
         receta.categoria = request.categoria
         receta.creador = request.creador
+        print(receta)
         adminreceta.agregarReceta(receta)
    
         print(receta_pb2)
@@ -164,7 +166,6 @@ class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
         return respuesta
 
     def loguearUsuario(self, request, context):
-        print("Golpeo al loguin")
         udao = UsuarioDAO()
         ustmp = udao.traerUsuarioSIMPLE(request.email);
         print(request)
@@ -179,9 +180,6 @@ class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
         return respuesta
     
     def crearUsuario(self, request, context):
-        print("Golpeo al crear")
-        print(request)
-        print("Fin request")
         udao = UsuarioDAO()
         ustmp = udao.traerUsuarioSIMPLE(request.username);
         msj = ""

@@ -107,6 +107,17 @@ app.post("/api/recipes", (req, res) => {
     }
   });
 });
+app.post("/api/recipe", (req, res) => {
+  console.log("body", req.body);
+
+  createRecipe(req.body, (error, response) => {
+    if (error) {
+      res.json([]);
+    } else {
+      res.json(response);
+    }
+  });
+});
 
 const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
@@ -126,10 +137,6 @@ function createUser(
   },
   callback
 ) {
-  console.log(userdata.email);
-  console.log(userdata.username);
-  console.log(userdata.password);
-  console.log(userdata.tipo);
   usersGrpcClient.crearUsuario(userdata, callback);
 }
 function loginUser(
@@ -143,15 +150,44 @@ function loginUser(
 ) {
   usersGrpcClient.loguearUsuario(userdata, callback);
 }
-function createRecipe() {}
-function getRecipes(
-  filters = {
+function createRecipe(
+  recipe = {
+    titulo: "",
+    descripcion: "",
     tiempoEnMinutos: "",
     categoria: "",
-    creador: "",
+    pasos: "",
+    foto1: "",
+    foto2: "",
+    foto3: "",
+    foto4: "",
+    foto5: "",
+    ingrediente: "",
   },
   callback
 ) {
+  recipesGrpcClient.crearReceta(recipe, (err, response) => {
+    callback(err, response);
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(response);
+    }
+  });
+}
+
+function getRecipes(
+  filters = {
+    tiempoEnMinutosMIN: "",
+    tiempoEnMinutosMAX: "",
+    categoria: "",
+    creador: "",
+    titulo: "",
+    ingrediente: "",
+  },
+  callback
+) {
+  console.log(filters);
   recipesGrpcClient.traerRecetasPor(filters, (err, response) => {
     callback(err, response);
     if (err) {

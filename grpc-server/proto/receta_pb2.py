@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0creceta.proto\"\xd6\x01\n\x06receta\x12\x0e\n\x06titulo\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scripcion\x18\x02 \x01(\t\x12\r\n\x05pasos\x18\x03 \x01(\t\x12\x17\n\x0ftiempoEnMinutos\x18\x04 \x01(\r\x12\x11\n\tcategoria\x18\x05 \x01(\t\x12\x0f\n\x07\x63reador\x18\x06 \x01(\t\x12\r\n\x05\x66oto1\x18\x07 \x01(\t\x12\r\n\x05\x66oto2\x18\x08 \x01(\t\x12\r\n\x05\x66oto3\x18\t \x01(\t\x12\r\n\x05\x66oto4\x18\n \x01(\t\x12\r\n\x05\x66oto5\x18\x0b \x01(\t\x12\x10\n\x08idReceta\x18\x0c \x01(\r\"e\n\x16traerRecetasPorRequest\x12\x17\n\x0ftiempoEnMinutos\x18\x01 \x01(\t\x12\x11\n\tcategoria\x18\x02 \x01(\t\x12\x0f\n\x07\x63reador\x18\x03 \x01(\t\x12\x0e\n\x06titulo\x18\x04 \x01(\t\"\xd0\x01\n\x12\x63rearRecetaRequest\x12\x0e\n\x06titulo\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scripcion\x18\x02 \x01(\t\x12\r\n\x05pasos\x18\x03 \x01(\t\x12\x17\n\x0ftiempoEnMinutos\x18\x04 \x01(\r\x12\x11\n\tcategoria\x18\x05 \x01(\t\x12\x0f\n\x07\x63reador\x18\x06 \x01(\t\x12\r\n\x05\x66oto1\x18\x07 \x01(\t\x12\r\n\x05\x66oto2\x18\x08 \x01(\t\x12\r\n\x05\x66oto3\x18\t \x01(\t\x12\r\n\x05\x66oto4\x18\n \x01(\t\x12\r\n\x05\x66oto5\x18\x0b \x01(\t\"\x18\n\x06status\x12\x0e\n\x06status\x18\x01 \x01(\x05\"3\n\x17traerRecetasPorResponse\x12\x18\n\x07recetas\x18\x01 \x03(\x0b\x32\x07.receta\"C\n\x1e\x61gregarRecetaAFavoritosRequest\x12\x0f\n\x07usuario\x18\x01 \x01(\t\x12\x10\n\x08idReceta\x18\x02 \x01(\t\"2\n\x1f\x61gregarRecetaAFavoritosResponse\x12\x0f\n\x07mensaje\x18\x01 \x01(\t\"/\n\x1ctraerRecetasFavoritasRequest\x12\x0f\n\x07usuario\x18\x01 \x01(\t\"&\n\x12traerRecetaRequest\x12\x10\n\x08idReceta\x18\x01 \x01(\t2\xe0\x02\n\x0eservicioReceta\x12\x44\n\x0ftraerRecetasPor\x12\x17.traerRecetasPorRequest\x1a\x18.traerRecetasPorResponse\x12+\n\x0b\x63rearReceta\x12\x13.crearRecetaRequest\x1a\x07.status\x12\\\n\x17\x61gregarRecetaAFavoritos\x12\x1f.agregarRecetaAFavoritosRequest\x1a .agregarRecetaAFavoritosResponse\x12P\n\x15traerRecetasFavoritas\x12\x1d.traerRecetasFavoritasRequest\x1a\x18.traerRecetasPorResponse\x12+\n\x0btraerReceta\x12\x13.traerRecetaRequest\x1a\x07.recetab\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0creceta.proto\"\xd6\x01\n\x06receta\x12\x0e\n\x06titulo\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scripcion\x18\x02 \x01(\t\x12\r\n\x05pasos\x18\x03 \x01(\t\x12\x17\n\x0ftiempoEnMinutos\x18\x04 \x01(\r\x12\x11\n\tcategoria\x18\x05 \x01(\t\x12\x0f\n\x07\x63reador\x18\x06 \x01(\t\x12\r\n\x05\x66oto1\x18\x07 \x01(\t\x12\r\n\x05\x66oto2\x18\x08 \x01(\t\x12\r\n\x05\x66oto3\x18\t \x01(\t\x12\r\n\x05\x66oto4\x18\n \x01(\t\x12\r\n\x05\x66oto5\x18\x0b \x01(\t\x12\x10\n\x08idReceta\x18\x0c \x01(\r\"M\n\x13ingredienteDeReceta\x12\x0e\n\x06nombre\x18\x01 \x01(\t\x12\x10\n\x08\x63\x61ntidad\x18\x02 \x01(\r\x12\x14\n\x0ctipoDeMedida\x18\x03 \x01(\t\"J\n\x1clistaIngredientesPorResponse\x12*\n\x0cingredientes\x18\x01 \x03(\x0b\x32\x14.ingredienteDeReceta\"\x99\x01\n\x16traerRecetasPorRequest\x12\x1a\n\x12tiempoEnMinutosMIN\x18\x01 \x01(\t\x12\x1a\n\x12tiempoEnMinutosMAX\x18\x02 \x01(\t\x12\x11\n\tcategoria\x18\x03 \x01(\t\x12\x0f\n\x07\x63reador\x18\x04 \x01(\t\x12\x0e\n\x06titulo\x18\x05 \x01(\t\x12\x13\n\x0bingrediente\x18\x06 \x01(\t\"\xd0\x01\n\x12\x63rearRecetaRequest\x12\x0e\n\x06titulo\x18\x01 \x01(\t\x12\x13\n\x0b\x64\x65scripcion\x18\x02 \x01(\t\x12\r\n\x05pasos\x18\x03 \x01(\t\x12\x17\n\x0ftiempoEnMinutos\x18\x04 \x01(\r\x12\x11\n\tcategoria\x18\x05 \x01(\t\x12\x0f\n\x07\x63reador\x18\x06 \x01(\t\x12\r\n\x05\x66oto1\x18\x07 \x01(\t\x12\r\n\x05\x66oto2\x18\x08 \x01(\t\x12\r\n\x05\x66oto3\x18\t \x01(\t\x12\r\n\x05\x66oto4\x18\n \x01(\t\x12\r\n\x05\x66oto5\x18\x0b \x01(\t\"\x18\n\x06status\x12\x0e\n\x06status\x18\x01 \x01(\x05\"3\n\x17traerRecetasPorResponse\x12\x18\n\x07recetas\x18\x01 \x03(\x0b\x32\x07.receta\"C\n\x1e\x61gregarRecetaAFavoritosRequest\x12\x0f\n\x07usuario\x18\x01 \x01(\t\x12\x10\n\x08idReceta\x18\x02 \x01(\t\"2\n\x1f\x61gregarRecetaAFavoritosResponse\x12\x0f\n\x07mensaje\x18\x01 \x01(\t\"q\n agregarIngredienteARecetaRequest\x12\x10\n\x08idReceta\x18\x01 \x01(\t\x12\x13\n\x0bingrediente\x18\x02 \x01(\t\x12\x10\n\x08\x63\x61ntidad\x18\x03 \x01(\r\x12\x14\n\x0ctipoDeMedida\x18\x04 \x01(\t\"4\n!agregarIngredienteARecetaResponse\x12\x0f\n\x07mensaje\x18\x01 \x01(\t\"/\n\x1ctraerRecetasFavoritasRequest\x12\x0f\n\x07usuario\x18\x01 \x01(\t\"&\n\x12traerRecetaRequest\x12\x10\n\x08idReceta\x18\x01 \x01(\t2\x95\x04\n\x0eservicioReceta\x12\x44\n\x0ftraerRecetasPor\x12\x17.traerRecetasPorRequest\x1a\x18.traerRecetasPorResponse\x12+\n\x0b\x63rearReceta\x12\x13.crearRecetaRequest\x1a\x07.status\x12\\\n\x17\x61gregarRecetaAFavoritos\x12\x1f.agregarRecetaAFavoritosRequest\x1a .agregarRecetaAFavoritosResponse\x12P\n\x15traerRecetasFavoritas\x12\x1d.traerRecetasFavoritasRequest\x1a\x18.traerRecetasPorResponse\x12+\n\x0btraerReceta\x12\x13.traerRecetaRequest\x1a\x07.receta\x12O\n\x19traerIngredientesDeReceta\x12\x13.traerRecetaRequest\x1a\x1d.listaIngredientesPorResponse\x12\x62\n\x19\x61gregarIngredienteAReceta\x12!.agregarIngredienteARecetaRequest\x1a\".agregarIngredienteARecetaResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -23,22 +23,30 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   DESCRIPTOR._options = None
   _globals['_RECETA']._serialized_start=17
   _globals['_RECETA']._serialized_end=231
-  _globals['_TRAERRECETASPORREQUEST']._serialized_start=233
-  _globals['_TRAERRECETASPORREQUEST']._serialized_end=334
-  _globals['_CREARRECETAREQUEST']._serialized_start=337
-  _globals['_CREARRECETAREQUEST']._serialized_end=545
-  _globals['_STATUS']._serialized_start=547
-  _globals['_STATUS']._serialized_end=571
-  _globals['_TRAERRECETASPORRESPONSE']._serialized_start=573
-  _globals['_TRAERRECETASPORRESPONSE']._serialized_end=624
-  _globals['_AGREGARRECETAAFAVORITOSREQUEST']._serialized_start=626
-  _globals['_AGREGARRECETAAFAVORITOSREQUEST']._serialized_end=693
-  _globals['_AGREGARRECETAAFAVORITOSRESPONSE']._serialized_start=695
-  _globals['_AGREGARRECETAAFAVORITOSRESPONSE']._serialized_end=745
-  _globals['_TRAERRECETASFAVORITASREQUEST']._serialized_start=747
-  _globals['_TRAERRECETASFAVORITASREQUEST']._serialized_end=794
-  _globals['_TRAERRECETAREQUEST']._serialized_start=796
-  _globals['_TRAERRECETAREQUEST']._serialized_end=834
-  _globals['_SERVICIORECETA']._serialized_start=837
-  _globals['_SERVICIORECETA']._serialized_end=1189
+  _globals['_INGREDIENTEDERECETA']._serialized_start=233
+  _globals['_INGREDIENTEDERECETA']._serialized_end=310
+  _globals['_LISTAINGREDIENTESPORRESPONSE']._serialized_start=312
+  _globals['_LISTAINGREDIENTESPORRESPONSE']._serialized_end=386
+  _globals['_TRAERRECETASPORREQUEST']._serialized_start=389
+  _globals['_TRAERRECETASPORREQUEST']._serialized_end=542
+  _globals['_CREARRECETAREQUEST']._serialized_start=545
+  _globals['_CREARRECETAREQUEST']._serialized_end=753
+  _globals['_STATUS']._serialized_start=755
+  _globals['_STATUS']._serialized_end=779
+  _globals['_TRAERRECETASPORRESPONSE']._serialized_start=781
+  _globals['_TRAERRECETASPORRESPONSE']._serialized_end=832
+  _globals['_AGREGARRECETAAFAVORITOSREQUEST']._serialized_start=834
+  _globals['_AGREGARRECETAAFAVORITOSREQUEST']._serialized_end=901
+  _globals['_AGREGARRECETAAFAVORITOSRESPONSE']._serialized_start=903
+  _globals['_AGREGARRECETAAFAVORITOSRESPONSE']._serialized_end=953
+  _globals['_AGREGARINGREDIENTEARECETAREQUEST']._serialized_start=955
+  _globals['_AGREGARINGREDIENTEARECETAREQUEST']._serialized_end=1068
+  _globals['_AGREGARINGREDIENTEARECETARESPONSE']._serialized_start=1070
+  _globals['_AGREGARINGREDIENTEARECETARESPONSE']._serialized_end=1122
+  _globals['_TRAERRECETASFAVORITASREQUEST']._serialized_start=1124
+  _globals['_TRAERRECETASFAVORITASREQUEST']._serialized_end=1171
+  _globals['_TRAERRECETAREQUEST']._serialized_start=1173
+  _globals['_TRAERRECETAREQUEST']._serialized_end=1211
+  _globals['_SERVICIORECETA']._serialized_start=1214
+  _globals['_SERVICIORECETA']._serialized_end=1747
 # @@protoc_insertion_point(module_scope)

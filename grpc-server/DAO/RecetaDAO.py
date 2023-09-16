@@ -37,14 +37,9 @@ class RecetaDAO(ConexionBD):
             self.cerrarConexion()
         
         return lstRecetas
-    # Filtros: 
-    # Todos los filtros son opcionales
-    # tiempoEnMinutos
-    # categoria
-    # creador
-    # titulo
     def traerRecetasXFiltro(self, 
-        tiempoEnMinutos,
+        tiempoEnMinutosMIN,
+        tiempoEnMinutosMAX,
         categoria,
         creador,
         titulo
@@ -54,8 +49,10 @@ class RecetaDAO(ConexionBD):
             self.crearConexion()
             self.cursorDict()
             queryBase="SELECT * FROM " + TRECETA + " WHERE {}.titulo is not null ".format(TRECETA)
-            if (tiempoEnMinutos != ""):
-                queryBase += "AND {}.tiempoEnMinutos = '{}' ".format(TRECETA,tiempoEnMinutos)
+            if (tiempoEnMinutosMAX != ""):
+                queryBase += "AND {}.tiempoEnMinutos <= {} ".format(TRECETA,tiempoEnMinutosMAX)
+            if (tiempoEnMinutosMIN != ""):
+                queryBase += "AND {}.tiempoEnMinutos >= {} ".format(TRECETA,tiempoEnMinutosMIN)
             if (categoria != ""):
                 queryBase += "AND {}.categoria = '{}' ".format(TRECETA,categoria)
             if (creador != ""):
@@ -202,7 +199,6 @@ class RecetaDAO(ConexionBD):
         return usTraido
 
     def agregarReceta(self, receta):
-        cdao = CategoriaDAO.agregarCategoria(receta.categoria)
         print("LLEGUE aki")
         print(receta)
         mensaje="Error."
@@ -210,10 +206,7 @@ class RecetaDAO(ConexionBD):
             self.crearConexion()
             self._micur.execute("INSERT INTO " + TRECETA + "(idReceta, titulo, descripcion, foto1, foto2, foto3, foto4, foto5, pasos, tiempoEnMinutos, categoria, creador) values (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s)", (receta.idReceta, receta.titulo, receta.descripcion, receta.foto1, receta.foto2, receta.foto3, receta.foto4, receta.foto5, receta.pasos, receta.tiempoEnMinutos, receta.categoria, receta.creador))
             self._bd.commit()
-            mensaje = "receta guardada."
-#            self._micur.execute("SELECT * FROM inscripcion where idUsuario = %s and idExamen = %s", (idUsuario, idExamen))
-            inscripcion = self._micur.fetchone()
-                
+            mensaje = "receta guardada."                
 
         except mysql.connector.errors.IntegrityError as err:
             print("Error: " + str(err))
