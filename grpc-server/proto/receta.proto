@@ -33,6 +33,7 @@ message traerRecetasPorRequest {
     string creador = 4;
     string titulo=5;
     string ingrediente = 6;
+    string idReceta=7;
 }
 message crearRecetaRequest {
     string titulo = 1;

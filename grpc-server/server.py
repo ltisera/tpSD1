@@ -39,7 +39,8 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
             tiempoEnMinutosMAX=request.tiempoEnMinutosMAX,
             categoria=request.categoria,
             creador=request.creador,
-            titulo=request.titulo
+            titulo=request.titulo,
+            idReceta=request.idReceta,
         )
         
         for rec in listaRecetas:

@@ -108,8 +108,6 @@ app.post("/api/recipes", (req, res) => {
   });
 });
 app.post("/api/recipe", (req, res) => {
-  console.log("body", req.body);
-
   createRecipe(req.body, (error, response) => {
     if (error) {
       res.json([]);
@@ -150,6 +148,9 @@ function loginUser(
 ) {
   usersGrpcClient.loguearUsuario(userdata, callback);
 }
+function getRecipeById({ id = "" }, callback) {
+  recipesGrpcClient.traerRecetaPor({ id }, callback);
+}
 function createRecipe(
   recipe = {
     titulo: "",
@@ -184,10 +185,10 @@ function getRecipes(
     creador: "",
     titulo: "",
     ingrediente: "",
+    idReceta: "",
   },
   callback
 ) {
-  console.log(filters);
   recipesGrpcClient.traerRecetasPor(filters, (err, response) => {
     callback(err, response);
     if (err) {

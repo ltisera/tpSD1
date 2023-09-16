@@ -75,7 +75,7 @@ fetch("/api/recipes", {
         pasos,
         titulo,
       }) => {
-        recipeList.innerHTML += ` <a href="" class="hover">
+        recipeList.innerHTML += ` <a href="/recipe?id=${idReceta}" class="hover">
             <article>
               <header class="container">
                 <div class="headings">

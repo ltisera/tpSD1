@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+    />
+    <link rel="stylesheet" href="/css/index.css" />
+    <title>ChefEnCasa</title>
+  </head>
+  <body style="padding-bottom: 48px">
+    <header class="container">
+      <div class="headings">
+        <h2 id="title"></h2>
+        <h3 id="description"></h3>
+      </div>
+      <img id="image-1" />
+    </header>
+
+    <main class="container">
+      <p id="time"></p>
+      <p id="category"></p>
+      <p id="creator"></p>
+      <code
+        id="steps"
+        style="
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+            Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+            sans-serif;
+        "
+      ></code>
+    </main>
+    <script src="/js/nav.js"></script>
+    <script>
+      const id = new URLSearchParams(window.location.search).get("id");
+      const title = document.getElementById("title");
+      const description = document.getElementById("description");
+      const time = document.getElementById("time");
+      const category = document.getElementById("category");
+      const creator = document.getElementById("creator");
+      const steps = document.getElementById("steps");
+      const image1 = document.getElementById("image-1");
+      fetch("/api/recipes", {
+        body: JSON.stringify({ idReceta: id }),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          /*
+           categoria
+: 
+"Almuerzo"
+creador
+: 
+"admin"
+descripcion
+: 
+"Ricas milanesas con pure al plato acompañado de un cremoso puré"
+foto1
+: 
+"https://www.recetasnestle.com.ar/sites/default/files/srh_recipes/1e13737ba00568d3938668193541fbad.jpg"
+foto2
+: 
+""
+foto3
+: 
+""
+foto4
+: 
+""
+foto5
+: 
+""
+idReceta
+: 
+12
+pasos
+: 
+"PROCEDIMIENTO.\n1. Rallar el pan viejo.\n2. Tiernizar las milanesas.\n3. En un bowl incorporar los huevos, bastante queso rallado, nuez moscada, orégano y mostaza. Pasar todas las milanesas por pan rallado y una vez listas, pasamos las milanesas por la preparación de huevos al queso y pasamos nuevamente por pan rallado.\n4. Freír en abundante aceite.  No tires la mezcla de huevo y queso!\n5. Para el puré de papa, lavar muy bien las papas y hervir con cáscara.\n6. En tibio, sacar las cáscara de las papas y pisar con un pisa papa, incorporar el queso crema, la manteca (mucha mucha cantidad, ese es el secreto) y si hace falta, sumar la leche.\n7. Revolver y servir junto con las milanesas. Que lo disfrutes ."
+tiempoEnMinutos
+: 
+45
+titulo
+: 
+"Milanesa con puré"
+           */
+
+          const recipeFound = res?.recetas?.[0];
+          if (!recipeFound) return (title.innerText = "Receta no encontrada");
+          title.innerText = recipeFound.titulo;
+          description.innerText = recipeFound.descripcion;
+          time.innerText = `Listo en ${recipeFound.tiempoEnMinutos} minutos`;
+          category.innerText = `Categoria: ${recipeFound.categoria}`;
+          creator.innerText = `Creada por: ${recipeFound.creador}`;
+          steps.innerText = recipeFound.pasos;
+          image1.src = recipeFound.foto1;
+        });
+    </script>
+  </body>
+</html>

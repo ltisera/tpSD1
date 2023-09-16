@@ -42,7 +42,8 @@ class RecetaDAO(ConexionBD):
         tiempoEnMinutosMAX,
         categoria,
         creador,
-        titulo
+        titulo,
+        idReceta
     ):
         lstRecetas = []
         try:
@@ -59,6 +60,8 @@ class RecetaDAO(ConexionBD):
                 queryBase += "AND {}.creador = '{}' ".format(TRECETA,creador)
             if (titulo != ""):
                 queryBase += "AND {}.titulo LIKE '%{}%' ".format(TRECETA,titulo)
+            if (idReceta != ""):
+                queryBase += "AND {}.idReceta = {} ".format(TRECETA,idReceta)
             print(queryBase)
             self._micur.execute(queryBase)
             listaDeRecetas = self._micur.fetchall()
