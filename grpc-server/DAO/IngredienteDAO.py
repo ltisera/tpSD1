@@ -20,7 +20,7 @@ class IngredienteDAO(ConexionBD):
         mensaje = "Error"
         try:
             self.crearConexion()
-            self._micur.execute("INSERT INTO Ingrediente(nombre) values (%s)", ( Ingrediente.nombre,))
+            self._micur.execute("INSERT INTO " + TINGREDIENTE + "(nombre) values (%s)", ( Ingrediente.nombre,))
             self._bd.commit()
             mensaje = "Ingrediente guardado"
         except mysql.connector.errors.IntegrityError as err:

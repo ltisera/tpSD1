@@ -40,27 +40,20 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
             creador=request.creador,
             titulo=request.titulo
         )
-        # if(request.creador == "" and request.categoria == ""):
-        #     listaRecetas=RecetaDAO().traerRecetas()
-        # elif(request.categoria != ""):
-        #     listaRecetas=RecetaDAO().traerRecetasxCategoria(request.categoria)
-        # else:
-        #     listaRecetas=RecetaDAO().traerRecetasxCreador(request.creador)
-
-
+        
         for rec in listaRecetas:
             re=receta_pb2.receta(
                 titulo = rec["titulo"],
                 descripcion = rec["descripcion"],
-                pasos = rec["pasos"],
+            #    pasos = rec["pasos"],
                 tiempoEnMinutos = rec["tiempoEnMinutos"],
                 categoria = rec["categoria"],
                 creador = rec["creador"],
                 foto1 = rec["foto1"],
-                foto2 = rec["foto2"],
-                foto3 = rec["foto3"],
-                foto4 = rec["foto4"],
-                foto5 = rec["foto5"],
+            #    foto2 = rec["foto2"],
+            #    foto3 = rec["foto3"],
+            #    foto4 = rec["foto4"],
+            #    foto5 = rec["foto5"],
                 idReceta = rec["idReceta"],
             )
             responseListaRecetas.append(re)
@@ -84,6 +77,27 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
             foto5 = rec["foto5"],
             idReceta = rec["idReceta"],
         )
+        return respuesta
+
+    def agregarIngredienteAReceta(self, request, context):
+        rDAO = RecetaDAO()
+        res = rDAO.agregarIngredienteAReceta(request.idReceta, request.ingrediente, request.cantidad, request.tipoDeMedida)
+        respuesta = receta_pb2.agregarIngredienteARecetaResponse(mensaje=res)
+        return respuesta
+
+    def traerIngredientesDeReceta(self, request, context):
+        responseListaIngredientes=[]
+        listaIngredientes=[]
+        listaIngredientes=RecetaDAO().traerIngredientesDeReceta(request.idReceta)
+
+        for ing in listaIngredientes:
+            ingrediente=receta_pb2.ingredienteDeReceta(
+                nombre = ing["ingrediente"],
+                cantidad = ing["cantidad"],
+                tipoDeMedida = ing["tipoDeMedida"],
+            )
+            responseListaIngredientes.append(ingrediente)
+        respuesta = receta_pb2.listaIngredientesPorResponse(ingredientes=responseListaIngredientes)
         return respuesta
 
     def crearReceta(self, request, context):
@@ -150,6 +164,7 @@ class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
         return respuesta
 
     def loguearUsuario(self, request, context):
+        print("Golpeo al loguin")
         udao = UsuarioDAO()
         ustmp = udao.traerUsuarioSIMPLE(request.email);
         print(request)
@@ -164,6 +179,9 @@ class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
         return respuesta
     
     def crearUsuario(self, request, context):
+        print("Golpeo al crear")
+        print(request)
+        print("Fin request")
         udao = UsuarioDAO()
         ustmp = udao.traerUsuarioSIMPLE(request.username);
         msj = ""

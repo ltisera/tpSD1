@@ -122,10 +122,14 @@ function createUser(
     username: "",
     email: "",
     password: "",
-    tipo: "",
+    tipo: "usuario",
   },
   callback
 ) {
+  console.log(userdata.email);
+  console.log(userdata.username);
+  console.log(userdata.password);
+  console.log(userdata.tipo);
   usersGrpcClient.crearUsuario(userdata, callback);
 }
 function loginUser(
