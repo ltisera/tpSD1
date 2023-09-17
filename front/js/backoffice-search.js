@@ -136,6 +136,9 @@ fetch("/api/recipes", {
           <button data-recipeid="${idReceta}" class="recipe-edit-button">
             Modificar
           </button>
+          <button data-recipeid="${idReceta}" class="recipe-delete-button contrast">
+            Eliminar
+          </button>
          </div>
           <article>
               <header class="container">
@@ -154,6 +157,9 @@ fetch("/api/recipes", {
     );
 
     const recipesEditButtons = document.querySelectorAll(".recipe-edit-button");
+    const recipesDeleteButtons = document.querySelectorAll(
+      ".recipe-delete-button"
+    );
 
     recipesEditButtons.forEach((button) => {
       button.addEventListener("click", (e) => {
@@ -174,6 +180,22 @@ fetch("/api/recipes", {
             fillForm({ ...res.recetas[0], idReceta: id });
             editModal.showModal();
           });
+      });
+    });
+    recipesDeleteButtons.forEach((button) => {
+      button.addEventListener("click", (e) => {
+        const id = e.target.getAttribute("data-recipeid");
+        fetch("/api/recipe", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            idReceta: id,
+          }),
+        }).then(() => {
+          window.location.reload();
+        });
       });
     });
   })

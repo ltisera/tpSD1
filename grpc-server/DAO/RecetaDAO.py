@@ -65,7 +65,6 @@ class RecetaDAO(ConexionBD):
                 queryBase += "AND {}.idReceta = {} ".format(TRECETA,idReceta)
             if (ingredientes != ""):
                 queryBase += "AND {}.ingredientes LIKE '%{}%' ".format(TRECETA,ingredientes)
-            print(queryBase)
             self._micur.execute(queryBase)
             listaDeRecetas = self._micur.fetchall()
             for r in listaDeRecetas:
@@ -79,80 +78,7 @@ class RecetaDAO(ConexionBD):
         return lstRecetas
 
 
-    def traerRecetasxCategoria(self, categoria):
-        lstRecetas = []
-        try:
-            self.crearConexion()
-            self.cursorDict()
-            self._micur.execute("SELECT * FROM " + TRECETA + " WHERE " + TRECETA + ".categoria = %s", (categoria,))
-            listaDeRecetas = self._micur.fetchall()
-            for r in listaDeRecetas:
-                lstRecetas.append(r)
-
-        except mysql.connector.errors.IntegrityError as err:
-            print("Error: " + str(err))
-
-        finally:
-            self.cerrarConexion()
-        
-        return lstRecetas
-
-    def traerRecetasxCreador(self, creador):
-        lstRecetas = []
-        try:
-            self.crearConexion()
-            self.cursorDict()
-            self._micur.execute("SELECT * FROM " + TRECETA + " WHERE " + TRECETA + ".creador = %s", (creador,))
-            listaDeRecetas = self._micur.fetchall()
-            for r in listaDeRecetas:
-                lstRecetas.append(r)
-
-        except mysql.connector.errors.IntegrityError as err:
-            print("Error: " + str(err))
-
-        finally:
-            self.cerrarConexion()
-        
-        return lstRecetas
-    
-    def traerRecetasxIngrediente(self, ingrediente):
-        lstRecetas = []
-        try:
-            self.crearConexion()
-            self.cursorDict()
-            self._micur.execute("SELECT " + TRECETA + ".idReceta, " + TRECETA + ".titulo, " + TRECETA + ".descripcion, " + TRECETA + ".foto1, " + TRECETA + ".tiempoEnMinutos, " + TRECETA + ".categoria, " + TRECETA + ".creador FROM " + TINGREDIENTEDERECETA + " INNER JOIN " + TRECETA + " ON " + TINGREDIENTEDERECETA + ".idReceta = " + TRECETA + ".idReceta WHERE " + TINGREDIENTEDERECETA + ".ingrediente = %s", (ingrediente,))
-            listaDeRecetas = self._micur.fetchall()
-            for r in listaDeRecetas:
-                lstRecetas.append(r)
-
-        except mysql.connector.errors.IntegrityError as err:
-            print("Error: " + str(err))
-
-        finally:
-            self.cerrarConexion()
-        
-        return lstRecetas
-
-    def traerRecetasxTiempo(self, tpMin, tpMax):
-        lstRecetas = []
-        try:
-            self.crearConexion()
-            self.cursorDict()
-            self._micur.execute("SELECT * FROM " + TRECETA + " WHERE " + TRECETA + ".tiempoEnMinutos BETWEEN %s and %s", (tpMin, tpMax))
-            listaDeRecetas = self._micur.fetchall()
-            for r in listaDeRecetas:
-                lstRecetas.append(r)
-
-        except mysql.connector.errors.IntegrityError as err:
-            print("Error: " + str(err))
-
-        finally:
-            self.cerrarConexion()
-        
-        return lstRecetas
-
-
-
+   
     #Recetas favoritas
 
     def agregarFavorito(self, usuario, idReceta):
@@ -189,20 +115,6 @@ class RecetaDAO(ConexionBD):
         
         return lstRecetas
 
-    def traerReceta(self, idReceta):
-        usTraido = None
-        try:
-            self.crearConexion()
-            self.cursorDict()
-            self._micur.execute("SELECT * FROM " + TRECETA + " WHERE " + TRECETA + ".idReceta = %s", (idReceta,))
-            usTraido = self._micur.fetchone()
-        except Error as e:
-            print("Error al conectar con la BD", e)
-
-        finally:
-            self.cerrarConexion()
-        
-        return usTraido
 
     def agregarReceta(self, receta):
         mensaje="Error."
@@ -226,6 +138,21 @@ class RecetaDAO(ConexionBD):
             self._micur.execute("UPDATE " + TRECETA + " SET titulo=%s, descripcion=%s, foto1=%s, foto2=%s, foto3=%s, foto4=%s, foto5=%s, pasos=%s, tiempoEnMinutos=%s, categoria=%s, creador=%s WHERE idReceta = %s", ( receta.titulo, receta.descripcion, receta.foto1, receta.foto2, receta.foto3, receta.foto4, receta.foto5, receta.pasos, receta.tiempoEnMinutos, receta.categoria, receta.creador,receta.idReceta))
             self._bd.commit()
             mensaje = "receta guardada."                
+
+        except mysql.connector.errors.IntegrityError as err:
+            print("Error: " + str(err))
+
+        finally:
+            self.cerrarConexion()
+        
+        return (mensaje)
+    def eliminarReceta(self, idReceta):
+        mensaje="Error."
+        try:
+            self.crearConexion()
+            self._micur.execute("DELETE FROM "+TRECETA+" where idReceta=%s", (idReceta,))
+            self._bd.commit()
+            mensaje = "Receta eliminada."                
 
         except mysql.connector.errors.IntegrityError as err:
             print("Error: " + str(err))

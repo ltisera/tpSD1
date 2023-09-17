@@ -30,7 +30,6 @@ from objetos.Usuario import *
 #### Aca te entra los request de RECETAS
 class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
     def traerRecetasPor(self, request, context):
-        print(request)
         responseListaRecetas=[]
     
             
@@ -61,7 +60,6 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
                 ingredientes = rec["ingredientes"],
             )
             responseListaRecetas.append(re)
-        print(responseListaRecetas)
         respuesta = receta_pb2.traerRecetasPorResponse(recetas=responseListaRecetas)
         return respuesta
 
@@ -122,14 +120,12 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
         receta.ingredientes= request.ingredientes
         adminreceta.agregarReceta(receta)
    
-        print(receta_pb2)
         respuesta = receta_pb2.status(status=1)
         return respuesta
     
     def editarReceta(self, request, context):
         adminreceta = RecetaDAO()
         receta = Receta()
-        print(request)
         receta.titulo = request.titulo
         receta.descripcion = request.descripcion
         receta.foto1 = request.foto1
@@ -145,7 +141,14 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
         receta.idReceta = request.idReceta
         adminreceta.modificarReceta(receta)
    
-        print(receta_pb2)
+        respuesta = receta_pb2.status(status=1)
+        return respuesta
+    
+    def eliminarReceta(self, request,context):
+        adminreceta = RecetaDAO()
+        print(request)
+        adminreceta.eliminarReceta(idReceta=request.idReceta)
+        
         respuesta = receta_pb2.status(status=1)
         return respuesta
     
@@ -167,7 +170,6 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
                 idReceta = rec["idReceta"],
             )
             responseListaRecetas.append(re)
-        print(responseListaRecetas)
         respuesta = receta_pb2.traerRecetasPorResponse(recetas=responseListaRecetas)
         return respuesta
 
@@ -193,8 +195,7 @@ class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
     def loguearUsuario(self, request, context):
         udao = UsuarioDAO()
         ustmp = udao.traerUsuarioSIMPLE(request.email);
-        print(request)
-        print(ustmp)
+
         if(ustmp == None):
             respuesta = usuario_pb2.loguearUsuarioResponse(username=ustmp["usuario"], estado="NO_EXISTE_EL_USUARIO")
         else:

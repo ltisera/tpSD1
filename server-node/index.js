@@ -125,6 +125,15 @@ app.patch("/api/recipe", (req, res) => {
     }
   });
 });
+app.delete("/api/recipe", (req, res) => {
+  deleteRecipe(req.body, (error, response) => {
+    if (error) {
+      res.json([]);
+    } else {
+      res.json(response);
+    }
+  });
+});
 
 const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
@@ -157,7 +166,22 @@ function loginUser(
 ) {
   usersGrpcClient.loguearUsuario(userdata, callback);
 }
-
+function deleteRecipe(
+  recipe = {
+    idReceta: "",
+  },
+  callback
+) {
+  console.log(recipe);
+  recipesGrpcClient.eliminarReceta(recipe, (err, response) => {
+    callback(err, response);
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(response);
+    }
+  });
+}
 function createRecipe(
   recipe = {
     titulo: "",

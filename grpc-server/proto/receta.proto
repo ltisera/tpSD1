@@ -115,6 +115,7 @@ service servicioReceta{
     rpc traerRecetasPor (traerRecetasPorRequest) returns (traerRecetasPorResponse);
     rpc crearReceta(crearRecetaRequest)returns (status);
     rpc editarReceta(editarRecetaRequest)returns (status);
+    rpc eliminarReceta(traerRecetaRequest)returns (status);
     rpc agregarRecetaAFavoritos(agregarRecetaAFavoritosRequest) returns (agregarRecetaAFavoritosResponse);
     rpc traerRecetasFavoritas(traerRecetasFavoritasRequest) returns (traerRecetasPorResponse);
     rpc traerReceta (traerRecetaRequest) returns (receta);
