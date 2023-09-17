@@ -43,7 +43,8 @@ class RecetaDAO(ConexionBD):
         categoria,
         creador,
         titulo,
-        idReceta
+        idReceta,
+        ingredientes
     ):
         lstRecetas = []
         try:
@@ -62,6 +63,8 @@ class RecetaDAO(ConexionBD):
                 queryBase += "AND {}.titulo LIKE '%{}%' ".format(TRECETA,titulo)
             if (idReceta != ""):
                 queryBase += "AND {}.idReceta = {} ".format(TRECETA,idReceta)
+            if (ingredientes != ""):
+                queryBase += "AND {}.ingredientes LIKE '%{}%' ".format(TRECETA,ingredientes)
             print(queryBase)
             self._micur.execute(queryBase)
             listaDeRecetas = self._micur.fetchall()
@@ -202,12 +205,25 @@ class RecetaDAO(ConexionBD):
         return usTraido
 
     def agregarReceta(self, receta):
-        print("LLEGUE aki")
-        print(receta)
         mensaje="Error."
         try:
             self.crearConexion()
-            self._micur.execute("INSERT INTO " + TRECETA + "(idReceta, titulo, descripcion, foto1, foto2, foto3, foto4, foto5, pasos, tiempoEnMinutos, categoria, creador) values (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s)", (receta.idReceta, receta.titulo, receta.descripcion, receta.foto1, receta.foto2, receta.foto3, receta.foto4, receta.foto5, receta.pasos, receta.tiempoEnMinutos, receta.categoria, receta.creador))
+            self._micur.execute("INSERT INTO " + TRECETA + "(idReceta, titulo, descripcion, foto1, foto2, foto3, foto4, foto5, pasos, tiempoEnMinutos, categoria, creador,ingredientes) values (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s)", (receta.idReceta, receta.titulo, receta.descripcion, receta.foto1, receta.foto2, receta.foto3, receta.foto4, receta.foto5, receta.pasos, receta.tiempoEnMinutos, receta.categoria, receta.creador,receta.ingredientes))
+            self._bd.commit()
+            mensaje = "receta guardada."                
+
+        except mysql.connector.errors.IntegrityError as err:
+            print("Error: " + str(err))
+
+        finally:
+            self.cerrarConexion()
+        
+        return (mensaje)
+    def modificarReceta(self, receta):
+        mensaje="Error."
+        try:
+            self.crearConexion()
+            self._micur.execute("UPDATE " + TRECETA + " SET titulo=%s, descripcion=%s, foto1=%s, foto2=%s, foto3=%s, foto4=%s, foto5=%s, pasos=%s, tiempoEnMinutos=%s, categoria=%s, creador=%s WHERE idReceta = %s", ( receta.titulo, receta.descripcion, receta.foto1, receta.foto2, receta.foto3, receta.foto4, receta.foto5, receta.pasos, receta.tiempoEnMinutos, receta.categoria, receta.creador,receta.idReceta))
             self._bd.commit()
             mensaje = "receta guardada."                
 

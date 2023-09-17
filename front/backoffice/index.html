@@ -39,6 +39,14 @@
             id="pasos"
             required
           ></textarea>
+          <label for="ingredientes">Ingredientes</label>
+          <textarea
+            rows="4"
+            cols="50"
+            name="ingredientes"
+            id="ingredientes"
+            required
+          ></textarea>
           <label for="tiempoEnMinutos">Tiempo en minutos</label>
           <input
             type="number"
@@ -70,6 +78,68 @@
         </form>
       </article>
     </dialog>
+    <dialog id="edit-modal">
+      <article class="flex-col">
+        <h2>Crear receta</h2>
+        <form class="justify-start" id="edit-recipe-form">
+          <input name="idReceta" id="edit-id-input" readonly hidden />
+          <input name="creador" id="edit-creator-input" readonly hidden />
+          <label for="titulo">Titulo</label>
+          <input type="text" name="titulo" id="edit-titulo" required />
+          <label for="descripcion">Descripcion</label>
+          <input
+            type="text"
+            name="descripcion"
+            id="edit-descripcion"
+            required
+          />
+          <label for="pasos">Pasos</label>
+          <textarea
+            rows="4"
+            cols="50"
+            name="pasos"
+            id="edit-pasos"
+            required
+          ></textarea>
+          <label for="ingredientes">Ingredientes</label>
+          <textarea
+            rows="4"
+            cols="50"
+            name="ingredientes"
+            id="edit-ingredientes"
+            required
+          ></textarea>
+          <label for="tiempoEnMinutos">Tiempo en minutos</label>
+          <input
+            type="number"
+            name="tiempoEnMinutos"
+            id="edit-tiempoEnMinutos"
+            required
+            min="1"
+          />
+          <label for="categoria">Categoria</label>
+          <select name="categoria" id="edit-categoria">
+            <option value="Todas">Todas</option>
+            <option value="Desayuno">Desayuno</option>
+            <option value="Almuerzo">Almuerzo</option>
+            <option value="Cena">Cena</option>
+          </select>
+          <label for="foto1">Foto 1</label>
+          <input type="text" name="foto1" id="edit-foto1" required />
+          <label for="foto2">Foto 2</label>
+          <input type="text" name="foto2" id="edit-foto2" />
+          <label for="foto3">Foto 3</label>
+          <input type="text" name="foto3" id="edit-foto3" />
+          <label for="foto4">Foto 4</label>
+          <input type="text" name="foto4" id="edit-foto4" />
+          <label for="foto5">Foto 5</label>
+          <input type="text" name="foto5" id="edit-foto5" />
+
+          <input type="submit" value="Crear" />
+          <input type="reset" value="Cancelar" id="edit-cancel-btn" />
+        </form>
+      </article>
+    </dialog>
 
     <script src="/js/nav.js"></script>
     <script src="/js/backoffice-search.js"></script>
@@ -79,11 +149,19 @@
       const cancelBtn = document.querySelector("#cancel-btn");
       const createRecipeForm = document.querySelector("#create-recipe-form");
       const creatorInput = document.querySelector("#creator-input");
+      // EDIT MODAL
+      const editModal = document.querySelector("#edit-modal");
+      const editCancelBtn = document.querySelector("#edit-cancel-btn");
+      const editRecipeForm = document.querySelector("#edit-recipe-form");
+      const editCreatorInput = document.querySelector("#edit-creator-input");
+
       creatorInput.value = user.username;
+      editCreatorInput.value = user.username;
+
       createRecipeForm.addEventListener("submit", (e) => {
         e.preventDefault();
         const data = new FormData(e.target);
-        console.log(Object.fromEntries(data));
+
         fetch("/api/recipe", {
           method: "POST",
           headers: {
@@ -100,7 +178,26 @@
         creationModal.close();
       });
       createBtn.addEventListener("click", () => {
+        clearForm();
         creationModal.showModal();
+      });
+
+      editCancelBtn.addEventListener("click", () => {
+        editModal.close();
+      });
+      editRecipeForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const data = new FormData(e.target);
+
+        fetch("/api/recipe", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(Object.fromEntries(data)),
+        }).then((res) => {
+          window.location.reload();
+        });
       });
     </script>
   </body>

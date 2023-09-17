@@ -14,6 +14,7 @@ message receta {
     string foto4=10;
     string foto5=11;
     uint32 idReceta = 12;
+    string ingredientes=13;
 }
 
 message ingredienteDeReceta {
@@ -32,7 +33,7 @@ message traerRecetasPorRequest {
     string categoria = 3;
     string creador = 4;
     string titulo=5;
-    string ingrediente = 6;
+    string ingredientes = 6;
     string idReceta=7;
 }
 message crearRecetaRequest {
@@ -47,6 +48,22 @@ message crearRecetaRequest {
     string foto3=9;
     string foto4=10;
     string foto5=11;
+    string ingredientes=12;
+}
+message editarRecetaRequest {
+    string titulo = 1;
+    string descripcion=2;
+    string pasos=3;
+    uint32 tiempoEnMinutos=4;
+    string categoria=5;
+    string creador=6;
+    string foto1=7;
+    string foto2=8;
+    string foto3=9;
+    string foto4=10;
+    string foto5=11;
+    string ingredientes=12;
+    uint32 idReceta = 13;
 }
 message status {
     // 0 = error, 1 = ok
@@ -97,6 +114,7 @@ message traerRecetaRequest{
 service servicioReceta{
     rpc traerRecetasPor (traerRecetasPorRequest) returns (traerRecetasPorResponse);
     rpc crearReceta(crearRecetaRequest)returns (status);
+    rpc editarReceta(editarRecetaRequest)returns (status);
     rpc agregarRecetaAFavoritos(agregarRecetaAFavoritosRequest) returns (agregarRecetaAFavoritosResponse);
     rpc traerRecetasFavoritas(traerRecetasFavoritasRequest) returns (traerRecetasPorResponse);
     rpc traerReceta (traerRecetaRequest) returns (receta);

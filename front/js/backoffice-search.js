@@ -36,12 +36,70 @@ form.innerHTML = `<form action="/backoffice" method="get" class="form">
 </form>`;
 formContainer.appendChild(form);
 
-const params = new URLSearchParams(window.location.search);
-const title = params.get("title") || "";
 const author = user.username;
-const category = params.get("category") || "";
-document.querySelector("#title").value = title;
-document.querySelector("#category").value = category;
+const params = new URLSearchParams(window.location.search);
+const titleSearchField = params.get("title") || "";
+const categorySearchField = params.get("category") || "";
+document.querySelector("#title").value = titleSearchField;
+document.querySelector("#category").value = categorySearchField;
+
+// ====== MODAL FORM ======
+const title = document.getElementById("edit-titulo");
+const id = document.getElementById("edit-id-input");
+const description = document.getElementById("edit-descripcion");
+const time = document.getElementById("edit-tiempoEnMinutos");
+const category = document.getElementById("edit-categoria");
+const steps = document.getElementById("edit-pasos");
+const ingredients = document.getElementById("edit-ingredientes");
+const image1 = document.getElementById("edit-foto1");
+const image2 = document.getElementById("edit-foto2");
+const image3 = document.getElementById("edit-foto3");
+const image4 = document.getElementById("edit-foto4");
+const image5 = document.getElementById("edit-foto5");
+
+function clearForm() {
+  id.value = "";
+  titulo.value = "";
+  description.value = "";
+  time.value = "";
+  category.value = "";
+  steps.value = "";
+  ingredients.value = "";
+  image1.value = "";
+  image2.value = "";
+  image3.value = "";
+  image4.value = "";
+  image5.value = "";
+}
+function fillForm({
+  titulo,
+  descripcion,
+  tiempoEnMinutos,
+  categoria,
+  pasos,
+  ingredientes,
+  foto1,
+  foto2,
+  foto3,
+  foto4,
+  foto5,
+  idReceta,
+}) {
+  id.value = idReceta;
+  title.value = titulo;
+  description.value = descripcion;
+  time.value = tiempoEnMinutos;
+  category.value = categoria;
+  steps.value = pasos;
+  ingredients.value = ingredientes;
+  image1.value = foto1;
+  image2.value = foto2;
+  image3.value = foto3;
+  image4.value = foto4;
+  image5.value = foto5;
+}
+
+/// ====== MODAL FORM ======
 
 const recipeList = document.querySelector("#recipes-list");
 fetch("/api/recipes", {
@@ -50,16 +108,13 @@ fetch("/api/recipes", {
     "Content-Type": "application/json",
   },
   body: JSON.stringify({
-    categoria: category,
+    categoria: categorySearchField,
     creador: author,
-    titulo: title,
+    titulo: titleSearchField,
   }),
 })
   .then((res) => res.json())
   .then((data = []) => {
-    console.log(data);
-    const {} = data;
-
     data.recetas.forEach(
       ({
         tiempoEnMinutos,
@@ -75,21 +130,52 @@ fetch("/api/recipes", {
         pasos,
         titulo,
       }) => {
-        recipeList.innerHTML += ` <a href="/recipe?id=${idReceta}" class="hover">
-            <article>
+        recipeList.innerHTML += ` 
+        <article class="flex-col">
+         <div class="flex gap-4">
+          <button data-recipeid="${idReceta}" class="recipe-edit-button">
+            Modificar
+          </button>
+         </div>
+          <article>
               <header class="container">
-                <div class="headings">
+                  <div class="headings">
                   <h2>${titulo}</h2>
                   <h5>${descripcion}</h5>
                   <small>Autor: ${creador}</small>
                   <p>Listo en ${tiempoEnMinutos} minutos</p>
-                </div>
+                  </div>
               </header>
               <img src="${foto1}" alt="imagen" />
             </article>
-          </a>`;
+        </article>
+                `;
       }
     );
+
+    const recipesEditButtons = document.querySelectorAll(".recipe-edit-button");
+
+    recipesEditButtons.forEach((button) => {
+      button.addEventListener("click", (e) => {
+        const id = e.target.getAttribute("data-recipeid");
+        fetch("/api/recipes", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            idReceta: id,
+          }),
+        })
+          .then((res) => res.json())
+          .then((res) => {
+            console.log(res.recetas[0]);
+            clearForm();
+            fillForm({ ...res.recetas[0], idReceta: id });
+            editModal.showModal();
+          });
+      });
+    });
   })
   .catch((err) => console.log(err));
 

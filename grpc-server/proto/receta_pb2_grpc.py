@@ -24,6 +24,11 @@ class servicioRecetaStub(object):
                 request_serializer=receta__pb2.crearRecetaRequest.SerializeToString,
                 response_deserializer=receta__pb2.status.FromString,
                 )
+        self.editarReceta = channel.unary_unary(
+                '/servicioReceta/editarReceta',
+                request_serializer=receta__pb2.editarRecetaRequest.SerializeToString,
+                response_deserializer=receta__pb2.status.FromString,
+                )
         self.agregarRecetaAFavoritos = channel.unary_unary(
                 '/servicioReceta/agregarRecetaAFavoritos',
                 request_serializer=receta__pb2.agregarRecetaAFavoritosRequest.SerializeToString,
@@ -61,6 +66,12 @@ class servicioRecetaServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def crearReceta(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def editarReceta(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -107,6 +118,11 @@ def add_servicioRecetaServicer_to_server(servicer, server):
             'crearReceta': grpc.unary_unary_rpc_method_handler(
                     servicer.crearReceta,
                     request_deserializer=receta__pb2.crearRecetaRequest.FromString,
+                    response_serializer=receta__pb2.status.SerializeToString,
+            ),
+            'editarReceta': grpc.unary_unary_rpc_method_handler(
+                    servicer.editarReceta,
+                    request_deserializer=receta__pb2.editarRecetaRequest.FromString,
                     response_serializer=receta__pb2.status.SerializeToString,
             ),
             'agregarRecetaAFavoritos': grpc.unary_unary_rpc_method_handler(
@@ -174,6 +190,23 @@ class servicioReceta(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/servicioReceta/crearReceta',
             receta__pb2.crearRecetaRequest.SerializeToString,
+            receta__pb2.status.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def editarReceta(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/servicioReceta/editarReceta',
+            receta__pb2.editarRecetaRequest.SerializeToString,
             receta__pb2.status.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

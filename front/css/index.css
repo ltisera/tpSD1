@@ -17,6 +17,9 @@ hgroup {
 .w-medium {
   width: 210px;
 }
+.gap-4 {
+  gap: 4rem;
+}
 input,
 select {
   margin: 0 !important;

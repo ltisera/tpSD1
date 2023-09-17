@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS `bdrecetas`.`receta` (
   `foto4` VARCHAR(1600) NULL,
   `foto5` VARCHAR(1600) NULL,
   `pasos` VARCHAR(1600) NULL,
+  `ingredientes` VARCHAR(1600) NULL,
   `tiempoEnMinutos` INT NULL,
   `categoria` VARCHAR(45) NOT NULL,
   `creador` VARCHAR(25) NOT NULL,
@@ -161,6 +162,6 @@ INSERT INTO `bdrecetas`.`categoria` (`nombre`) VALUES ('Almuerzo');
 INSERT INTO `bdrecetas`.`categoria` (`nombre`) VALUES ('Cena');
 INSERT INTO `bdrecetas`.`categoria` (`nombre`) VALUES ('Todas');
 
-INSERT INTO `bdrecetas`.`receta` (`titulo`, `descripcion`, `foto1`, `foto2`, `foto3`, `foto4`, `foto5`, `pasos`, `tiempoEnMinutos`, `categoria`, `creador`) VALUES ('Huevos con jamon', 'Huevos con jamon', 'https://cdn0.recetasgratis.net/es/posts/2/9/7/huevos_con_jamon_y_frijoles_76792_orig.jpg', NULL, NULL, NULL, NULL, '1. Cocinar los huevos en una sarten\n2. Cocinar el jamon en otra sarten\n3. Servir en un plato', '10', 'Desayuno', 'admin');
+INSERT INTO `bdrecetas`.`receta` (`titulo`, `descripcion`, `foto1`, `foto2`, `foto3`, `foto4`, `foto5`, `pasos`, `tiempoEnMinutos`, `categoria`, `creador`,`ingredientes`) VALUES ('Huevos con jamon', 'Huevos con jamon', 'https://cdn0.recetasgratis.net/es/posts/2/9/7/huevos_con_jamon_y_frijoles_76792_orig.jpg', NULL, NULL, NULL, NULL, '1. Cocinar los huevos en una sarten\n2. Cocinar el jamon en otra sarten\n3. Servir en un plato', '10', 'Desayuno', 'admin','Huevos, jamon, sal, pimienta, aceite de oliva');
 
-INSERT INTO `bdrecetas`.`receta` (`titulo`, `descripcion`, `foto1`, `foto2`, `foto3`, `foto4`, `foto5`, `pasos`, `tiempoEnMinutos`, `categoria`, `creador`) VALUES ('Frijoles', 'Frijoles muy ricos con salsa especial', 'https://www.goya.com/media/4156/colombian-beans.jpg?quality=80', NULL, NULL, NULL, NULL, '1. Servir 2. Poner salsa', '10', 'Almuerzo', 'roberto');
+INSERT INTO `bdrecetas`.`receta` (`titulo`, `descripcion`, `foto1`, `foto2`, `foto3`, `foto4`, `foto5`, `pasos`, `tiempoEnMinutos`, `categoria`, `creador`,`ingredientes`) VALUES ('Frijoles', 'Frijoles muy ricos con salsa especial', 'https://www.goya.com/media/4156/colombian-beans.jpg?quality=80', NULL, NULL, NULL, NULL, '1. Servir 2. Poner salsa', '10', 'Almuerzo', 'roberto','Frijoles, salsa pomarolla, sal, pimienta, aceite de oliva');

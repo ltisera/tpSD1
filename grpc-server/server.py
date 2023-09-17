@@ -41,6 +41,7 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
             creador=request.creador,
             titulo=request.titulo,
             idReceta=request.idReceta,
+            ingredientes = request.ingredientes,
         )
         
         for rec in listaRecetas:
@@ -57,6 +58,7 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
                 foto4 = rec["foto4"],
                 foto5 = rec["foto5"],
                 idReceta = rec["idReceta"],
+                ingredientes = rec["ingredientes"],
             )
             responseListaRecetas.append(re)
         print(responseListaRecetas)
@@ -78,6 +80,7 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
             foto4 = rec["foto4"],
             foto5 = rec["foto5"],
             idReceta = rec["idReceta"],
+            ingredientes = rec["ingredientes"],
         )
         return respuesta
 
@@ -103,8 +106,6 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
         return respuesta
 
     def crearReceta(self, request, context):
-        print(request)
-        print(context)
         adminreceta = RecetaDAO()
         receta = Receta()
         receta.titulo = request.titulo
@@ -118,8 +119,31 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
         receta.tiempoEnMinutos = request.tiempoEnMinutos
         receta.categoria = request.categoria
         receta.creador = request.creador
-        print(receta)
+        receta.ingredientes= request.ingredientes
         adminreceta.agregarReceta(receta)
+   
+        print(receta_pb2)
+        respuesta = receta_pb2.status(status=1)
+        return respuesta
+    
+    def editarReceta(self, request, context):
+        adminreceta = RecetaDAO()
+        receta = Receta()
+        print(request)
+        receta.titulo = request.titulo
+        receta.descripcion = request.descripcion
+        receta.foto1 = request.foto1
+        receta.foto2 = request.foto2
+        receta.foto3 = request.foto3
+        receta.foto4 = request.foto4
+        receta.foto5 = request.foto5
+        receta.pasos = request.pasos
+        receta.tiempoEnMinutos = request.tiempoEnMinutos
+        receta.categoria = request.categoria
+        receta.creador = request.creador
+        receta.ingredientes= request.ingredientes
+        receta.idReceta = request.idReceta
+        adminreceta.modificarReceta(receta)
    
         print(receta_pb2)
         respuesta = receta_pb2.status(status=1)

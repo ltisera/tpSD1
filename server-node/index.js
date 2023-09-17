@@ -116,6 +116,15 @@ app.post("/api/recipe", (req, res) => {
     }
   });
 });
+app.patch("/api/recipe", (req, res) => {
+  editRecipe(req.body, (error, response) => {
+    if (error) {
+      res.json([]);
+    } else {
+      res.json(response);
+    }
+  });
+});
 
 const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
@@ -148,9 +157,7 @@ function loginUser(
 ) {
   usersGrpcClient.loguearUsuario(userdata, callback);
 }
-function getRecipeById({ id = "" }, callback) {
-  recipesGrpcClient.traerRecetaPor({ id }, callback);
-}
+
 function createRecipe(
   recipe = {
     titulo: "",
@@ -163,11 +170,36 @@ function createRecipe(
     foto3: "",
     foto4: "",
     foto5: "",
-    ingrediente: "",
+    ingredientes: "",
   },
   callback
 ) {
   recipesGrpcClient.crearReceta(recipe, (err, response) => {
+    callback(err, response);
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(response);
+    }
+  });
+}
+function editRecipe(
+  recipe = {
+    titulo: "",
+    descripcion: "",
+    tiempoEnMinutos: "",
+    categoria: "",
+    pasos: "",
+    foto1: "",
+    foto2: "",
+    foto3: "",
+    foto4: "",
+    foto5: "",
+    ingredientes: "",
+  },
+  callback
+) {
+  recipesGrpcClient.editarReceta(recipe, (err, response) => {
     callback(err, response);
     if (err) {
       console.error(err);
@@ -184,7 +216,7 @@ function getRecipes(
     categoria: "",
     creador: "",
     titulo: "",
-    ingrediente: "",
+    ingredientes: "",
     idReceta: "",
   },
   callback

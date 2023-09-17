@@ -16,21 +16,38 @@
         <h2 id="title"></h2>
         <h3 id="description"></h3>
       </div>
+
       <img id="image-1" />
     </header>
 
     <main class="container">
-      <p id="time"></p>
-      <p id="category"></p>
-      <p id="creator"></p>
-      <code
-        id="steps"
-        style="
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-            Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
-            sans-serif;
-        "
-      ></code>
+      <article class="gap-4">
+        <p id="time"></p>
+        <p id="category"></p>
+        <p id="creator"></p>
+      </article>
+      <article class="flex-col">
+        <h4>Pasos</h4>
+        <code
+          id="steps"
+          style="
+            font-family: system-ui, -apple-system, BlinkMacSystemFont,
+              'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+              'Helvetica Neue', sans-serif;
+          "
+        ></code>
+      </article>
+      <article class="flex-col">
+        <h4>Ingredientes</h4>
+        <code
+          id="ingredients"
+          style="
+            font-family: system-ui, -apple-system, BlinkMacSystemFont,
+              'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+              'Helvetica Neue', sans-serif;
+          "
+        ></code>
+      </article>
     </main>
     <script src="/js/nav.js"></script>
     <script>
@@ -41,6 +58,7 @@
       const category = document.getElementById("category");
       const creator = document.getElementById("creator");
       const steps = document.getElementById("steps");
+      const ingredients = document.getElementById("ingredients");
       const image1 = document.getElementById("image-1");
       fetch("/api/recipes", {
         body: JSON.stringify({ idReceta: id }),
@@ -98,6 +116,7 @@ titulo
           category.innerText = `Categoria: ${recipeFound.categoria}`;
           creator.innerText = `Creada por: ${recipeFound.creador}`;
           steps.innerText = recipeFound.pasos;
+          ingredients.innerText = recipeFound.ingredientes;
           image1.src = recipeFound.foto1;
         });
     </script>
