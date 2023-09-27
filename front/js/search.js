@@ -61,58 +61,113 @@ document.querySelector("#min-temp").value = minTemp;
 document.querySelector("#max-temp").value = maxTemp;
 
 const recipeList = document.querySelector("#recipes-list");
-fetch("/api/recipes", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
 
-  body: JSON.stringify({
-    categoria: category,
-    creador: author,
-    titulo: title,
-    tiempoEnMinutosMIN: minTemp,
-    tiempoEnMinutosMAX: maxTemp,
-  }),
-})
-  .then((res) => res.json())
-  .then((data = []) => {
-    console.log(data);
-    const {} = data;
-    if (data.recetas.length === 0) {
-      recipeList.innerHTML += `<h2>No se encontraron recetas</h2>
-      <p>Intenta con otros filtros</p>
-      `;
+function isFav(favRecipes = [], idReceta) {
+  return favRecipes.some((fav) => fav.idReceta === idReceta);
+}
+
+const fetchRecipes = async () => {
+  const favRecipes = await fetch("/api/favs")
+    .then((res) => res.json())
+    .then((res) => res.recetas);
+  const recipes = await fetch("/api/recipes", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify({
+      categoria: category,
+      creador: author,
+      titulo: title,
+      tiempoEnMinutosMIN: minTemp,
+      tiempoEnMinutosMAX: maxTemp,
+    }),
+  }).then((res) => res.json());
+
+  if (recipes.recetas.length === 0) {
+    recipeList.innerHTML += `<h2>No se encontraron recetas</h2>
+    <p>Intenta con otros filtros</p>
+    `;
+  }
+  recipes.recetas.forEach(
+    ({
+      tiempoEnMinutos,
+      categoria,
+      creador,
+      descripcion,
+      foto1,
+      foto2,
+      foto3,
+      foto4,
+      foto5,
+      idReceta,
+      pasos,
+      titulo,
+    }) => {
+      const markedAsFav = isFav(favRecipes, idReceta);
+      recipeList.innerHTML += ` 
+          <article class="gap-4">
+            <header class="container">
+            <a href="/recipe?id=${idReceta}" class="hover">
+              <div class="headings">
+                <h2>${titulo}</h2>
+                <h5>${descripcion}</h5>
+                <small>Autor: ${creador}</small>
+                <p>Listo en ${tiempoEnMinutos} minutos</p>
+              </div>
+            </a>
+              <button class='${
+                markedAsFav ? "remove-favourite destructive" : "add-favourite"
+              }' data-favourite-recipe-id="${idReceta}">${
+        markedAsFav ? "Quitar de favoritos" : "Agregar a favoritos"
+      }</button>
+            </header>
+            <img src="${foto1}" alt="imagen" />
+          </article>
+`;
     }
-    data.recetas.forEach(
-      ({
-        tiempoEnMinutos,
-        categoria,
-        creador,
-        descripcion,
-        foto1,
-        foto2,
-        foto3,
-        foto4,
-        foto5,
-        idReceta,
-        pasos,
-        titulo,
-      }) => {
-        recipeList.innerHTML += ` <a href="/recipe?id=${idReceta}" class="hover">
-            <article class="gap-4">
-              <header class="container">
-                <div class="headings">
-                  <h2>${titulo}</h2>
-                  <h5>${descripcion}</h5>
-                  <small>Autor: ${creador}</small>
-                  <p>Listo en ${tiempoEnMinutos} minutos</p>
-                </div>
-              </header>
-              <img src="${foto1}" alt="imagen" />
-            </article>
-          </a>`;
-      }
-    );
-  })
-  .catch((err) => console.log(err));
+  );
+
+  const addFavouriteButtons = document.querySelectorAll(".add-favourite");
+  addFavouriteButtons.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      const recipeId = event.target.getAttribute("data-favourite-recipe-id");
+      fetch("/api/favs", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          idReceta: recipeId,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          window.location.reload();
+        });
+    });
+  });
+
+  const removeFavouriteButtons = document.querySelectorAll(".remove-favourite");
+  removeFavouriteButtons.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      const recipeId = event.target.getAttribute("data-favourite-recipe-id");
+      fetch("/api/favs", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          idReceta: recipeId,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          window.location.reload();
+        });
+    });
+  });
+};
+
+fetchRecipes();

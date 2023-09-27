@@ -155,8 +155,12 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
     def agregarRecetaAFavoritos(self, request, context):
         rdao = RecetaDAO()
         res = rdao.agregarFavorito(request.usuario, request.idReceta)
-        respuesta = usuario_pb2.solicitudDeSeguidorResponse(mensaje=res)
-        return respuesta
+        return res
+    def eliminarRecetaDeFavoritos(self, request, context):
+        rdao = RecetaDAO()
+        print(request)
+        res = rdao.eliminarFavorito(request.usuario, request.idReceta)
+        return res
 
     def traerRecetasFavoritas(self, request, context):
         responseListaRecetas=[]            

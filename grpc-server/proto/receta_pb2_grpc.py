@@ -34,6 +34,11 @@ class servicioRecetaStub(object):
                 request_serializer=receta__pb2.traerRecetaRequest.SerializeToString,
                 response_deserializer=receta__pb2.status.FromString,
                 )
+        self.eliminarRecetaDeFavoritos = channel.unary_unary(
+                '/servicioReceta/eliminarRecetaDeFavoritos',
+                request_serializer=receta__pb2.agregarRecetaAFavoritosRequest.SerializeToString,
+                response_deserializer=receta__pb2.agregarRecetaAFavoritosResponse.FromString,
+                )
         self.agregarRecetaAFavoritos = channel.unary_unary(
                 '/servicioReceta/agregarRecetaAFavoritos',
                 request_serializer=receta__pb2.agregarRecetaAFavoritosRequest.SerializeToString,
@@ -83,6 +88,12 @@ class servicioRecetaServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def eliminarReceta(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def eliminarRecetaDeFavoritos(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -140,6 +151,11 @@ def add_servicioRecetaServicer_to_server(servicer, server):
                     servicer.eliminarReceta,
                     request_deserializer=receta__pb2.traerRecetaRequest.FromString,
                     response_serializer=receta__pb2.status.SerializeToString,
+            ),
+            'eliminarRecetaDeFavoritos': grpc.unary_unary_rpc_method_handler(
+                    servicer.eliminarRecetaDeFavoritos,
+                    request_deserializer=receta__pb2.agregarRecetaAFavoritosRequest.FromString,
+                    response_serializer=receta__pb2.agregarRecetaAFavoritosResponse.SerializeToString,
             ),
             'agregarRecetaAFavoritos': grpc.unary_unary_rpc_method_handler(
                     servicer.agregarRecetaAFavoritos,
@@ -241,6 +257,23 @@ class servicioReceta(object):
         return grpc.experimental.unary_unary(request, target, '/servicioReceta/eliminarReceta',
             receta__pb2.traerRecetaRequest.SerializeToString,
             receta__pb2.status.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def eliminarRecetaDeFavoritos(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/servicioReceta/eliminarRecetaDeFavoritos',
+            receta__pb2.agregarRecetaAFavoritosRequest.SerializeToString,
+            receta__pb2.agregarRecetaAFavoritosResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

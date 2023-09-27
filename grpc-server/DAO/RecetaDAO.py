@@ -96,6 +96,22 @@ class RecetaDAO(ConexionBD):
             self.cerrarConexion()
         
         return (mensaje)
+    
+    def eliminarFavorito(self, usuario, idReceta):
+        mensaje = "Error."
+        try:
+            self.crearConexion()
+            self._micur.execute("DELETE FROM " + TRECETAFAVORITA + " where usuario=%s and idReceta=%s ", (usuario, idReceta))
+            self._bd.commit()
+            mensaje = "favorito eliminado."
+
+        except mysql.connector.errors.IntegrityError as err:
+            print("Error: " + str(err))
+
+        finally:
+            self.cerrarConexion()
+        
+        return (mensaje)
 
     def traerRecetasFavoritas(self, usuario):
         lstRecetas = []

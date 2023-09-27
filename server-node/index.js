@@ -71,7 +71,6 @@ app.post("/api/register", (req, res) => {
       console.error(err);
       res.redirect("/login");
     } else {
-      console.log(response);
       if (response.mensaje === "Usuario Existente") {
         res.cookie("user", buildAuthCookie(response));
         return res.redirect("/backoffice");
@@ -87,7 +86,6 @@ app.post("/api/login", (req, res) => {
       console.error(err);
       return res.redirect("/login");
     }
-    console.log(response);
     if (response.mensaje === "INVALIDO") {
       return res.redirect("/login?error=INVALID_CREDENTIALS");
     }
@@ -134,7 +132,53 @@ app.delete("/api/recipe", (req, res) => {
     }
   });
 });
-
+app.get("/api/favs", (req, res) => {
+  const { username } = jwt.decode(req.cookies.user);
+  traerRecetasFavoritas(
+    {
+      usuario: username,
+    },
+    (error, response) => {
+      if (error) {
+        res.json([]);
+      } else {
+        res.json(response);
+      }
+    }
+  );
+});
+app.patch("/api/favs", (req, res) => {
+  const { username } = jwt.decode(req.cookies.user);
+  agregarRecetaFavorita(
+    {
+      idReceta: req.body.idReceta,
+      usuario: username,
+    },
+    (error, response) => {
+      if (error) {
+        res.json([]);
+      } else {
+        res.json(response);
+      }
+    }
+  );
+});
+app.delete("/api/favs", (req, res) => {
+  const { username } = jwt.decode(req.cookies.user);
+  eliminarRecetaFavorita(
+    {
+      idReceta: req.body.idReceta,
+      usuario: username,
+    },
+    (error, response) => {
+      if (error) {
+        res.json([]);
+      } else {
+        res.json(response);
+      }
+    }
+  );
+});
 const server = app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
@@ -144,6 +188,52 @@ server.on("close", () => {
 });
 
 // ====== GRPC CLIENT ======
+function eliminarRecetaFavorita(
+  recipe = {
+    idReceta: "",
+    usuario: "",
+  },
+  callback
+) {
+  recipesGrpcClient.eliminarRecetaDeFavoritos(recipe, (err, response) => {
+    callback(err, response);
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(response);
+    }
+  });
+}
+function traerRecetasFavoritas(
+  request = {
+    username: "",
+  },
+  callback
+) {
+  recipesGrpcClient.traerRecetasFavoritas(request, (err, response) => {
+    callback(err, response);
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(response);
+    }
+  });
+}
+function agregarRecetaFavorita(
+  recipe = {
+    idReceta: "",
+  },
+  callback
+) {
+  recipesGrpcClient.agregarRecetaAFavoritos(recipe, (err, response) => {
+    callback(err, response);
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(response);
+    }
+  });
+}
 function createUser(
   userdata = {
     username: "",
@@ -172,7 +262,6 @@ function deleteRecipe(
   },
   callback
 ) {
-  console.log(recipe);
   recipesGrpcClient.eliminarReceta(recipe, (err, response) => {
     callback(err, response);
     if (err) {
