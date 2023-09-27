@@ -136,7 +136,7 @@ fetch("/api/recipes", {
           <button data-recipeid="${idReceta}" class="recipe-edit-button">
             Modificar
           </button>
-          <button data-recipeid="${idReceta}" class="recipe-delete-button contrast">
+          <button data-recipeid="${idReceta}" class="recipe-delete-button destructive">
             Eliminar
           </button>
          </div>

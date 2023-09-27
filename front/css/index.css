@@ -77,4 +77,5 @@ form > button {
 }
 button {
   margin: 0;
+  border: none;
 }
