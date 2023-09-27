@@ -101,7 +101,24 @@ app.post("/api/recipes", (req, res) => {
     if (error) {
       res.json([]);
     } else {
-      res.json(response);
+      const { username } = jwt.decode(req.cookies.user);
+      traerRecetasFavoritas(
+        {
+          usuario: username,
+        },
+        (err, favRecipesResponse) => {
+          res.json({
+            recetas: response.recetas.map((recipe) => {
+              return {
+                ...recipe,
+                isFav: favRecipesResponse.recetas.some(
+                  (fav) => fav.idReceta === recipe.idReceta
+                ),
+              };
+            }),
+          });
+        }
+      );
     }
   });
 });
@@ -206,7 +223,7 @@ function eliminarRecetaFavorita(
 }
 function traerRecetasFavoritas(
   request = {
-    username: "",
+    usuario: "",
   },
   callback
 ) {

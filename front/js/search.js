@@ -62,14 +62,7 @@ document.querySelector("#max-temp").value = maxTemp;
 
 const recipeList = document.querySelector("#recipes-list");
 
-function isFav(favRecipes = [], idReceta) {
-  return favRecipes.some((fav) => fav.idReceta === idReceta);
-}
-
 const fetchRecipes = async () => {
-  const favRecipes = await fetch("/api/favs")
-    .then((res) => res.json())
-    .then((res) => res.recetas);
   const recipes = await fetch("/api/recipes", {
     method: "POST",
     headers: {
@@ -104,8 +97,8 @@ const fetchRecipes = async () => {
       idReceta,
       pasos,
       titulo,
+      isFav,
     }) => {
-      const markedAsFav = isFav(favRecipes, idReceta);
       recipeList.innerHTML += ` 
           <article class="gap-4">
             <header class="container">
@@ -118,9 +111,9 @@ const fetchRecipes = async () => {
               </div>
             </a>
               <button class='${
-                markedAsFav ? "remove-favourite destructive" : "add-favourite"
+                isFav ? "remove-favourite destructive" : "add-favourite"
               }' data-favourite-recipe-id="${idReceta}">${
-        markedAsFav ? "Quitar de favoritos" : "Agregar a favoritos"
+        isFav ? "Quitar de favoritos" : "Agregar a favoritos"
       }</button>
             </header>
             <img src="${foto1}" alt="imagen" />
@@ -143,7 +136,7 @@ const fetchRecipes = async () => {
         }),
       })
         .then((res) => res.json())
-        .then((data) => {
+        .then(() => {
           window.location.reload();
         });
     });
@@ -163,7 +156,7 @@ const fetchRecipes = async () => {
         }),
       })
         .then((res) => res.json())
-        .then((data) => {
+        .then(() => {
           window.location.reload();
         });
     });
