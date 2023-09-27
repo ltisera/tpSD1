@@ -1,6 +1,8 @@
 # Nombres de Tablas
 
 TCATEGORIA = "categoria"
+TCALIFICACION = "calificacion"
+TCOMENTARIO = "comentario"
 TINGREDIENTE = "ingrediente"
 TRECETA = "receta"
 TRECETAFAVORITA = "receta_favorita"

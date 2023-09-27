@@ -1,5 +1,5 @@
 class Receta():
-    def __init__(self, idReceta=None, titulo="", descripcion="", foto1="", foto2="", foto3="", foto4="", foto5="", pasos="", tiempoEnMinutos="", categoria="",creador=""):
+    def __init__(self, idReceta=None, titulo="", descripcion="", foto1="", foto2="", foto3="", foto4="", foto5="", pasos="", tiempoEnMinutos="", categoria="", creador="", popularidad=""):
         self._idReceta = idReceta
         self._titulo = titulo
         self.descripcion = descripcion
@@ -13,6 +13,7 @@ class Receta():
         self._foto4 = foto4
         self._foto5 = foto5
         self._lstIngredientes = []
+        self._popularidad = popularidad
         
 
     @property
@@ -123,7 +124,13 @@ class Receta():
     def lstIngredientes(self, lst):
         self._lstIngredientes = lst
 
-
+    @property
+    def popularidad(self):
+        return self._popularidad
+    
+    @popularidad.setter
+    def popularidad (self, popularidad):
+        self._popularidad = popularidad
 
     def __str__(self):
         return str("id: " + str(self.idReceta)
@@ -133,4 +140,6 @@ class Receta():
                    str(self.pasos) + " tiempoEnMinutos: " +
                    str(self._tiempoEnMinutos) + " creador: " +
                    str(self._creador) + " categoria: " +
-                   str(self._categoria))
+                   str(self._categoria) + " popularidad= " + 
+                   str(self.popularidad)
+        )

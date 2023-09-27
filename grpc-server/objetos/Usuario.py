@@ -1,10 +1,11 @@
 class Usuario():
-    def __init__(self, idUsuario = None, email = "", nombre ="", password="", tipo = ""):
+    def __init__(self, idUsuario = None, email = "", nombre ="", password="", tipo = "", popularidad=""):
         self._idUsuario = idUsuario
         self._email = email
         self._nombre = nombre
         self._password = password
         self._tipo = tipo
+        self._popularidad = popularidad
     
     @property
     def idUsuario(self):
@@ -47,13 +48,22 @@ class Usuario():
     def tipo (self, tipo):
         self._tipo = tipo
 
+    @property
+    def popularidad(self):
+        return self._popularidad
+    
+    @popularidad.setter
+    def popularidad (self, popularidad):
+        self._popularidad = popularidad
+
     def __str__(self):
         return str (
             "idUsuario: " + str(self.idUsuario) +
             " email: " + str(self.email) +
             " nombre: " + str(self.nombre) +
             " password: " + str(self.nombre) +
-            " tipo = " + str(self.nombre)
+            " tipo = " + str(self.nombre) +
+            " popularidad= " + str(self.popularidad)
         )
 
 
