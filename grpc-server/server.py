@@ -2,6 +2,10 @@
 
 import os, sys
 
+from time import sleep  
+from json import dumps  
+from kafka import KafkaProducer  
+
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(CURRENT_DIR))
 sys.path.append(CURRENT_DIR + '\\proto')
@@ -242,6 +246,20 @@ def iniciar_servidor():
     
 
 if __name__ == '__main__':
+
+
+    producer = KafkaProducer(bootstrap_servers='localhost:9092')  # Cambia esto a la dirección de tu servidor Kafka
+    # Enviar un mensaje al tema 'mi-topic'
+    producer.send('mi-topic', key=b'clave', value=b'CAMBIO A')
+    producer.send('mi-topic', key=b'clave', value=b'CAMBIO B')
+    producer.send('mi-topic', key=b'clave', value=b'CAMBIO C')
+    producer.send('mi-topic', key=b'clave', value=b'CAMBIO D')
+    producer.send('mi-topic', key=b'clave', value=b'CAMBIO E')
+    producer.send('mi-topic', key=b'clave', value=b'CAMBIO F')
+
+    # Cerrar el productor después de enviar el mensaje
+    producer.close()
+    
     print("current dir: " + CURRENT_DIR)
     iniciar_servidor()
     
