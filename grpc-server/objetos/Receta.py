@@ -1,5 +1,5 @@
 class Receta():
-    def __init__(self, idReceta=None, titulo="", descripcion="", foto1="", foto2="", foto3="", foto4="", foto5="", pasos="", tiempoEnMinutos="", categoria="", creador="", popularidad=""):
+    def __init__(self, idReceta=None, titulo="", descripcion="", foto1="", foto2="", foto3="", foto4="", foto5="", pasos="", tiempoEnMinutos="", categoria="", creador="", popularidad="", ingredientes =""):
         self._idReceta = idReceta
         self._titulo = titulo
         self.descripcion = descripcion
@@ -13,6 +13,7 @@ class Receta():
         self._foto4 = foto4
         self._foto5 = foto5
         self._lstIngredientes = []
+        self._ingredientes = ingredientes
         self._popularidad = popularidad
         
 
@@ -23,6 +24,14 @@ class Receta():
     @idReceta.setter
     def idReceta(self, id):
         self._idReceta = id
+
+    @property
+    def ingredientes(self):
+        return self._ingredientes
+
+    @idReceta.setter
+    def ingredientes(self, ingredientes):
+        self._ingredientes = ingredientes
 
     @property
     def titulo(self):

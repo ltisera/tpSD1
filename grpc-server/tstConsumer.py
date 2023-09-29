@@ -2,7 +2,7 @@ from kafka import KafkaConsumer
 
 # Configura las opciones del consumidor
 consumer = KafkaConsumer(
-    'mi-topic',
+    'novedades',
     bootstrap_servers='localhost:9092',  # Reemplaza con la dirección de tu servidor Kafka
     group_id="un grupo",  # Puedes usar cualquier grupo de consumidores
     auto_offset_reset='latest',  # Lee desde la posición más reciente

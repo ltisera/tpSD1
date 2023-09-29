@@ -108,6 +108,9 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
         return respuesta
 
     def crearReceta(self, request, context):
+        print("QUE RECIBNO DE ESTE MUCHACHO")
+        print(request)
+        print("Esto recibi")
         adminreceta = RecetaDAO()
         receta = Receta()
         receta.titulo = request.titulo
@@ -122,8 +125,19 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
         receta.categoria = request.categoria
         receta.creador = request.creador
         receta.ingredientes= request.ingredientes
-        adminreceta.agregarReceta(receta)
-   
+        idUltimaReceta = adminreceta.agregarReceta(receta)
+        ### Productor kafka
+        producer = KafkaProducer(bootstrap_servers='localhost:9092')  # Cambia esto a la dirección de tu servidor Kafka
+        mkafka = {
+            "idReceta": idUltimaReceta, 
+            "tituloReceta" : receta.titulo,
+            "urlFoto": receta.foto1,
+            "usuario" : receta.creador
+        }
+        print("este es el json") 
+        print(mkafka)
+        producer.send(topic = 'novedades', value=json.dumps(mkafka).encode("utf-8"))
+        producer.close()
         respuesta = receta_pb2.status(status=1)
         return respuesta
     
@@ -144,7 +158,7 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
         receta.ingredientes= request.ingredientes
         receta.idReceta = request.idReceta
         adminreceta.modificarReceta(receta)
-   
+        
         respuesta = receta_pb2.status(status=1)
         return respuesta
     
@@ -208,6 +222,9 @@ class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
             respuesta = usuario_pb2.loguearUsuarioResponse(username=ustmp["usuario"], estado="NO_EXISTE_EL_USUARIO")
         else:
             if(ustmp["password"] == request.password):
+                print("Te pasamos")
+                print(ustmp["usuario"])
+                print("Esto")
                 respuesta = usuario_pb2.loguearUsuarioResponse(username=ustmp["usuario"], estado="VALIDO")
             else:
                 respuesta = usuario_pb2.loguearUsuarioResponse(username=ustmp["usuario"], estado="INVALIDO")
@@ -248,17 +265,17 @@ def iniciar_servidor():
 if __name__ == '__main__':
 
 
-    producer = KafkaProducer(bootstrap_servers='localhost:9092')  # Cambia esto a la dirección de tu servidor Kafka
+    #producer = KafkaProducer(bootstrap_servers='localhost:9092')  # Cambia esto a la dirección de tu servidor Kafka
     # Enviar un mensaje al tema 'mi-topic'
-    producer.send('mi-topic', key=b'clave', value=b'CAMBIO A')
-    producer.send('mi-topic', key=b'clave', value=b'CAMBIO B')
-    producer.send('mi-topic', key=b'clave', value=b'CAMBIO C')
-    producer.send('mi-topic', key=b'clave', value=b'CAMBIO D')
-    producer.send('mi-topic', key=b'clave', value=b'CAMBIO E')
-    producer.send('mi-topic', key=b'clave', value=b'CAMBIO F')
+    #producer.send('mi-topic', key=b'clave', value=b'CAMBIO A')
+    #producer.send('mi-topic', key=b'clave', value=b'CAMBIO B')
+    #producer.send('mi-topic', key=b'clave', value=b'CAMBIO C')
+    #producer.send('mi-topic', key=b'clave', value=b'CAMBIO D')
+    #producer.send('mi-topic', key=b'clave', value=b'CAMBIO E')
+    #producer.send('mi-topic', key=b'clave', value=b'CAMBIO F')
 
     # Cerrar el productor después de enviar el mensaje
-    producer.close()
+    #producer.close()
     
     print("current dir: " + CURRENT_DIR)
     iniciar_servidor()

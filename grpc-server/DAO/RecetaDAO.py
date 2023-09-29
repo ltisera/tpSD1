@@ -133,12 +133,12 @@ class RecetaDAO(ConexionBD):
 
 
     def agregarReceta(self, receta):
-        mensaje="Error."
+        nuevo_id_receta ="Error."
         try:
             self.crearConexion()
             self._micur.execute("INSERT INTO " + TRECETA + "(idReceta, titulo, descripcion, foto1, foto2, foto3, foto4, foto5, pasos, tiempoEnMinutos, categoria, creador,ingredientes) values (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s)", (receta.idReceta, receta.titulo, receta.descripcion, receta.foto1, receta.foto2, receta.foto3, receta.foto4, receta.foto5, receta.pasos, receta.tiempoEnMinutos, receta.categoria, receta.creador,receta.ingredientes))
             self._bd.commit()
-            mensaje = "receta guardada."                
+            nuevo_id_receta = self._micur.lastrowid
 
         except mysql.connector.errors.IntegrityError as err:
             print("Error: " + str(err))
@@ -146,7 +146,9 @@ class RecetaDAO(ConexionBD):
         finally:
             self.cerrarConexion()
         
-        return (mensaje)
+        return (nuevo_id_receta)
+    
+
     def modificarReceta(self, receta):
         mensaje="Error."
         try:
@@ -217,13 +219,14 @@ if __name__ == '__main__':
     
     rdao = RecetaDAO()
 
-    rec = Receta(titulo="flan",tiempoEnMinutos=5,categoria="Cena",descripcion="Rico", creador="roberto", pasos="1)hacer el flan")
+    rec = Receta(titulo="tocino",tiempoEnMinutos=5,categoria="Cena",descripcion="Rico", creador="roberto", pasos="1)hacer revuelto")
     
-
+    print("aver")
     print(rdao.agregarReceta(rec))
-
-    print("traer:")
-    print(rdao.traerReceta(3))
+    print("ta")
+    
+    #print("traer:")
+    #print(rdao.traerReceta(3))
     
     #print(rdao.agregarIngredienteAReceta(1, "Azucar", 10, "gramos"))
 
