@@ -28,6 +28,8 @@ if assignment:
     # Lee los últimos 5 mensajes en orden inverso
     for _ in range(num_messages_to_read):
         position = total_messages - messages_read - 1
+        if(position < 0):
+            break
         consumer.seek(assignment[0], position)
         message = next(consumer)
         print('Mensaje leído: {}'.format(message.value.decode('utf-8')))
