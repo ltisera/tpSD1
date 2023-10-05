@@ -19,6 +19,22 @@ class RecetaDAO(ConexionBD):
     def __int__(self):
         pass
     
+    def popularidadReceta(self, idReceta, puntaje):
+        mensaje="Error."
+        try:
+            self.crearConexion()
+            self._micur.execute("UPDATE " + TRECETA + " SET popularidad=popularidad + %s WHERE idReceta = %s", ( puntaje, idReceta))
+            self._bd.commit()
+            mensaje = "receta puntuada."                
+
+        except mysql.connector.errors.IntegrityError as err:
+            print("Error: " + str(err))
+
+        finally:
+            self.cerrarConexion()
+        
+        return (mensaje)
+    
 
     def traerRecetas(self):
         lstRecetas = []
@@ -219,10 +235,8 @@ if __name__ == '__main__':
     
     rdao = RecetaDAO()
 
-    rec = Receta(titulo="tocino",tiempoEnMinutos=5,categoria="Cena",descripcion="Rico", creador="roberto", pasos="1)hacer revuelto")
-    
     print("aver")
-    print(rdao.agregarReceta(rec))
+    print(rdao.popularidadReceta(idReceta=12, puntaje=-4))
     print("ta")
     
     #print("traer:")
