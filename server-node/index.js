@@ -6,9 +6,23 @@ const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const grpc = require("@grpc/grpc-js");
 const protoLoader = require("@grpc/proto-loader");
+const { Kafka } = require("kafkajs");
+const { WebSocketServer } = require("ws");
 const app = express();
 
 // ======== CONFIGURACION =========
+const kafka = new Kafka({
+  brokers: [`0.0.0.0:9092`],
+  clientId: "node-js",
+});
+const kafkaProducer = kafka.producer();
+const kafkaConsumer = kafka.consumer({ groupId: "node-js" });
+const KAFKA_TOPIC_NEWS = "novedades";
+
+const wss = new WebSocketServer({
+  port: 4004,
+});
+
 const PROTO_PATH_USERS = path.resolve(
   __dirname,
   "../grpc-server/proto/usuario.proto"
@@ -123,10 +137,22 @@ app.post("/api/recipes", (req, res) => {
   });
 });
 app.post("/api/recipe", (req, res) => {
+  const { username } = jwt.decode(req.cookies.user);
+
   createRecipe(req.body, (error, response) => {
     if (error) {
       res.json([]);
     } else {
+      kafkaProducer.send({
+        topic: KAFKA_TOPIC_NEWS,
+        messages: [
+          JSON.stringify({
+            usuario: username,
+            titulo: req.body.titulo,
+            imagen: req.body.foto1,
+          }),
+        ],
+      });
       res.json(response);
     }
   });
@@ -196,11 +222,31 @@ app.delete("/api/favs", (req, res) => {
     }
   );
 });
-const server = app.listen(port, () => {
+
+const server = app.listen(port, async () => {
   console.log(`Example app listening on port ${port}`);
+  await kafkaConsumer.connect();
+  await kafkaConsumer.subscribe({
+    topic: KAFKA_TOPIC_NEWS,
+    fromBeginning: true,
+  });
+  wss.on("connection", async (ws) => {
+    await kafkaConsumer.run({
+      eachMessage: async ({ topic, partition, message }) => {
+        ws.send(
+          JSON.stringify({
+            topic,
+            message,
+          })
+        );
+      },
+    });
+  });
 });
 
 server.on("close", () => {
+  kafka.producer.disconnect();
+  wss.close();
   console.log("Server closed");
 });
 
