@@ -1,4 +1,4 @@
-pip install mysql-connector-python grpcio-tools
+pip install mysql-connector-python grpcio-tools kafka-python
 # https://kafka.apache.org/quickstart
 # wget https://downloads.apache.org/kafka/3.6.0/kafka-3.6.0-src.tgz
 tar -xzf kafka-3.6.0-src.tgz

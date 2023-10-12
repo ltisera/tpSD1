@@ -138,7 +138,9 @@ app.post("/api/recipes", (req, res) => {
 });
 app.post("/api/recipe", (req, res) => {
   const { username } = jwt.decode(req.cookies.user);
-
+  if (!username) {
+    return res.json([]);
+  }
   createRecipe(req.body, (error, response) => {
     if (error) {
       res.json([]);
@@ -146,11 +148,13 @@ app.post("/api/recipe", (req, res) => {
       kafkaProducer.send({
         topic: KAFKA_TOPIC_NEWS,
         messages: [
-          JSON.stringify({
-            usuario: username,
-            titulo: req.body.titulo,
-            imagen: req.body.foto1,
-          }),
+          {
+            value: JSON.stringify({
+              usuario: username,
+              titulo: req.body.titulo,
+              imagen: req.body.foto1,
+            }),
+          },
         ],
       });
       res.json(response);
@@ -177,6 +181,9 @@ app.delete("/api/recipe", (req, res) => {
 });
 app.get("/api/favs", (req, res) => {
   const { username } = jwt.decode(req.cookies.user);
+  if (!username) {
+    return res.json([]);
+  }
   traerRecetasFavoritas(
     {
       usuario: username,
@@ -222,30 +229,38 @@ app.delete("/api/favs", (req, res) => {
     }
   );
 });
+let connections = [];
 
 const server = app.listen(port, async () => {
   console.log(`Example app listening on port ${port}`);
+  await kafkaProducer.connect();
   await kafkaConsumer.connect();
   await kafkaConsumer.subscribe({
     topic: KAFKA_TOPIC_NEWS,
     fromBeginning: true,
   });
   wss.on("connection", async (ws) => {
-    await kafkaConsumer.run({
-      eachMessage: async ({ topic, partition, message }) => {
+    connections.push(ws);
+  });
+  await kafkaConsumer.run({
+    eachMessage: async ({ topic, partition, message }) => {
+      connections = connections.filter((ws) => ws.OPEN);
+      connections.forEach((ws) => {
         ws.send(
           JSON.stringify({
             topic,
-            message,
+            message: JSON.parse(message.value.toString()),
           })
         );
-      },
-    });
+      });
+    },
   });
 });
 
-server.on("close", () => {
-  kafka.producer.disconnect();
+server.on("close", async () => {
+  connections.forEach((ws) => ws.close());
+  await kafkaProducer.disconnect();
+  await kafkaConsumer.disconnect();
   wss.close();
   console.log("Server closed");
 });
