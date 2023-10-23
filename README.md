@@ -78,3 +78,22 @@ SQL: 3306
 Broker kafka: 9092
 
 Zookeeper: 2181
+
+# Integrantes
+- Camila Mathov
+- Lucas Tisera
+- Julian Kominovic
+
+# Repartición de tareas
+## Front
+- Julian Kominovic
+## Server de NodeJS
+- Julian Kominovic
+## Server Python
+- Camila Mathov
+- Lucas Tisera
+- Julian Kominovic (solo algun que otro DAO y archivos .proto)
+## Base de datos
+- Camila Mathov
+- Lucas Tisera
+- Julian Kominovic (algunas modificaciones)
