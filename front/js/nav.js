@@ -12,6 +12,9 @@ nav.innerHTML = `<nav class="container">
 </ul>
 <ul>
   <li>
+    <a href="/followers" class="secondary">Seguidores</a>
+  </li>
+  <li>
     <a href="/backoffice" class="secondary">Mis recetas</a>
   </li>
   <li>

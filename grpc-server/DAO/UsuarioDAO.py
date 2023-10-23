@@ -13,6 +13,7 @@ from DAO.CONFIGS.variablesGlobales import TUSUARIO, TSIGUIENDO
 class UsuarioDAO(ConexionBD):
     def __int__(self):
         pass
+
     
     def traerUsuarioSIMPLE(self, email):
         usTraido = None

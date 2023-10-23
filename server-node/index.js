@@ -4,10 +4,22 @@ const cors = require("cors");
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
-const grpc = require("@grpc/grpc-js");
-const protoLoader = require("@grpc/proto-loader");
+
 const { Kafka } = require("kafkajs");
 const { WebSocketServer } = require("ws");
+const {
+  agregarRecetaFavorita,
+  createRecipe,
+  createUser,
+  deleteRecipe,
+  editRecipe,
+  eliminarRecetaFavorita,
+  getRecipes,
+  loginUser,
+  traerRecetasFavoritas,
+  seguirUsuario,
+  traerUsuariosQueSigo,
+} = require("./grpc");
 const app = express();
 
 // ======== CONFIGURACION =========
@@ -22,43 +34,6 @@ const KAFKA_TOPIC_NEWS = "novedades";
 const wss = new WebSocketServer({
   port: 4004,
 });
-
-const PROTO_PATH_USERS = path.resolve(
-  __dirname,
-  "../grpc-server/proto/usuario.proto"
-);
-
-const packageDefinitionUser = protoLoader.loadSync(PROTO_PATH_USERS, {
-  keepCase: true,
-  longs: String,
-  enums: String,
-  defaults: true,
-  oneofs: true,
-});
-
-const userProto = grpc.loadPackageDefinition(packageDefinitionUser);
-const usersGrpcClient = new userProto.servicioUsuario(
-  "localhost:50051",
-  grpc.credentials.createInsecure()
-);
-const PROTO_PATH_RECIPES = path.resolve(
-  __dirname,
-  "../grpc-server/proto/receta.proto"
-);
-
-const packageDefinitionRecipes = protoLoader.loadSync(PROTO_PATH_RECIPES, {
-  keepCase: true,
-  longs: String,
-  enums: String,
-  defaults: true,
-  oneofs: true,
-});
-
-const recipesProto = grpc.loadPackageDefinition(packageDefinitionRecipes);
-const recipesGrpcClient = new recipesProto.servicioReceta(
-  "localhost:50051",
-  grpc.credentials.createInsecure()
-);
 
 const port = 3000;
 const SERVER_JWT_SECRET = "secret1234";
@@ -229,6 +204,41 @@ app.delete("/api/favs", (req, res) => {
     }
   );
 });
+
+app.post("/api/follow", (req, res) => {
+  const { username } = jwt.decode(req.cookies.user);
+  seguirUsuario(
+    {
+      usuario: username,
+      usuarioSeguido: req.body.usuarioSeguido,
+    },
+    (error, response) => {
+      if (error) {
+        res.json([]);
+      } else {
+        res.json(response);
+      }
+    }
+  );
+});
+
+app.get("/api/follow", (req, res) => {
+  const { username } = jwt.decode(req.cookies.user);
+  traerUsuariosQueSigo(
+    {
+      usuario: username,
+    },
+    (error, response) => {
+      if (error) {
+        res.json([]);
+      } else {
+        res.json(response);
+      }
+    }
+  );
+});
+
+// ================
 let connections = [];
 
 const server = app.listen(port, async () => {
@@ -264,163 +274,6 @@ server.on("close", async () => {
   wss.close();
   console.log("Server closed");
 });
-
-// ====== GRPC CLIENT ======
-function eliminarRecetaFavorita(
-  recipe = {
-    idReceta: "",
-    usuario: "",
-  },
-  callback
-) {
-  recipesGrpcClient.eliminarRecetaDeFavoritos(recipe, (err, response) => {
-    callback(err, response);
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(response);
-    }
-  });
-}
-function traerRecetasFavoritas(
-  request = {
-    usuario: "",
-  },
-  callback
-) {
-  recipesGrpcClient.traerRecetasFavoritas(request, (err, response) => {
-    callback(err, response);
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(response);
-    }
-  });
-}
-function agregarRecetaFavorita(
-  recipe = {
-    idReceta: "",
-  },
-  callback
-) {
-  recipesGrpcClient.agregarRecetaAFavoritos(recipe, (err, response) => {
-    callback(err, response);
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(response);
-    }
-  });
-}
-function createUser(
-  userdata = {
-    username: "",
-    email: "",
-    password: "",
-    tipo: "usuario",
-  },
-  callback
-) {
-  usersGrpcClient.crearUsuario(userdata, callback);
-}
-function loginUser(
-  userdata = {
-    username: "",
-    email: "",
-    password: "",
-    tipo: "",
-  },
-  callback
-) {
-  usersGrpcClient.loguearUsuario(userdata, callback);
-}
-function deleteRecipe(
-  recipe = {
-    idReceta: "",
-  },
-  callback
-) {
-  recipesGrpcClient.eliminarReceta(recipe, (err, response) => {
-    callback(err, response);
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(response);
-    }
-  });
-}
-function createRecipe(
-  recipe = {
-    titulo: "",
-    descripcion: "",
-    tiempoEnMinutos: "",
-    categoria: "",
-    pasos: "",
-    foto1: "",
-    foto2: "",
-    foto3: "",
-    foto4: "",
-    foto5: "",
-    ingredientes: "",
-  },
-  callback
-) {
-  recipesGrpcClient.crearReceta(recipe, (err, response) => {
-    callback(err, response);
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(response);
-    }
-  });
-}
-function editRecipe(
-  recipe = {
-    titulo: "",
-    descripcion: "",
-    tiempoEnMinutos: "",
-    categoria: "",
-    pasos: "",
-    foto1: "",
-    foto2: "",
-    foto3: "",
-    foto4: "",
-    foto5: "",
-    ingredientes: "",
-  },
-  callback
-) {
-  recipesGrpcClient.editarReceta(recipe, (err, response) => {
-    callback(err, response);
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(response);
-    }
-  });
-}
-
-function getRecipes(
-  filters = {
-    tiempoEnMinutosMIN: "",
-    tiempoEnMinutosMAX: "",
-    categoria: "",
-    creador: "",
-    titulo: "",
-    ingredientes: "",
-    idReceta: "",
-  },
-  callback
-) {
-  recipesGrpcClient.traerRecetasPor(filters, (err, response) => {
-    callback(err, response);
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(response);
-    }
-  });
-}
 
 // ====== MIDDLEWARES ======
 
