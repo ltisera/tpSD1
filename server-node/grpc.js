@@ -196,7 +196,7 @@ function getRecipes(
   });
 }
 
-function traerUsuariosQueSigo(usuario = "") {
+function traerUsuariosQueSigo({ usuario = "" }) {
   usersGrpcClient.traerUsuariosQueSigo({ usuario }, (err, response) => {
     if (err) {
       console.error(err);
@@ -206,7 +206,7 @@ function traerUsuariosQueSigo(usuario = "") {
   });
 }
 
-function seguirUsuario(usuarioQueSigue = "", usuarioSeguido = "") {
+function seguirUsuario({ usuarioQueSigue = "", usuarioSeguido = "" }) {
   usersGrpcClient.seguirUsuario(
     { usuarioQueSigue, usuarioSeguido },
     (err, response) => {

@@ -79,3 +79,18 @@ button {
   margin: 0;
   border: none;
 }
+
+#recipes-list article {
+  position: relative;
+}
+.recipelist__author {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: white;
+  padding: 0.5rem;
+}

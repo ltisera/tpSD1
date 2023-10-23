@@ -209,7 +209,7 @@ app.post("/api/follow", (req, res) => {
   const { username } = jwt.decode(req.cookies.user);
   seguirUsuario(
     {
-      usuario: username,
+      usuarioQueSigue: username,
       usuarioSeguido: req.body.usuarioSeguido,
     },
     (error, response) => {

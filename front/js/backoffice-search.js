@@ -115,46 +115,7 @@ fetch("/api/recipes", {
 })
   .then((res) => res.json())
   .then((data = []) => {
-    data.recetas.forEach(
-      ({
-        tiempoEnMinutos,
-        categoria,
-        creador,
-        descripcion,
-        foto1,
-        foto2,
-        foto3,
-        foto4,
-        foto5,
-        idReceta,
-        pasos,
-        titulo,
-      }) => {
-        recipeList.innerHTML += ` 
-        <article class="flex-col">
-         <div class="flex gap-4">
-          <button data-recipeid="${idReceta}" class="recipe-edit-button">
-            Modificar
-          </button>
-          <button data-recipeid="${idReceta}" class="recipe-delete-button destructive">
-            Eliminar
-          </button>
-         </div>
-          <article>
-              <header class="container">
-                  <div class="headings">
-                  <h2>${titulo}</h2>
-                  <h5>${descripcion}</h5>
-                  <small>Autor: ${creador}</small>
-                  <p>Listo en ${tiempoEnMinutos} minutos</p>
-                  </div>
-              </header>
-              <img src="${foto1}" alt="imagen" />
-            </article>
-        </article>
-                `;
-      }
-    );
+    buildRecipeList(data.recetas);
 
     const recipesEditButtons = document.querySelectorAll(".recipe-edit-button");
     const recipesDeleteButtons = document.querySelectorAll(
