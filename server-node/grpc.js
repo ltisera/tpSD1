@@ -196,8 +196,9 @@ function getRecipes(
   });
 }
 
-function traerUsuariosQueSigo({ usuario = "" }) {
+function traerUsuariosQueSigo({ usuario = "" }, callback) {
   usersGrpcClient.traerUsuariosQueSigo({ usuario }, (err, response) => {
+    callback(err, response);
     if (err) {
       console.error(err);
     } else {
@@ -206,10 +207,14 @@ function traerUsuariosQueSigo({ usuario = "" }) {
   });
 }
 
-function seguirUsuario({ usuarioQueSigue = "", usuarioSeguido = "" }) {
+function seguirUsuario(
+  { usuarioQueSigue = "", usuarioSeguido = "" },
+  callback
+) {
   usersGrpcClient.seguirUsuario(
     { usuarioQueSigue, usuarioSeguido },
     (err, response) => {
+      callback(err, response);
       if (err) {
         console.error(err);
       } else {

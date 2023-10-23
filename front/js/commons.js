@@ -38,3 +38,9 @@ var buildRecipeList = function (recipes = []) {
     }
   );
 };
+var getFollowers = function (author) {
+  return fetch("/api/follow").then((res) => res.json());
+};
+var userFollowsMe = function () {
+  return getFollowers().then((data) => data.usuarios.includes(author));
+};
