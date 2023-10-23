@@ -21,6 +21,10 @@ mysql -u root -p
 Introducir tu contraseña de root
 Pegar contenido del archivo `grpc-server/ModeloWB/modeloDatosBDRecetas.sql`
 
+# Docs
+![Untitled-2022-08-15-1645](https://github.com/ltisera/tpSD1/assets/70329467/f5b5e2c1-f3e3-49ea-a053-8f185d75172a)
+
+
 # Demo
 ## Entrega uno
 ### Login
@@ -56,7 +60,6 @@ Las siguientes pruebas son hechas en dos navegadores diferentes con usuarios dif
 [Screencast from 23-10-23 16:56:04.webm](https://github.com/ltisera/tpSD1/assets/70329467/3492451f-74d4-4980-959c-ad1fa1220a4e)
 ### Comentarios en las recetas
 [Screencast from 23-10-23 16:59:01.webm](https://github.com/ltisera/tpSD1/assets/70329467/5f3ef997-272d-4268-9370-4951026345eb)
-
 
 
 
