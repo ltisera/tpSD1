@@ -10,7 +10,7 @@ from objetos.Ingrediente import *
 from DAO.ConexionBD import ConexionBD
 from DAO.IngredienteDAO import IngredienteDAO
 from DAO.CategoriaDAO import CategoriaDAO
-from DAO.CONFIGS.variablesGlobales import TRECETA, TRECETAFAVORITA, TINGREDIENTEDERECETA 
+from DAO.CONFIGS.variablesGlobales import TRECETA, TRECETAFAVORITA, TINGREDIENTEDERECETA , TOPIC_NOVEDADES
 from kafka import KafkaProducer
 from mysql.connector import Error
 
@@ -139,7 +139,7 @@ class RecetaDAO(ConexionBD):
             self._micur.execute("INSERT INTO " + TRECETA + "(idReceta, titulo, descripcion, foto1, foto2, foto3, foto4, foto5, pasos, tiempoEnMinutos, categoria, creador,ingredientes) values (%s, %s, %s, %s, %s, %s,%s, %s, %s, %s, %s, %s, %s)", (receta.idReceta, receta.titulo, receta.descripcion, receta.foto1, receta.foto2, receta.foto3, receta.foto4, receta.foto5, receta.pasos, receta.tiempoEnMinutos, receta.categoria, receta.creador,receta.ingredientes))
             self._bd.commit()
             mensaje = "receta guardada."
-            producer.send("novedades", json.dumps({
+            producer.send(TOPIC_NOVEDADES, json.dumps({
                 "usuario": receta.creador,
                 "titulo": receta.titulo,
                 "imagen": receta.foto1,

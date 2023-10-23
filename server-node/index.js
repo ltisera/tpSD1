@@ -32,6 +32,7 @@ const kafka = new Kafka({
 const kafkaProducer = kafka.producer();
 const kafkaConsumer = kafka.consumer({ groupId: "node-js" });
 const KAFKA_TOPIC_NEWS = "novedades";
+const KAFKA_TOPIC_USER_POPULARITY = "PopularidadUsuario";
 
 const wss = new WebSocketServer({
   port: 4004,
@@ -281,6 +282,10 @@ const server = app.listen(port, async () => {
   await kafkaConsumer.subscribe({
     topic: KAFKA_TOPIC_NEWS,
     fromBeginning: true,
+  });
+  await kafkaConsumer.subscribe({
+    topic: KAFKA_TOPIC_USER_POPULARITY,
+    fromBeginning: false,
   });
   wss.on("connection", async (ws) => {
     connections.push(ws);

@@ -14,4 +14,17 @@ ws.onmessage = (obj) => {
       },
     }).showToast();
   }
+  if (topic === "PopularidadUsuario") {
+    console.log(message);
+    new Toastify({
+      text:
+        message.puntaje > 0
+          ? `${message.nombre_usuario} ganó un seguidor`
+          : `${message.nombre_usuario} perdió un seguidor`,
+      duration: 3000,
+      gravity: "top", // `top` or `bottom`
+      position: "left", // `left`, `center` or `right`,
+      callback: function () {},
+    }).showToast();
+  }
 };
