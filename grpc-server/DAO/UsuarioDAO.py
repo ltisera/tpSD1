@@ -71,6 +71,22 @@ class UsuarioDAO(ConexionBD):
                 self.cerrarConexion()
         
         return (mensaje)
+    def dejarDeSeguirUsuario(self, usuarioQueSigue, usuarioSeguido):
+        mensaje = "No se puede dejar de seguir a este usuario"
+        if (usuarioQueSigue != usuarioSeguido):
+            try:
+                self.crearConexion()
+                self._micur.execute("DELETE FROM " + TSIGUIENDO + " WHERE Usuario_Seguidor=%s and Usuario_Seguido=%s", (usuarioQueSigue, usuarioSeguido))
+                self._bd.commit()
+                mensaje = "Dejaste de seguir a este usuario"
+
+            except mysql.connector.errors.IntegrityError as err:
+                print("Error: " + str(err))
+
+            finally:
+                self.cerrarConexion()
+        
+        return (mensaje)
     
     def traerUsuariosQueSigo(self, usuario):
         lstSeguidos = []

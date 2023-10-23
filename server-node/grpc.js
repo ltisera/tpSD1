@@ -223,6 +223,22 @@ function seguirUsuario(
     }
   );
 }
+function dejarDeSeguirUsuario(
+  { usuarioQueSigue = "", usuarioSeguido = "" },
+  callback
+) {
+  usersGrpcClient.dejarDeSeguirUsuario(
+    { usuarioQueSigue, usuarioSeguido },
+    (err, response) => {
+      callback(err, response);
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(response);
+      }
+    }
+  );
+}
 
 module.exports = {
   getRecipes,
@@ -236,4 +252,5 @@ module.exports = {
   eliminarRecetaFavorita,
   traerUsuariosQueSigo,
   seguirUsuario,
+  dejarDeSeguirUsuario,
 };

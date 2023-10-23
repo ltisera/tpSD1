@@ -1,3 +1,34 @@
+function readAuthUserInfo(name = "") {
+  var result = document.cookie.match(new RegExp(name + "=([^;]+)"));
+  let userInfo = {
+    username: "",
+  };
+  if (result && result[1]) {
+    userInfo = parseJwt(result[1]);
+  }
+  if (userInfo.username === "") {
+    return null;
+  }
+  return userInfo;
+}
+function parseJwt(token) {
+  var base64Url = token.split(".")[1];
+  var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  var jsonPayload = decodeURIComponent(
+    window
+      .atob(base64)
+      .split("")
+      .map(function (c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join("")
+  );
+
+  return JSON.parse(jsonPayload);
+}
+
+var user = readAuthUserInfo("user");
+
 var buildRecipeList = function (recipes = []) {
   recipes.forEach(
     ({
@@ -41,6 +72,17 @@ var buildRecipeList = function (recipes = []) {
 var getFollowers = function (author) {
   return fetch("/api/follow").then((res) => res.json());
 };
-var userFollowsMe = function () {
+var stopFollowing = function (author) {
+  return fetch("/api/follow", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      usuarioSeguido: author,
+    }),
+  }).then((res) => res.json());
+};
+var userFollowsMe = function (author) {
   return getFollowers().then((data) => data.usuarios.includes(author));
 };

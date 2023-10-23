@@ -69,14 +69,6 @@ const profileName = params.get("author") || "";
 const followBtn = document.querySelector("#follow-btn");
 profileNameElement.textContent = `Recetas de ${profileName}`;
 
-userFollowsMe().then((followsMe) => {
-  if (followsMe) {
-    followBtn.textContent = "Dejar de seguir";
-    followBtn.addEventListener("click", unfollow);
-    followBtn.classList.add("destructive");
-  }
-});
-
 const follow = async () => {
   const follow = await fetch("/api/follow", {
     method: "POST",
@@ -89,9 +81,20 @@ const follow = async () => {
   }).then((res) => res.json());
   window.location.reload();
 };
-const unfollow = async () => {
-  alert("TODO!");
+const unfollow = () => {
+  return stopFollowing(profileName).then(() => {
+    window.location.reload();
+  });
 };
 
-followBtn.textContent = "Seguir";
-followBtn.addEventListener("click", follow);
+userFollowsMe(profileName).then((followsMe) => {
+  if (followsMe) {
+    followBtn.textContent = "Dejar de seguir";
+    followBtn.addEventListener("click", unfollow);
+    followBtn.classList.add("destructive");
+  } else {
+    followBtn.textContent = "Seguir";
+    followBtn.addEventListener("click", follow);
+    followBtn.classList.remove("destructive");
+  }
+});

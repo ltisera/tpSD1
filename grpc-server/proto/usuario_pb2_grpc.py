@@ -29,6 +29,11 @@ class servicioUsuarioStub(object):
                 request_serializer=usuario__pb2.solicitudDeSeguidorRequest.SerializeToString,
                 response_deserializer=usuario__pb2.solicitudDeSeguidorResponse.FromString,
                 )
+        self.dejarDeSeguirUsuario = channel.unary_unary(
+                '/servicioUsuario/dejarDeSeguirUsuario',
+                request_serializer=usuario__pb2.solicitudDeSeguidorRequest.SerializeToString,
+                response_deserializer=usuario__pb2.solicitudDeSeguidorResponse.FromString,
+                )
         self.traerUsuariosQueSigo = channel.unary_unary(
                 '/servicioUsuario/traerUsuariosQueSigo',
                 request_serializer=usuario__pb2.traerUsuariosQueSigoRequest.SerializeToString,
@@ -57,6 +62,12 @@ class servicioUsuarioServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def dejarDeSeguirUsuario(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def traerUsuariosQueSigo(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -78,6 +89,11 @@ def add_servicioUsuarioServicer_to_server(servicer, server):
             ),
             'seguirUsuario': grpc.unary_unary_rpc_method_handler(
                     servicer.seguirUsuario,
+                    request_deserializer=usuario__pb2.solicitudDeSeguidorRequest.FromString,
+                    response_serializer=usuario__pb2.solicitudDeSeguidorResponse.SerializeToString,
+            ),
+            'dejarDeSeguirUsuario': grpc.unary_unary_rpc_method_handler(
+                    servicer.dejarDeSeguirUsuario,
                     request_deserializer=usuario__pb2.solicitudDeSeguidorRequest.FromString,
                     response_serializer=usuario__pb2.solicitudDeSeguidorResponse.SerializeToString,
             ),
@@ -142,6 +158,23 @@ class servicioUsuario(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/servicioUsuario/seguirUsuario',
+            usuario__pb2.solicitudDeSeguidorRequest.SerializeToString,
+            usuario__pb2.solicitudDeSeguidorResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def dejarDeSeguirUsuario(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/servicioUsuario/dejarDeSeguirUsuario',
             usuario__pb2.solicitudDeSeguidorRequest.SerializeToString,
             usuario__pb2.solicitudDeSeguidorResponse.FromString,
             options, channel_credentials,

@@ -19,6 +19,7 @@ const {
   traerRecetasFavoritas,
   seguirUsuario,
   traerUsuariosQueSigo,
+  dejarDeSeguirUsuario,
 } = require("./grpc");
 const app = express();
 
@@ -208,6 +209,22 @@ app.delete("/api/favs", (req, res) => {
 app.post("/api/follow", (req, res) => {
   const { username } = jwt.decode(req.cookies.user);
   seguirUsuario(
+    {
+      usuarioQueSigue: username,
+      usuarioSeguido: req.body.usuarioSeguido,
+    },
+    (error, response) => {
+      if (error) {
+        res.json([]);
+      } else {
+        res.json(response);
+      }
+    }
+  );
+});
+app.delete("/api/follow", (req, res) => {
+  const { username } = jwt.decode(req.cookies.user);
+  dejarDeSeguirUsuario(
     {
       usuarioQueSigue: username,
       usuarioSeguido: req.body.usuarioSeguido,
