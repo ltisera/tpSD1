@@ -38,6 +38,24 @@ const recipesGrpcClient = new recipesProto.servicioReceta(
   "localhost:50051",
   grpc.credentials.createInsecure()
 );
+const PROTO_PATH_COMMENTS = path.resolve(
+  __dirname,
+  "../grpc-server/proto/comentarios.proto"
+);
+
+const packageDefinitionComments = protoLoader.loadSync(PROTO_PATH_COMMENTS, {
+  keepCase: true,
+  longs: String,
+  enums: String,
+  defaults: true,
+  oneofs: true,
+});
+
+const commentsProto = grpc.loadPackageDefinition(packageDefinitionComments);
+const commentsGrpcClient = new commentsProto.servicioComentarios(
+  "localhost:50051",
+  grpc.credentials.createInsecure()
+);
 
 // ====== GRPC CLIENT ======
 function eliminarRecetaFavorita(
@@ -250,6 +268,47 @@ function dejarDeSeguirUsuario(
   );
 }
 
+function crearComentario(
+  { idReceta = "", idUsuario = "", comentario = "" },
+  callback
+) {
+  commentsGrpcClient.crearComentario(
+    { idReceta, comentario, idUsuario },
+    (err, response) => {
+      callback(err, response);
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(response);
+      }
+    }
+  );
+}
+function eliminarComentario({ idComentario = "" }, callback) {
+  console.log({ idComentario });
+  commentsGrpcClient.eliminarComentario(
+    { idComentario: Number(idComentario) },
+    (err, response) => {
+      callback(err, response);
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(response);
+      }
+    }
+  );
+}
+function traerComentarios({ idReceta = "" }, callback) {
+  commentsGrpcClient.obtenerComentarios({ idReceta }, (err, response) => {
+    callback(err, response);
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(response);
+    }
+  });
+}
+
 module.exports = {
   getRecipes,
   editRecipe,
@@ -264,4 +323,7 @@ module.exports = {
   seguirUsuario,
   dejarDeSeguirUsuario,
   traerUsuariosQueMeSiguen,
+  crearComentario,
+  eliminarComentario,
+  traerComentarios,
 };

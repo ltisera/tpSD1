@@ -53,10 +53,67 @@
           "
         ></code>
       </article>
+      <form id="submit-comment-form">
+        <input name="comentario" placeholder="Comentario" required />
+        <button>Comentar</button>
+      </form>
+      <section>
+        <ul id="comments"></ul>
+      </section>
     </main>
     <script src="/js/commons.js"></script>
     <script src="/js/nav.js"></script>
     <script src="/js/websocket.js"></script>
+    <script>
+      const submitForm = document.getElementById("submit-comment-form");
+      submitForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const comentario = e.target.comentario.value;
+        fetch("/api/comments", {
+          body: JSON.stringify({ comentario }),
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }).finally(() => {
+          window.location.reload();
+        });
+      });
+
+      const commentsList = document.querySelector("#comments");
+
+      getCommentsByRecipeId(
+        new URLSearchParams(location.search).get("id")
+      ).then((comments) => {
+        comments.comentarios.forEach((comment) => {
+          const li = document.createElement("li");
+          li.classList.add("comment__list-item");
+          const deleteCommentBtn =
+            comment.idUsuario === user.username
+              ? `<button class="destructive" data-delete-comment=${comment.idComentario}>Eliminar comentario</button>`
+              : "";
+          li.innerHTML = `
+            <p><a href="/profile?author=${comment.idUsuario}">${comment.idUsuario}</a> dice:</p>
+            <p>${comment.comentario}</p>
+            ${deleteCommentBtn}
+          `;
+          commentsList.appendChild(li);
+        });
+
+        const deleteCommentBtns = document.querySelectorAll(
+          "[data-delete-comment]"
+        );
+        deleteCommentBtns.forEach((element) => {
+          element.addEventListener("click", (e) => {
+            deleteCommentById(
+              e.target.getAttribute("data-delete-comment")
+            ).finally(() => {
+              window.location.reload();
+            });
+          });
+        });
+      });
+    </script>
     <script>
       const id = new URLSearchParams(window.location.search).get("id");
       const title = document.getElementById("title");

@@ -93,3 +93,18 @@ var userFollowsMe = function (author) {
     })
     .catch(() => false);
 };
+
+var getCommentsByRecipeId = function (recipeId = "") {
+  return fetch("/api/comments?id=" + recipeId).then((res) => res.json());
+};
+var deleteCommentById = function (commentId = "") {
+  return fetch("/api/comments", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      idComentario: commentId,
+    }),
+  }).then((res) => res.json());
+};

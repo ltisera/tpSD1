@@ -21,6 +21,9 @@ const {
   traerUsuariosQueSigo,
   dejarDeSeguirUsuario,
   traerUsuariosQueMeSiguen,
+  crearComentario,
+  eliminarComentario,
+  traerComentarios,
 } = require("./grpc");
 const app = express();
 
@@ -33,6 +36,8 @@ const kafkaProducer = kafka.producer();
 const kafkaConsumer = kafka.consumer({ groupId: "node-js" });
 const KAFKA_TOPIC_NEWS = "novedades";
 const KAFKA_TOPIC_USER_POPULARITY = "PopularidadUsuario";
+const KAFKA_TOPIC_RECIPE_COMMENTS = "RecetaComentarios";
+const KAFKA_TOPIC_RECIPE_POPULARITY = "RecetaPopularidad";
 
 const wss = new WebSocketServer({
   port: 4004,
@@ -272,6 +277,57 @@ app.get("/api/followers", (req, res) => {
   );
 });
 
+app.post("/api/comments", (req, res) => {
+  const { username } = jwt.decode(req.cookies.user);
+  const url = new URL(req.headers.referer);
+  crearComentario(
+    {
+      idReceta: url.searchParams.get("id"),
+      idUsuario: username,
+      comentario: req.body.comentario,
+    },
+    (error, response) => {
+      if (error) {
+        res.json({});
+      } else {
+        res.json(response);
+      }
+    }
+  );
+});
+
+app.get("/api/comments", (req, res) => {
+  const id = req.query.id;
+  traerComentarios(
+    {
+      idReceta: id,
+    },
+    (error, response) => {
+      if (error) {
+        res.json([]);
+      } else {
+        res.json(response);
+      }
+    }
+  );
+});
+
+app.delete("/api/comments", (req, res) => {
+  const { idComentario } = req.body;
+  eliminarComentario(
+    {
+      idComentario,
+    },
+    (error, response) => {
+      if (error) {
+        res.json({});
+      } else {
+        res.json(response);
+      }
+    }
+  );
+});
+
 // ================
 let connections = [];
 
@@ -285,6 +341,14 @@ const server = app.listen(port, async () => {
   });
   await kafkaConsumer.subscribe({
     topic: KAFKA_TOPIC_USER_POPULARITY,
+    fromBeginning: false,
+  });
+  await kafkaConsumer.subscribe({
+    topic: KAFKA_TOPIC_RECIPE_POPULARITY,
+    fromBeginning: true,
+  });
+  await kafkaConsumer.subscribe({
+    topic: KAFKA_TOPIC_RECIPE_COMMENTS,
     fromBeginning: false,
   });
   wss.on("connection", async (ws) => {

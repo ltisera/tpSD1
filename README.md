@@ -24,7 +24,15 @@ Pegar contenido del archivo `grpc-server/ModeloWB/modeloDatosBDRecetas.sql`
 ### Puertos
 
 Front: 3000
+
+Websocket: 4004
+
 Backend node: 3000
+
 Backend python (GRPC): 50051
+
+SQL: 3306
+
 Broker kafka: 9092
+
 Zookeeper: 2181

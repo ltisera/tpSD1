@@ -94,3 +94,14 @@ button {
   background-color: white;
   padding: 0.5rem;
 }
+.comment__list-item {
+  border-radius: 8px;
+  box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.2);
+  list-style: none;
+  padding: 12px;
+}
+
+.comment__list-item button {
+  width: fit-content;
+  padding: 4px 8px;
+}

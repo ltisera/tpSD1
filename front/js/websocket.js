@@ -1,8 +1,12 @@
 const ws = new WebSocket("ws://localhost:4004", "ws");
+const KAFKA_TOPIC_NEWS = "novedades";
+const KAFKA_TOPIC_USER_POPULARITY = "PopularidadUsuario";
+const KAFKA_TOPIC_RECIPE_COMMENTS = "RecetaComentarios";
+const KAFKA_TOPIC_RECIPE_POPULARITY = "RecetaPopularidad";
 
 ws.onmessage = (obj) => {
   const { message, topic } = JSON.parse(obj.data);
-  if (topic === "novedades") {
+  if (topic === KAFKA_TOPIC_NEWS) {
     new Toastify({
       text: "Nueva receta: " + message.titulo,
       avatar: message.imagen,
@@ -14,7 +18,7 @@ ws.onmessage = (obj) => {
       },
     }).showToast();
   }
-  if (topic === "PopularidadUsuario") {
+  if (topic === KAFKA_TOPIC_USER_POPULARITY) {
     console.log(message);
     new Toastify({
       text:
@@ -27,4 +31,5 @@ ws.onmessage = (obj) => {
       callback: function () {},
     }).showToast();
   }
+  console.log({ message, topic });
 };
