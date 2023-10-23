@@ -193,6 +193,15 @@ class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
         res = udao.dejarDeSeguirUsuario(request.usuarioQueSigue, request.usuarioSeguido)
         respuesta = usuario_pb2.solicitudDeSeguidorResponse(mensaje=res)
         return respuesta
+    def traerUsuariosQueMeSiguen(self, request, context):
+        responseListaUsuarios=[] 
+        listaUsuario=[]
+        udao = UsuarioDAO()
+        listaUsuario = udao.traerUsuariosQueMeSiguen(request.usuario)
+        for us in listaUsuario:
+            responseListaUsuarios.append(us["Usuario_Seguidor"])
+        respuesta = usuario_pb2.traerUsuariosQueSigoResponse(usuarios=responseListaUsuarios)
+        return respuesta
 
     def traerUsuariosQueSigo(self, request, context):
         responseListaUsuarios=[] 

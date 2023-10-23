@@ -69,8 +69,11 @@ var buildRecipeList = function (recipes = []) {
     }
   );
 };
-var getFollowers = function (author) {
-  return fetch("/api/follow").then((res) => res.json());
+var getFollowers = function () {
+  return fetch("/api/followers").then((res) => res.json());
+};
+var getFollowing = function () {
+  return fetch("/api/following").then((res) => res.json());
 };
 var stopFollowing = function (author) {
   return fetch("/api/follow", {
@@ -84,5 +87,9 @@ var stopFollowing = function (author) {
   }).then((res) => res.json());
 };
 var userFollowsMe = function (author) {
-  return getFollowers().then((data) => data.usuarios.includes(author));
+  return getFollowing()
+    .then((data) => {
+      return data.usuarios.includes(author);
+    })
+    .catch(() => false);
 };

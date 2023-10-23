@@ -206,6 +206,16 @@ function traerUsuariosQueSigo({ usuario = "" }, callback) {
     }
   });
 }
+function traerUsuariosQueMeSiguen({ usuario = "" }, callback) {
+  usersGrpcClient.traerUsuariosQueMeSiguen({ usuario }, (err, response) => {
+    callback(err, response);
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(response);
+    }
+  });
+}
 
 function seguirUsuario(
   { usuarioQueSigue = "", usuarioSeguido = "" },
@@ -253,4 +263,5 @@ module.exports = {
   traerUsuariosQueSigo,
   seguirUsuario,
   dejarDeSeguirUsuario,
+  traerUsuariosQueMeSiguen,
 };

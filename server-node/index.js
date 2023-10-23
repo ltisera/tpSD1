@@ -20,6 +20,7 @@ const {
   seguirUsuario,
   traerUsuariosQueSigo,
   dejarDeSeguirUsuario,
+  traerUsuariosQueMeSiguen,
 } = require("./grpc");
 const app = express();
 
@@ -239,9 +240,24 @@ app.delete("/api/follow", (req, res) => {
   );
 });
 
-app.get("/api/follow", (req, res) => {
+app.get("/api/following", (req, res) => {
   const { username } = jwt.decode(req.cookies.user);
   traerUsuariosQueSigo(
+    {
+      usuario: username,
+    },
+    (error, response) => {
+      if (error) {
+        res.json([]);
+      } else {
+        res.json(response);
+      }
+    }
+  );
+});
+app.get("/api/followers", (req, res) => {
+  const { username } = jwt.decode(req.cookies.user);
+  traerUsuariosQueMeSiguen(
     {
       usuario: username,
     },
