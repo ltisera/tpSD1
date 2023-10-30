@@ -1,0 +1,36 @@
+syntax ="proto3";
+
+message crearComentarioRequest {
+    int32 idReceta = 1;
+    string idUsuario = 2;
+    string comentario = 3;
+}
+message eliminarComentarioRequest {
+    int32 idComentario = 1;
+}
+
+message comentario{
+    int32 idComentario = 1;
+    int32 idReceta = 2;
+    string idUsuario = 3;
+    string comentario = 4;
+}
+
+
+
+
+message comentarioStatus{
+    int32 estado = 1;
+}
+message traerComentariosRequest{
+    int32 idReceta = 1;
+}
+message traerComentariosResponse{
+    repeated comentario comentarios = 1;
+}
+
+service servicioComentarios{
+    rpc crearComentario(crearComentarioRequest) returns (comentarioStatus);
+    rpc eliminarComentario(eliminarComentarioRequest) returns (comentarioStatus);
+    rpc obtenerComentarios(traerComentariosRequest) returns (traerComentariosResponse);
+}

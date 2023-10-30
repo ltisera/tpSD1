@@ -46,22 +46,6 @@ class IngredienteDAO(ConexionBD):
         
         return inTraido
 
-if __name__ == '__main__':
-    
-    idao = IngredienteDAO()
-    
-    
-    ingre = Ingrediente(nombre="Azucar")
-    ingre2 = Ingrediente(nombre="Huevos")
-    ingre3 = Ingrediente(nombre="Harina")
-    
-    print(idao.agregarIngrediente(ingre))
-    print(idao.agregarIngrediente(ingre2))
-    print(idao.agregarIngrediente(ingre3))
 
-    
-    print(idao.traerIngrediente("Huevos"))
-
-    print("Finnn eaaa")
     
         

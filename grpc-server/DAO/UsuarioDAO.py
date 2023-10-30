@@ -8,11 +8,14 @@ import mysql.connector
 import json
 from mysql.connector import Error
 from DAO.ConexionBD import ConexionBD
-from DAO.CONFIGS.variablesGlobales import TUSUARIO, TSIGUIENDO
+from DAO.CONFIGS.variablesGlobales import TUSUARIO, TSIGUIENDO, TOPIC_USUARIO_POPULARIDAD
+from kafka import KafkaProducer
+producer = KafkaProducer(bootstrap_servers='localhost:9092')
 
 class UsuarioDAO(ConexionBD):
     def __int__(self):
         pass
+
     
     def traerUsuarioSIMPLE(self, email):
         usTraido = None
@@ -62,6 +65,30 @@ class UsuarioDAO(ConexionBD):
                 self._micur.execute("INSERT INTO " + TSIGUIENDO + "(Usuario_Seguidor, Usuario_Seguido) values (%s, %s)", (usuarioQueSigue, usuarioSeguido))
                 self._bd.commit()
                 mensaje = "Estas siguiendo a este usuario"
+                producer.send(TOPIC_USUARIO_POPULARIDAD, json.dumps({
+                "nombre_usuario": usuarioSeguido,
+                "puntaje": 1
+                }).encode('utf-8'))
+
+            except mysql.connector.errors.IntegrityError as err:
+                print("Error: " + str(err))
+
+            finally:
+                self.cerrarConexion()
+        
+        return (mensaje)
+    def dejarDeSeguirUsuario(self, usuarioQueSigue, usuarioSeguido):
+        mensaje = "No se puede dejar de seguir a este usuario"
+        if (usuarioQueSigue != usuarioSeguido):
+            try:
+                self.crearConexion()
+                self._micur.execute("DELETE FROM " + TSIGUIENDO + " WHERE Usuario_Seguidor=%s and Usuario_Seguido=%s", (usuarioQueSigue, usuarioSeguido))
+                self._bd.commit()
+                mensaje = "Dejaste de seguir a este usuario"
+                producer.send(TOPIC_USUARIO_POPULARIDAD, json.dumps({
+                "nombre_usuario": usuarioSeguido,
+                "puntaje": -1
+                }).encode('utf-8'))
 
             except mysql.connector.errors.IntegrityError as err:
                 print("Error: " + str(err))

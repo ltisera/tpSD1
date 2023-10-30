@@ -1,5 +1,5 @@
 node_modules
-
+kafka-3.6.0-src
 # Archivos y directorios generados automáticamente
 __pycache__/
 *.pyc

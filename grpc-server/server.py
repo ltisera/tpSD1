@@ -23,13 +23,49 @@ from proto import usuario_pb2 as usuario_pb2
 from proto import usuario_pb2_grpc as usuario_pb2_grpc
 from proto import receta_pb2 as receta_pb2
 from proto import receta_pb2_grpc as receta_pb2_grpc
+from proto import comentarios_pb2 as comentarios_pb2
+from proto import comentarios_pb2_grpc as comentarios_pb2_grpc
 
 
 from DAO.RecetaDAO import RecetaDAO
 from DAO.UsuarioDAO import UsuarioDAO
+from DAO.ComentarioDAO import ComentarioDAO
 
 from objetos.Receta import *
 from objetos.Usuario import *
+from objetos.Comentario import *
+
+class ComentarioServicer(comentarios_pb2_grpc.servicioComentariosServicer):
+    def crearComentario(self,request,context):
+        admincomentario = ComentarioDAO()
+        comentario = Comentario()
+        comentario.idReceta = request.idReceta
+        comentario.idUsuario = request.idUsuario
+        comentario.comentario = request.comentario
+        admincomentario.agregarComentario(comentario)
+        respuesta = comentarios_pb2.comentarioStatus(estado=1)
+        return respuesta
+    def eliminarComentario(self,request,context):
+        admincomentario = ComentarioDAO()
+        print(request.idComentario)
+        admincomentario.eliminarComentario(request.idComentario)
+        respuesta = comentarios_pb2.comentarioStatus(estado=1)
+        return respuesta
+    def obtenerComentarios(self,request,context):
+        responseListaComentarios=[]
+        listaComentarios=[]
+        listaComentarios=ComentarioDAO().traerComentarios(request.idReceta)
+        for com in listaComentarios:
+            comentario=comentarios_pb2.comentario(
+                idComentario = com["idComentario"],
+                idReceta = com["idReceta"],
+                idUsuario = com["idUsuario"],
+                comentario = com["comentario"],
+            )
+            responseListaComentarios.append(comentario)
+        respuesta = comentarios_pb2.traerComentariosResponse(comentarios=responseListaComentarios)
+        return respuesta
+
 
 #### Aca te entra los request de RECETAS
 class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
@@ -200,8 +236,25 @@ class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
     
     def seguirUsuario(self, request, context):
         udao = UsuarioDAO()
+        print(request.usuarioQueSigue, request.usuarioSeguido)
         res = udao.seguirUsuario(request.usuarioQueSigue, request.usuarioSeguido)
         respuesta = usuario_pb2.solicitudDeSeguidorResponse(mensaje=res)
+        return respuesta
+    
+    def dejarDeSeguirUsuario(self, request, context):
+        udao = UsuarioDAO()
+        print(request.usuarioQueSigue, request.usuarioSeguido)
+        res = udao.dejarDeSeguirUsuario(request.usuarioQueSigue, request.usuarioSeguido)
+        respuesta = usuario_pb2.solicitudDeSeguidorResponse(mensaje=res)
+        return respuesta
+    def traerUsuariosQueMeSiguen(self, request, context):
+        responseListaUsuarios=[] 
+        listaUsuario=[]
+        udao = UsuarioDAO()
+        listaUsuario = udao.traerUsuariosQueMeSiguen(request.usuario)
+        for us in listaUsuario:
+            responseListaUsuarios.append(us["Usuario_Seguidor"])
+        respuesta = usuario_pb2.traerUsuariosQueSigoResponse(usuarios=responseListaUsuarios)
         return respuesta
 
     def traerUsuariosQueSigo(self, request, context):
@@ -254,6 +307,7 @@ def iniciar_servidor():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     receta_pb2_grpc.add_servicioRecetaServicer_to_server(RecetaServicer(), server)
     usuario_pb2_grpc.add_servicioUsuarioServicer_to_server(UsuarioServicer(), server)
+    comentarios_pb2_grpc.add_servicioComentariosServicer_to_server(ComentarioServicer(), server)
     server.add_insecure_port('[::]:50051')  # Escucha en el puerto 50051 sin cifrado
     server.start()
     logging.basicConfig(level=logging.DEBUG) 

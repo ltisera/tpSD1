@@ -110,23 +110,11 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 -- Table `bdrecetas`.`siguiendo`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bdrecetas`.`siguiendo` (
-  `Usuario_Seguidor` VARCHAR(25) NOT NULL,
-  `Usuario_Seguido` VARCHAR(25) NOT NULL,
-  PRIMARY KEY (`Usuario_Seguidor`, `Usuario_Seguido`),
-  INDEX `fk_Usuario_has_Usuario_Usuario2_idx` (`Usuario_Seguido` ASC) VISIBLE,
-  INDEX `fk_Usuario_has_Usuario_Usuario1_idx` (`Usuario_Seguidor` ASC) VISIBLE,
-  CONSTRAINT `fk_Usuario_has_Usuario_Usuario1`
-    FOREIGN KEY (`Usuario_Seguidor`)
-    REFERENCES `bdrecetas`.`usuario` (`usuario`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Usuario_has_Usuario_Usuario2`
-    FOREIGN KEY (`Usuario_Seguido`)
-    REFERENCES `bdrecetas`.`usuario` (`usuario`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `bdrecetas`.`siguiendo` (`Usuario_Seguidor` VARCHAR(25) NOT NULL, `Usuario_Seguido` VARCHAR(25) NOT NULL, PRIMARY KEY (`Usuario_Seguidor`, `Usuario_Seguido`));
+-- -----------------------------------------------------
+-- Table `bdrecetas`.`comentarios`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `bdrecetas`.`comentarios` (`idComentario` INT NOT NULL AUTO_INCREMENT, `idReceta` INT NOT NULL, `idUsuario` VARCHAR(25) NOT NULL, `comentario` VARCHAR(255) NOT NULL, PRIMARY KEY (`idComentario`));
 
 
 -- -----------------------------------------------------

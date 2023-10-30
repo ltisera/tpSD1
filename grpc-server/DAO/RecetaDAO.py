@@ -10,11 +10,11 @@ from objetos.Ingrediente import *
 from DAO.ConexionBD import ConexionBD
 from DAO.IngredienteDAO import IngredienteDAO
 from DAO.CategoriaDAO import CategoriaDAO
-from DAO.CONFIGS.variablesGlobales import TRECETA, TRECETAFAVORITA, TINGREDIENTEDERECETA 
-
+from DAO.CONFIGS.variablesGlobales import TRECETA, TRECETAFAVORITA, TINGREDIENTEDERECETA , TOPIC_NOVEDADES
+from kafka import KafkaProducer
 from mysql.connector import Error
 
-
+producer = KafkaProducer(bootstrap_servers='localhost:9092')
 class RecetaDAO(ConexionBD):
     def __int__(self):
         pass

@@ -1,51 +1,47 @@
 class Comentario():
-    def __init__(self, idComentario="", idReceta="", usuario="", comentario="", respondeA=None):
-        self._idComentario = idComentario
+    def __init__(self, idUsuario = None, idReceta = "", idComentario ="", comentario=""):
+        self._idUsuario = idUsuario
         self._idReceta = idReceta
-        self._usuario = usuario
+        self._idComentario = idComentario
         self._comentario = comentario
-        self._respondeA = respondeA
-    
+
     @property
-    def idComentario(self):
-        return self._idComentario
+    def idUsuario(self):
+        return self._idUsuario
 
-    @idComentario.setter
-    def idComentario(self, id):
-        self._idComentario = id
-
+    @idUsuario.setter
+    def idUsuario(self, idUsuario):
+        self._idUsuario = idUsuario
+    
     @property
     def idReceta(self):
         return self._idReceta
-
+    
     @idReceta.setter
-    def idReceta(self, id):
-        self._idReceta = id
+    def idReceta(self, idReceta):
+        self._idReceta = idReceta
 
     @property
-    def usuario(self):
-        return self._usuario
-
-    @usuario.setter
-    def usuario(self, usuario):
-        self._usuario = str(usuario)
+    def idComentario(self):
+        return self._idComentario
+    
+    @idComentario.setter
+    def idComentario(self, idComentario):
+        self._idComentario = idComentario
 
     @property
     def comentario(self):
         return self._comentario
-
+    
     @comentario.setter
     def comentario(self, comentario):
-        self._comentario = str(comentario)
+        self._comentario = comentario
 
-    @property
-    def respondeA(self):
-        return self._respondeA
-
-    @respondeA.setter
-    def respondeA(self, respondeA):
-        self._respondeA = str(respondeA)
-    
     def __str__(self):
-        return str("id: " + str(" comentario: " +
-                   str(self.comentario)))
+        return str("idUsuario: " + str(self.idUsuario) +
+                   " idReceta: " + str(self.idReceta) +
+                   " idComentario: " + str(self.idComentario) +
+                   " comentario: " + str(self.comentario))
+    
+
+    

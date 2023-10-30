@@ -4,47 +4,44 @@ const cors = require("cors");
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
-const grpc = require("@grpc/grpc-js");
-const protoLoader = require("@grpc/proto-loader");
+
+const { Kafka } = require("kafkajs");
+const { WebSocketServer } = require("ws");
+const {
+  agregarRecetaFavorita,
+  createRecipe,
+  createUser,
+  deleteRecipe,
+  editRecipe,
+  eliminarRecetaFavorita,
+  getRecipes,
+  loginUser,
+  traerRecetasFavoritas,
+  seguirUsuario,
+  traerUsuariosQueSigo,
+  dejarDeSeguirUsuario,
+  traerUsuariosQueMeSiguen,
+  crearComentario,
+  eliminarComentario,
+  traerComentarios,
+} = require("./grpc");
 const app = express();
 
 // ======== CONFIGURACION =========
-const PROTO_PATH_USERS = path.resolve(
-  __dirname,
-  "../grpc-server/proto/usuario.proto"
-);
-
-const packageDefinitionUser = protoLoader.loadSync(PROTO_PATH_USERS, {
-  keepCase: true,
-  longs: String,
-  enums: String,
-  defaults: true,
-  oneofs: true,
+const kafka = new Kafka({
+  brokers: [`0.0.0.0:9092`],
+  clientId: "node-js",
 });
+const kafkaProducer = kafka.producer();
+const kafkaConsumer = kafka.consumer({ groupId: "node-js" });
+const KAFKA_TOPIC_NEWS = "novedades";
+const KAFKA_TOPIC_USER_POPULARITY = "PopularidadUsuario";
+const KAFKA_TOPIC_RECIPE_COMMENTS = "RecetaComentarios";
+const KAFKA_TOPIC_RECIPE_POPULARITY = "RecetaPopularidad";
 
-const userProto = grpc.loadPackageDefinition(packageDefinitionUser);
-const usersGrpcClient = new userProto.servicioUsuario(
-  "localhost:50051",
-  grpc.credentials.createInsecure()
-);
-const PROTO_PATH_RECIPES = path.resolve(
-  __dirname,
-  "../grpc-server/proto/receta.proto"
-);
-
-const packageDefinitionRecipes = protoLoader.loadSync(PROTO_PATH_RECIPES, {
-  keepCase: true,
-  longs: String,
-  enums: String,
-  defaults: true,
-  oneofs: true,
+const wss = new WebSocketServer({
+  port: 4004,
 });
-
-const recipesProto = grpc.loadPackageDefinition(packageDefinitionRecipes);
-const recipesGrpcClient = new recipesProto.servicioReceta(
-  "localhost:50051",
-  grpc.credentials.createInsecure()
-);
 
 const port = 3000;
 const SERVER_JWT_SECRET = "secret1234";
@@ -123,10 +120,26 @@ app.post("/api/recipes", (req, res) => {
   });
 });
 app.post("/api/recipe", (req, res) => {
+  const { username } = jwt.decode(req.cookies.user);
+  if (!username) {
+    return res.json([]);
+  }
   createRecipe(req.body, (error, response) => {
     if (error) {
       res.json([]);
     } else {
+      kafkaProducer.send({
+        topic: KAFKA_TOPIC_NEWS,
+        messages: [
+          {
+            value: JSON.stringify({
+              usuario: username,
+              titulo: req.body.titulo,
+              imagen: req.body.foto1,
+            }),
+          },
+        ],
+      });
       res.json(response);
     }
   });
@@ -151,6 +164,9 @@ app.delete("/api/recipe", (req, res) => {
 });
 app.get("/api/favs", (req, res) => {
   const { username } = jwt.decode(req.cookies.user);
+  if (!username) {
+    return res.json([]);
+  }
   traerRecetasFavoritas(
     {
       usuario: username,
@@ -196,172 +212,170 @@ app.delete("/api/favs", (req, res) => {
     }
   );
 });
-const server = app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+
+app.post("/api/follow", (req, res) => {
+  const { username } = jwt.decode(req.cookies.user);
+  seguirUsuario(
+    {
+      usuarioQueSigue: username,
+      usuarioSeguido: req.body.usuarioSeguido,
+    },
+    (error, response) => {
+      if (error) {
+        res.json([]);
+      } else {
+        res.json(response);
+      }
+    }
+  );
+});
+app.delete("/api/follow", (req, res) => {
+  const { username } = jwt.decode(req.cookies.user);
+  dejarDeSeguirUsuario(
+    {
+      usuarioQueSigue: username,
+      usuarioSeguido: req.body.usuarioSeguido,
+    },
+    (error, response) => {
+      if (error) {
+        res.json([]);
+      } else {
+        res.json(response);
+      }
+    }
+  );
 });
 
-server.on("close", () => {
+app.get("/api/following", (req, res) => {
+  const { username } = jwt.decode(req.cookies.user);
+  traerUsuariosQueSigo(
+    {
+      usuario: username,
+    },
+    (error, response) => {
+      if (error) {
+        res.json([]);
+      } else {
+        res.json(response);
+      }
+    }
+  );
+});
+app.get("/api/followers", (req, res) => {
+  const { username } = jwt.decode(req.cookies.user);
+  traerUsuariosQueMeSiguen(
+    {
+      usuario: username,
+    },
+    (error, response) => {
+      if (error) {
+        res.json([]);
+      } else {
+        res.json(response);
+      }
+    }
+  );
+});
+
+app.post("/api/comments", (req, res) => {
+  const { username } = jwt.decode(req.cookies.user);
+  const url = new URL(req.headers.referer);
+  crearComentario(
+    {
+      idReceta: url.searchParams.get("id"),
+      idUsuario: username,
+      comentario: req.body.comentario,
+    },
+    (error, response) => {
+      if (error) {
+        res.json({});
+      } else {
+        res.json(response);
+      }
+    }
+  );
+});
+
+app.get("/api/comments", (req, res) => {
+  const id = req.query.id;
+  traerComentarios(
+    {
+      idReceta: id,
+    },
+    (error, response) => {
+      if (error) {
+        res.json([]);
+      } else {
+        res.json(response);
+      }
+    }
+  );
+});
+
+app.delete("/api/comments", (req, res) => {
+  const { idComentario } = req.body;
+  eliminarComentario(
+    {
+      idComentario,
+    },
+    (error, response) => {
+      if (error) {
+        res.json({});
+      } else {
+        res.json(response);
+      }
+    }
+  );
+});
+
+// ================
+let connections = [];
+
+const server = app.listen(port, async () => {
+  console.log(`Example app listening on port ${port}`);
+  await kafkaProducer.connect();
+  await kafkaConsumer.connect();
+  await kafkaConsumer.subscribe({
+    topic: KAFKA_TOPIC_NEWS,
+    fromBeginning: true,
+  });
+  await kafkaConsumer.subscribe({
+    topic: KAFKA_TOPIC_USER_POPULARITY,
+    fromBeginning: false,
+  });
+  await kafkaConsumer.subscribe({
+    topic: KAFKA_TOPIC_RECIPE_POPULARITY,
+    fromBeginning: true,
+  });
+  await kafkaConsumer.subscribe({
+    topic: KAFKA_TOPIC_RECIPE_COMMENTS,
+    fromBeginning: false,
+  });
+  wss.on("connection", async (ws) => {
+    connections.push(ws);
+  });
+  await kafkaConsumer.run({
+    eachMessage: async ({ topic, partition, message }) => {
+      connections = connections.filter((ws) => ws.OPEN);
+      connections.forEach((ws) => {
+        ws.send(
+          JSON.stringify({
+            topic,
+            message: JSON.parse(message.value.toString()),
+          })
+        );
+      });
+    },
+  });
+});
+
+server.on("close", async () => {
+  connections.forEach((ws) => ws.close());
+  await kafkaProducer.disconnect();
+  await kafkaConsumer.disconnect();
+  wss.close();
   console.log("Server closed");
 });
-
-// ====== GRPC CLIENT ======
-function eliminarRecetaFavorita(
-  recipe = {
-    idReceta: "",
-    usuario: "",
-  },
-  callback
-) {
-  recipesGrpcClient.eliminarRecetaDeFavoritos(recipe, (err, response) => {
-    callback(err, response);
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(response);
-    }
-  });
-}
-function traerRecetasFavoritas(
-  request = {
-    usuario: "",
-  },
-  callback
-) {
-  recipesGrpcClient.traerRecetasFavoritas(request, (err, response) => {
-    callback(err, response);
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(response);
-    }
-  });
-}
-function agregarRecetaFavorita(
-  recipe = {
-    idReceta: "",
-  },
-  callback
-) {
-  recipesGrpcClient.agregarRecetaAFavoritos(recipe, (err, response) => {
-    callback(err, response);
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(response);
-    }
-  });
-}
-function createUser(
-  userdata = {
-    username: "",
-    email: "",
-    password: "",
-    tipo: "usuario",
-  },
-  callback
-) {
-  usersGrpcClient.crearUsuario(userdata, callback);
-}
-function loginUser(
-  userdata = {
-    username: "",
-    email: "",
-    password: "",
-    tipo: "",
-  },
-  callback
-) {
-  usersGrpcClient.loguearUsuario(userdata, callback);
-}
-
-
-function deleteRecipe(
-  recipe = {
-    idReceta: "",
-  },
-  callback
-) {
-  recipesGrpcClient.eliminarReceta(recipe, (err, response) => {
-    callback(err, response);
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(response);
-    }
-  });
-}
-function createRecipe(
-  recipe = {
-    titulo: "",
-    descripcion: "",
-    tiempoEnMinutos: "",
-    categoria: "",
-    pasos: "",
-    foto1: "",
-    foto2: "",
-    foto3: "",
-    foto4: "",
-    foto5: "",
-    ingredientes: "",
-  },
-  callback
-) {
-  recipesGrpcClient.crearReceta(recipe, (err, response) => {
-    callback(err, response);
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(response);
-    }
-  });
-}
-function editRecipe(
-  recipe = {
-    titulo: "",
-    descripcion: "",
-    tiempoEnMinutos: "",
-    categoria: "",
-    pasos: "",
-    foto1: "",
-    foto2: "",
-    foto3: "",
-    foto4: "",
-    foto5: "",
-    ingredientes: "",
-  },
-  callback
-) {
-  recipesGrpcClient.editarReceta(recipe, (err, response) => {
-    callback(err, response);
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(response);
-    }
-  });
-}
-
-function getRecipes(
-  filters = {
-    tiempoEnMinutosMIN: "",
-    tiempoEnMinutosMAX: "",
-    categoria: "",
-    creador: "",
-    titulo: "",
-    ingredientes: "",
-    idReceta: "",
-  },
-  callback
-) {
-  recipesGrpcClient.traerRecetasPor(filters, (err, response) => {
-    callback(err, response);
-    if (err) {
-      console.error(err);
-    } else {
-      console.log(response);
-    }
-  });
-}
 
 // ====== MIDDLEWARES ======
 

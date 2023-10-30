@@ -65,5 +65,7 @@ service servicioUsuario{
     rpc crearUsuario (crearUsuarioRequest) returns (crearUsuarioResponse);
     rpc loguearUsuario (crearUsuarioRequest) returns (crearUsuarioResponse);
     rpc seguirUsuario(solicitudDeSeguidorRequest) returns (solicitudDeSeguidorResponse);
+    rpc dejarDeSeguirUsuario(solicitudDeSeguidorRequest) returns (solicitudDeSeguidorResponse);
+    rpc traerUsuariosQueMeSiguen(traerUsuariosQueSigoRequest) returns (traerUsuariosQueSigoResponse);
     rpc traerUsuariosQueSigo(traerUsuariosQueSigoRequest) returns (traerUsuariosQueSigoResponse);
 }
