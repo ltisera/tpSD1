@@ -277,9 +277,54 @@ app.get("/api/followers", (req, res) => {
   );
 });
 
+async function comentario(usuario, idReceta, comentario) {
+  const kafka = new Kafka({
+    clientId: 'clienteNode',
+    brokers: ['localhost:9092'] // Cambia esto con la dirección de tus brokers Kafka
+  });
+  
+  const producer = kafka.producer();
+  
+  const mkafka = {
+    usuario: usuario,
+    idReceta: idReceta,
+    comentario: comentario
+  };
+  
+  // Signo + para agregar 1 o - para restar 1
+  console.log("Este es el JSON");
+  console.log(mkafka);
+  
+  await producer.connect();
+  
+  await producer.send({
+    topic: 'comentario',
+    messages: [
+      { value: JSON.stringify(mkafka) }
+    ]
+  });
+  
+  await producer.disconnect();
+}
+
 app.post("/api/comments", (req, res) => {
   const { username } = jwt.decode(req.cookies.user);
   const url = new URL(req.headers.referer);
+  console.log("Este comentario saleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
+  kafkaProducer.send({
+    topic: KAFKA_TOPIC_RECIPE_COMMENTS,
+    messages: [
+      {
+        value: JSON.stringify({
+          idReceta: url.searchParams.get("id"),
+          idUsuario: username,
+          comentario: req.body.comentario,
+        }),
+      },
+    ],
+  });
+
+  /*
   crearComentario(
     {
       idReceta: url.searchParams.get("id"),
@@ -294,6 +339,8 @@ app.post("/api/comments", (req, res) => {
       }
     }
   );
+  */
+  
 });
 
 app.get("/api/comments", (req, res) => {

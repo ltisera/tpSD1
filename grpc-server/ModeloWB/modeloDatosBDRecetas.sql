@@ -112,9 +112,9 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `bdrecetas`.`siguiendo` (`Usuario_Seguidor` VARCHAR(25) NOT NULL, `Usuario_Seguido` VARCHAR(25) NOT NULL, PRIMARY KEY (`Usuario_Seguidor`, `Usuario_Seguido`));
 -- -----------------------------------------------------
--- Table `bdrecetas`.`comentarios`
+-- Table `bdrecetas`.`comentario`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `bdrecetas`.`comentarios` (`idComentario` INT NOT NULL AUTO_INCREMENT, `idReceta` INT NOT NULL, `idUsuario` VARCHAR(25) NOT NULL, `comentario` VARCHAR(255) NOT NULL, PRIMARY KEY (`idComentario`));
+CREATE TABLE IF NOT EXISTS `bdrecetas`.`comentario` (`idComentario` INT NOT NULL AUTO_INCREMENT, `idReceta` INT NOT NULL, `idUsuario` VARCHAR(25) NOT NULL, `comentario` VARCHAR(255) NOT NULL, PRIMARY KEY (`idComentario`));
 
 
 -- -----------------------------------------------------

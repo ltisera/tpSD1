@@ -36,21 +36,26 @@ from objetos.Usuario import *
 from objetos.Comentario import *
 
 class ComentarioServicer(comentarios_pb2_grpc.servicioComentariosServicer):
+    
     def crearComentario(self,request,context):
         admincomentario = ComentarioDAO()
         comentario = Comentario()
         comentario.idReceta = request.idReceta
         comentario.idUsuario = request.idUsuario
         comentario.comentario = request.comentario
-        admincomentario.agregarComentario(comentario)
+        #admincomentario.agregarComentario(comentario)
+        #Ya nno persistimos el comentario
         respuesta = comentarios_pb2.comentarioStatus(estado=1)
         return respuesta
+    
+    
     def eliminarComentario(self,request,context):
         admincomentario = ComentarioDAO()
         print(request.idComentario)
         admincomentario.eliminarComentario(request.idComentario)
         respuesta = comentarios_pb2.comentarioStatus(estado=1)
         return respuesta
+
     def obtenerComentarios(self,request,context):
         responseListaComentarios=[]
         listaComentarios=[]

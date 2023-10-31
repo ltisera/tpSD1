@@ -30,6 +30,23 @@ class ComentarioDAO(ConexionBD):
         
         return (mensaje)
     
+    
+    def eliminarComentario(self, idComentario):
+        mensaje  = "Error de nada"
+        try:
+            self.crearConexion()
+            self.cursorDict()
+            self._micur.execute("DELETE FROM " + TCOMENTARIO + " where idComentario = %s",(idComentario,))
+            mensaje = "Comentario elminated"
+        except mysql.connector.errors.IntegrityError as err:
+            mensaje = "Error con except"
+            print("Error: " + str(err))
+        finally:
+            self.cerrarConexion()
+        return mensaje
+    
+    
+    
     def traerComentarios(self, idReceta):
         lstComentarios = []
         try:
