@@ -30,10 +30,37 @@ from proto import comentarios_pb2_grpc as comentarios_pb2_grpc
 from DAO.RecetaDAO import RecetaDAO
 from DAO.UsuarioDAO import UsuarioDAO
 from DAO.ComentarioDAO import ComentarioDAO
+from DAO.CONFIGS.variablesGlobales import *
 
 from objetos.Receta import *
 from objetos.Usuario import *
 from objetos.Comentario import *
+
+### Productor kafka popularidadReceta
+def popularidadReceta(idReceta, signo):
+    producer = KafkaProducer(bootstrap_servers='localhost:9092')  
+    mkafka = {
+        "idReceta": idReceta, 
+        "popularidad" : signo
+    }
+    #signo + para agregar 1 o - para restar 1
+    print("este es el json") 
+    print(mkafka)
+    producer.send(topic = TOPIC_RECIPE_POPULARIDAD, value=json.dumps(mkafka).encode("utf-8"))
+    producer.close()
+
+### Productor kafka popularidadUsuario
+def popularidadUsuario(usuario, signo):
+    producer = KafkaProducer(bootstrap_servers='localhost:9092')  
+    mkafka = {
+        "usuario": usuario, 
+        "popularidad" : signo
+    }
+    #signo + para agregar 1 o - para restar 1
+    print("este es el json") 
+    print(mkafka)
+    producer.send(topic = TOPIC_USUARIO_POPULARIDAD, value=json.dumps(mkafka).encode("utf-8"))
+    producer.close()
 
 class ComentarioServicer(comentarios_pb2_grpc.servicioComentariosServicer):
     
@@ -168,7 +195,7 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
         receta.ingredientes= request.ingredientes
         idUltimaReceta = adminreceta.agregarReceta(receta)
         ### Productor kafka
-        producer = KafkaProducer(bootstrap_servers='localhost:9092')  # Cambia esto a la dirección de tu servidor Kafka
+        producer = KafkaProducer(bootstrap_servers='localhost:9092')
         mkafka = {
             "idReceta": idUltimaReceta, 
             "tituloReceta" : receta.titulo,
@@ -177,7 +204,7 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
         }
         print("este es el json") 
         print(mkafka)
-        producer.send(topic = 'novedades', value=json.dumps(mkafka).encode("utf-8"))
+        producer.send(topic = TOPIC_NOVEDADES, value=json.dumps(mkafka).encode("utf-8"))
         producer.close()
         respuesta = receta_pb2.status(status=1)
         return respuesta
@@ -214,11 +241,13 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
     def agregarRecetaAFavoritos(self, request, context):
         rdao = RecetaDAO()
         res = rdao.agregarFavorito(request.usuario, request.idReceta)
+        popularidadReceta(request.idReceta, "+")
         return res
     def eliminarRecetaDeFavoritos(self, request, context):
         rdao = RecetaDAO()
         print(request)
         res = rdao.eliminarFavorito(request.usuario, request.idReceta)
+        popularidadReceta(request.idReceta, "-")
         return res
 
     def traerRecetasFavoritas(self, request, context):
@@ -244,6 +273,7 @@ class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
         print(request.usuarioQueSigue, request.usuarioSeguido)
         res = udao.seguirUsuario(request.usuarioQueSigue, request.usuarioSeguido)
         respuesta = usuario_pb2.solicitudDeSeguidorResponse(mensaje=res)
+        popularidadUsuario(request.usuarioSeguido, "+")
         return respuesta
     
     def dejarDeSeguirUsuario(self, request, context):
@@ -251,7 +281,9 @@ class UsuarioServicer(usuario_pb2_grpc.servicioUsuarioServicer):
         print(request.usuarioQueSigue, request.usuarioSeguido)
         res = udao.dejarDeSeguirUsuario(request.usuarioQueSigue, request.usuarioSeguido)
         respuesta = usuario_pb2.solicitudDeSeguidorResponse(mensaje=res)
+        popularidadUsuario(request.usuarioSeguido, "-")
         return respuesta
+
     def traerUsuariosQueMeSiguen(self, request, context):
         responseListaUsuarios=[] 
         listaUsuario=[]

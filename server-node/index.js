@@ -98,7 +98,8 @@ app.post("/api/recipes", (req, res) => {
     if (error) {
       res.json([]);
     } else {
-      const { username } = jwt.decode(req.cookies.user);
+      const { username } = "vacio";
+      if (jwt.decode(req.cookies.user != null)) {const { username } = jwt.decode(req.cookies.user);}
       traerRecetasFavoritas(
         {
           usuario: username,
@@ -280,7 +281,8 @@ app.get("/api/followers", (req, res) => {
 async function comentario(usuario, idReceta, comentario) {
   const kafka = new Kafka({
     clientId: 'clienteNode',
-    brokers: ['localhost:9092'] // Cambia esto con la dirección de tus brokers Kafka
+    brokers: ['localhost:9092']
+780'¿
   });
   
   const producer = kafka.producer();
