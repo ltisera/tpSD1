@@ -5,6 +5,7 @@ import os, sys
 from time import sleep  
 from json import dumps  
 from kafka import KafkaProducer  
+from kafka import KafkaConsumer
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(CURRENT_DIR))
@@ -103,37 +104,104 @@ class ComentarioServicer(comentarios_pb2_grpc.servicioComentariosServicer):
 class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
     def traerRecetasPor(self, request, context):
         responseListaRecetas=[]
-    
-            
-        listaRecetas=RecetaDAO().traerRecetasXFiltro(
-            tiempoEnMinutosMIN=request.tiempoEnMinutosMIN,
-            tiempoEnMinutosMAX=request.tiempoEnMinutosMAX,
-            categoria=request.categoria,
-            creador=request.creador,
-            titulo=request.titulo,
-            idReceta=request.idReceta,
-            ingredientes = request.ingredientes,
-        )
+        print("MIRA")
+        if((request.tiempoEnMinutosMIN == "") 
+            & (request.tiempoEnMinutosMIN == "")
+            & (request.tiempoEnMinutosMIN == "")
+            & (request.tiempoEnMinutosMAX == "")
+            & (request.categoria == "")
+            & (request.creador == "")
+            & (request.titulo == "")
+            & (request.idReceta == "")
+            & (request.ingredientes == "")):
         
-        for rec in listaRecetas:
-            re=receta_pb2.receta(
-                titulo = rec["titulo"],
-                descripcion = rec["descripcion"],
-                pasos = rec["pasos"],
-                tiempoEnMinutos = rec["tiempoEnMinutos"],
-                categoria = rec["categoria"],
-                creador = rec["creador"],
-                foto1 = rec["foto1"],
-                foto2 = rec["foto2"],
-                foto3 = rec["foto3"],
-                foto4 = rec["foto4"],
-                foto5 = rec["foto5"],
-                idReceta = rec["idReceta"],
-                ingredientes = rec["ingredientes"],
+            # Configura las opciones del consumidor
+            consumer = KafkaConsumer(
+                'novedades',
+                bootstrap_servers='localhost:9092',  # Reemplaza con la dirección de tu servidor Kafka
+                group_id="un grupo",  # Puedes usar cualquier grupo de consumidores
+                auto_offset_reset='latest',  # Lee desde la posición más reciente
+                enable_auto_commit=False  # Desactiva el auto commit
             )
-            responseListaRecetas.append(re)
-        respuesta = receta_pb2.traerRecetasPorResponse(recetas=responseListaRecetas)
-        return respuesta
+
+
+
+
+            # Obtiene la cantidad total de mensajes en el tema
+            consumer.poll()
+            consumer.seek_to_end()
+            assignment = list(consumer.assignment())
+            # Verificar si hay particiones antes de continuar
+            if assignment:
+                # Obtener la cantidad total de mensajes en la primera partición
+                total_messages = consumer.position(assignment[0])
+                # Lleva un registro de cuántos mensajes has consumido
+                num_messages_to_read = 5
+                messages_read = 0
+
+                # Resto del código para leer los últimos mensajes
+                # Lee los últimos 5 mensajes en orden inverso
+                for _ in range(num_messages_to_read):
+                    position = total_messages - messages_read - 1
+                    if(position < 0):
+                        break
+                    consumer.seek(assignment[0], position)
+                    message = next(consumer)
+                    print('Mensaje leído: {}'.format(message.value.decode('utf-8')))
+                    messages_read += 1
+
+
+            # Cierra el consumidor al final
+            consumer.close()
+            respuesta=receta_pb2.receta(
+                titulo = "titulo",
+                descripcion = "descripcion",
+                pasos = "pasos",
+                tiempoEnMinutos = 2,
+                categoria = "categoria",
+                creador = "creador",
+                foto1 = "foto1",
+                foto2 = "foto2",
+                foto3 = "foto3",
+                foto4 = "foto4",
+                foto5 = "foto5",
+                idReceta = 33,
+                ingredientes = "ingredientes",
+            )
+            print("Trqanqui que no cuelgo")
+            return respuesta
+            
+
+        else:
+            listaRecetas=RecetaDAO().traerRecetasXFiltro(
+                tiempoEnMinutosMIN=request.tiempoEnMinutosMIN,
+                tiempoEnMinutosMAX=request.tiempoEnMinutosMAX,
+                categoria=request.categoria,
+                creador=request.creador,
+                titulo=request.titulo,
+                idReceta=request.idReceta,
+                ingredientes = request.ingredientes,
+            )
+            
+            for rec in listaRecetas:
+                re=receta_pb2.receta(
+                    titulo = rec["titulo"],
+                    descripcion = rec["descripcion"],
+                    pasos = rec["pasos"],
+                    tiempoEnMinutos = rec["tiempoEnMinutos"],
+                    categoria = rec["categoria"],
+                    creador = rec["creador"],
+                    foto1 = rec["foto1"],
+                    foto2 = rec["foto2"],
+                    foto3 = rec["foto3"],
+                    foto4 = rec["foto4"],
+                    foto5 = rec["foto5"],
+                    idReceta = rec["idReceta"],
+                    ingredientes = rec["ingredientes"],
+                )
+                responseListaRecetas.append(re)
+            respuesta = receta_pb2.traerRecetasPorResponse(recetas=responseListaRecetas)
+            return respuesta
 
     def traerReceta(self, request, context):
         rec=RecetaDAO().traerReceta(request.idReceta)
@@ -347,7 +415,7 @@ def iniciar_servidor():
     comentarios_pb2_grpc.add_servicioComentariosServicer_to_server(ComentarioServicer(), server)
     server.add_insecure_port('[::]:50051')  # Escucha en el puerto 50051 sin cifrado
     server.start()
-    logging.basicConfig(level=logging.DEBUG) 
+    logging.basicConfig(level=logging.ERROR) 
     logging.info("Servidor gRPC iniciado en el puerto 50051")
     
     server.wait_for_termination()

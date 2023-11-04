@@ -98,6 +98,7 @@ app.post("/api/recipes", (req, res) => {
     if (error) {
       res.json([]);
     } else {
+      console.log("YO LO USO")
       const { username } = "vacio";
       if (jwt.decode(req.cookies.user != null)) {const { username } = jwt.decode(req.cookies.user);}
       traerRecetasFavoritas(
@@ -120,6 +121,7 @@ app.post("/api/recipes", (req, res) => {
     }
   });
 });
+
 app.post("/api/recipe", (req, res) => {
   const { username } = jwt.decode(req.cookies.user);
   if (!username) {
@@ -129,7 +131,7 @@ app.post("/api/recipe", (req, res) => {
     if (error) {
       res.json([]);
     } else {
-      kafkaProducer.send({
+      /*kafkaProducer.send({
         topic: KAFKA_TOPIC_NEWS,
         messages: [
           {
@@ -140,7 +142,7 @@ app.post("/api/recipe", (req, res) => {
             }),
           },
         ],
-      });
+      });*/
       res.json(response);
     }
   });
@@ -282,7 +284,6 @@ async function comentario(usuario, idReceta, comentario) {
   const kafka = new Kafka({
     clientId: 'clienteNode',
     brokers: ['localhost:9092']
-780'¿
   });
   
   const producer = kafka.producer();

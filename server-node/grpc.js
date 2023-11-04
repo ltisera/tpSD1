@@ -85,7 +85,9 @@ function traerRecetasFavoritas(
     if (err) {
       console.error(err);
     } else {
+      console.log( "MATHOV 1");
       console.log(response);
+      console.log( "MATHOV 2")
     }
   });
 }
