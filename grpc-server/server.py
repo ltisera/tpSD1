@@ -148,26 +148,25 @@ class RecetaServicer(receta_pb2_grpc.servicioRecetaServicer):
                     consumer.seek(assignment[0], position)
                     message = next(consumer)
                     print('Mensaje leído: {}'.format(message.value.decode('utf-8')))
+                    rec = json.loads(message.value.decode('utf-8'))
                     messages_read += 1
+                    print("ASEGURATE")
+                    print(rec)
+                    print("Esto soy")
+                    re=receta_pb2.receta(
+                        titulo = "*Novedad* " + rec["tituloReceta"],
+                        creador = rec["usuario"],
+                        foto1 = rec["urlFoto"],
+                        idReceta = rec["idReceta"],
+                    )
+                    responseListaRecetas.append(re)
 
 
             # Cierra el consumidor al final
             consumer.close()
-            respuesta=receta_pb2.receta(
-                titulo = "titulo",
-                descripcion = "descripcion",
-                pasos = "pasos",
-                tiempoEnMinutos = 2,
-                categoria = "categoria",
-                creador = "creador",
-                foto1 = "foto1",
-                foto2 = "foto2",
-                foto3 = "foto3",
-                foto4 = "foto4",
-                foto5 = "foto5",
-                idReceta = 33,
-                ingredientes = "ingredientes",
-            )
+
+                
+            respuesta = receta_pb2.traerRecetasPorResponse(recetas=responseListaRecetas)
             print("Trqanqui que no cuelgo")
             return respuesta
             
